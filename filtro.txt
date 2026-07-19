@@ -1,0 +1,25 @@
+// Configuración de Filtros (filtro.txt)
+// -----------------------------------------------------
+// Utiliza este archivo para indicar qué carpetas o archivos
+// quieres incluir o ignorar durante la comparación.
+//
+// REGLAS DE EXCLUSIÓN (Ignorar):
+// Las líneas que empiecen con '-' o '!' serán ignoradas.
+// Ejemplos:
+// - node_modules
+// - build
+// - .env
+// - .git
+//
+// REGLAS DE INCLUSIÓN (Solo comparar estos):
+// Las líneas que empiecen con '+' serán incluidas (las demás se omitirán).
+// Ejemplos:
+// + src/
+// + *.js
+// + *.jsx
+// -----------------------------------------------------
+
+- node_modules
+- dist
+- build
+- .git

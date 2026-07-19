@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: nmerge.local Backend API
+  description: API interna para gestionar perfiles, configuraciones, filtros y validación de licencias.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+    description: Servidor de desarrollo local
+  - url: /
+    description: Proxy relativo
+paths:
+  /api/configs:
+    get:
+      summary: Listar configuraciones guardadas
+      description: Devuelve una lista de los nombres de los archivos JSON de configuración disponibles en la carpeta configs/.
+      responses:
+        '200':
+          description: Lista de nombres de archivos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: Error interno del servidor
+    post:
+      summary: Guardar una configuración (perfil)
+      description: Guarda un objeto de configuración bajo un nombre específico usando Zod para validar la estructura.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - config
+              properties:
+                name:
+                  type: string
+                  pattern: "^[a-zA-Z0-9_-]+(\\.json)?$"
+                config:
+                  type: object
+      responses:
+        '200':
+          description: Configuración guardada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Validación fallida
+        '500':
+          description: Error interno
+
+  /api/configs/{name}:
+    get:
+      summary: Obtener una configuración específica
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Nombre del archivo de configuración
+      responses:
+        '200':
+          description: Objeto de configuración JSON
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Error interno o archivo no encontrado
+
+  /api/license/verify:
+    post:
+      summary: Verificar licencia (Pro)
+      description: Valida una clave de licencia (mínimo 10 caracteres) contra la base de datos SQLite interna.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - key
+              properties:
+                key:
+                  type: string
+                  minLength: 10
+      responses:
+        '200':
+          description: Licencia válida y activa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+        '400':
+          description: Payload inválido
+        '401':
+          description: Licencia inexistente o inactiva
+        '500':
+          description: Error interno
+
+  /api/filters/{filename}:
+    get:
+      summary: Obtener contenido de archivo de filtro
+      description: Retorna el contenido en texto plano de un archivo de filtro, como filtro.txt. Si no existe filtro.txt, crea un template base y lo devuelve.
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Contenido del archivo de filtros
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Archivo no encontrado
+        '500':
+          description: Error interno
+    post:
+      summary: Guardar contenido de archivo de filtro
+      description: Sobrescribe el contenido de texto plano de un filtro.
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Error interno

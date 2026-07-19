@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nodemerge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-nmerge}-app
+    user: "1000:1000"
+    volumes:
+      # Carpeta de persistencia para SQLite y filtros
+      - ./configs:/app/configs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+    networks:
+      - global-network
+
+networks:
+  global-network:
+    external: true

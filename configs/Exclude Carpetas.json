@@ -1,0 +1,4 @@
+{
+  "includeText": "",
+  "excludeText": ".agents/, codigo_extraido/,Forms/,node_modules/"
+}
