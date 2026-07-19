@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useMonetizationStore } from '../monetization/MonetizationStore.js';
+import logo from '../../assets/logo.png';
 
 export const LandingPage = () => {
   const { setActiveTab } = useAppStore();
@@ -22,6 +23,9 @@ export const LandingPage = () => {
     }}>
       {/* Hero Section */}
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '25px' }}>
+          <img src={logo} alt="NMerge Logo" style={{ height: '80px', filter: 'drop-shadow(0 4px 20px rgba(167, 139, 250, 0.2))' }} />
+        </div>
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',

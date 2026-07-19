@@ -20,6 +20,7 @@ import { CommandTerminal } from './features/terminal/CommandTerminal.jsx';
 import { LandingPage } from './features/landing/LandingPage.jsx';
 import { RegisterPage } from './features/register/RegisterPage.jsx';
 import { LoginPage } from './features/login/LoginPage.jsx';
+import appIcon from './assets/icon.png';
 import './App.css';
 
 // --- TOAST NOTIFICATIONS ---
@@ -188,7 +189,7 @@ function App() {
       </Helmet>
       <AdBanner />
       <header className="app-header">
-        <h1><span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>folder_open</span> NodeMerge</h1>
+        <h1><img src={appIcon} alt="NMerge Icon" style={{ height: '22px', width: '22px', marginRight: '8px', verticalAlign: 'middle', borderRadius: '4px' }} /> NodeMerge</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Advanced Agentic Diff</span>
           <button
