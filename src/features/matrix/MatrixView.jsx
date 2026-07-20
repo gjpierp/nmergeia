@@ -15,19 +15,22 @@ export const MatrixView = memo(({
         showOnlyChanges, setShowOnlyChanges, 
         isProcessing, 
         collapsedFolders, setCollapsedFolders,
-        fileEqualityMap
+        fileEqualityMap,
+        matrixScrollTop, setMatrixScrollTop
     } = useAppStore();
 
     const containerRef = useRef(null);
-    const [scrollTop, setScrollTop] = useState(0);
     const [containerHeight, setContainerHeight] = useState(600);
 
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
 
+        // Restaura la posición de scroll guardada en el store
+        el.scrollTop = matrixScrollTop;
+
         const handleScroll = () => {
-            setScrollTop(el.scrollTop);
+            setMatrixScrollTop(el.scrollTop);
         };
 
         let resizeObserver;
@@ -196,8 +199,8 @@ export const MatrixView = memo(({
     const ROW_HEIGHT = 36;
     const overscan = 10;
     const totalHeight = rowData.length * ROW_HEIGHT;
-    const startIndex = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - overscan);
-    const endIndex = Math.min(rowData.length - 1, Math.ceil((scrollTop + containerHeight) / ROW_HEIGHT) + overscan);
+    const startIndex = Math.max(0, Math.floor(matrixScrollTop / ROW_HEIGHT) - overscan);
+    const endIndex = Math.min(rowData.length - 1, Math.ceil((matrixScrollTop + containerHeight) / ROW_HEIGHT) + overscan);
     const visibleRowsData = rowData.slice(startIndex, endIndex + 1);
     const paddingTop = startIndex * ROW_HEIGHT;
 

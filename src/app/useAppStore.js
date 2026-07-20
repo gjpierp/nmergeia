@@ -76,4 +76,7 @@ export const useAppStore = create((set) => ({
 
   loadedProfileName: null,
   setLoadedProfileName: (val) => setVal(set, 'loadedProfileName', val),
+
+  matrixScrollTop: 0,
+  setMatrixScrollTop: (val) => setVal(set, 'matrixScrollTop', val),
 }));
