@@ -4,7 +4,7 @@
  * Permite persistir los handles (referencias) de directorios para que el usuario no tenga que volver a seleccionarlos.
  */
 
-const DB_NAME = 'nodemerge-db';
+const DB_NAME = 'nmergeia-db';
 const DB_VERSION = 1;
 const STORE_NAME = 'handles';
 

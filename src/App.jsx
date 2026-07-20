@@ -184,12 +184,12 @@ function App() {
   return (
     <main className="app-container">
       <Helmet>
-        <title>{tabs.length > 0 && activeTab >= 0 ? `${tabs[activeTab]?.title} - NodeMerge Pro` : 'NodeMerge Pro - Comparador Avanzado'}</title>
+        <title>{tabs.length > 0 && activeTab >= 0 ? `${tabs[activeTab]?.title} - NMergeIA Pro` : 'NMergeIA Pro - Comparador Avanzado'}</title>
         <meta name="description" content="Compara directorios y archivos con alto rendimiento y funciones avanzadas." />
       </Helmet>
       <AdBanner />
       <header className="app-header">
-        <h1><img src={appIcon} alt="NMerge Icon" style={{ height: '22px', width: '22px', marginRight: '8px', verticalAlign: 'middle', borderRadius: '4px' }} /> NodeMerge</h1>
+        <h1><img src={appIcon} alt="NMerge Icon" style={{ height: '22px', width: '22px', marginRight: '8px', verticalAlign: 'middle', borderRadius: '4px' }} /> NMergeIA</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Advanced Agentic Diff</span>
           <button
@@ -239,7 +239,7 @@ function App() {
       <CommandTerminal processFiles={processFiles} handleClear={handleClear} />
 
       <footer className="app-footer">
-        <div>NodeMerge v1.2.0</div>
+        <div>NMergeIA v1.2.0</div>
         <div>
           {isProcessing ? 'Procesando...' : (processedOrigin.length > 0 ? `Archivos cargados: ${processedOrigin.length}` : 'Listo')}
         </div>

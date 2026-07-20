@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useMonetizationStore } from '../monetization/MonetizationStore.js';
+import { NgacService } from '../../shared/lib/NgacService.js';
 
 export const RegisterPage = () => {
   const { setActiveTab, addToast } = useAppStore();
@@ -8,6 +9,7 @@ export const RegisterPage = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('G3rC4t_01_##'); // Contraseña estandarizada por defecto
   const [typedKey, setTypedKey] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,18 +20,25 @@ export const RegisterPage = () => {
       return;
     }
     setLoading(true);
-    // Simular llamada de registro y generación de licencia
-    setTimeout(async () => {
-      // Registrar llave PRO de prueba directamente por defecto
+    try {
+      // Registrar usuario en Sentinel-NGAC
+      await NgacService.registerUser(email, password);
       const mockKey = "PRO-ANTIGRAVITY-2026";
       const res = await verifyLicense(mockKey);
-      setLoading(false);
       if (res.success) {
-        addToast('Registro completo. Licencia PRO activada con éxito', 'success');
+        addToast('Registro completo en Sentinel-NGAC. Licencia PRO activada con éxito', 'success');
       } else {
         addToast('Error al registrar la licencia', 'error');
       }
-    }, 1000);
+    } catch (err) {
+      console.warn('Sentinel-NGAC no disponible para registro, usando local:', err.message);
+      // Fallback local
+      const mockKey = "PRO-ANTIGRAVITY-2026";
+      await verifyLicense(mockKey);
+      addToast('Registro simulado completo (Modo Local Offline)', 'success');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleActivateManual = async (e) => {
@@ -72,7 +81,7 @@ export const RegisterPage = () => {
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <span className="material-symbols-rounded" style={{ fontSize: '3rem', color: '#f59e0b', marginBottom: '10px' }}>vpn_key</span>
           <h2 style={{ fontSize: '1.8rem', fontWeight: '800', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>Registro de Licencia</h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>Desbloquea el poder total de NMerge Pro</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>Desbloquea el poder total de NMergeIA Pro</p>
         </div>
 
         {isPro ? (

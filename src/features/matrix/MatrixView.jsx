@@ -214,13 +214,13 @@ export const MatrixView = memo(({
              onChange={(e) => setFilterText(e.target.value)}
            />
            <button 
-             className={`btn ${showOnlyChanges ? 'primary-btn' : 'secondary-btn'}`} 
-             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.5rem', width: '40px', height: '40px', borderRadius: '8px' }}
-             onClick={() => setShowOnlyChanges(!showOnlyChanges)}
-             data-tooltip="Alternar entre ver todos los archivos o sólo los que tienen diferencias"
-           >
-             <span style={{ fontSize: '1.2rem' }}>{showOnlyChanges ? '🔍' : '👁️'}</span>
-           </button>
+              className={`btn ${showOnlyChanges ? 'primary-btn' : 'secondary-btn'}`} 
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.5rem', width: '40px', height: '40px', borderRadius: '8px' }}
+              onClick={() => setShowOnlyChanges(!showOnlyChanges)}
+              data-tooltip="Ver solo archivos con diferencias"
+            >
+              <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>difference</span>
+            </button>
            <button 
              className="btn primary-btn" 
              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.5rem', width: '40px', height: '40px', borderRadius: '8px' }}

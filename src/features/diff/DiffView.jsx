@@ -354,10 +354,8 @@ export const DiffView = ({
             }
             if (nextFile) {
                 closeTab(tab.id);
-                const conf = await showModal('confirm', 'Guardado Exitoso', `El archivo se guardó correctamente.\n\n¿Deseas abrir el siguiente archivo con diferencias?`);
-                if (conf) {
-                    openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
-                }
+                addToast("Guardado exitoso. Abriendo siguiente archivo con diferencias...", "success");
+                openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
             } else {
                 closeTab(tab.id);
                 addToast("Guardado exitosamente. No hay más diferencias.", "success");

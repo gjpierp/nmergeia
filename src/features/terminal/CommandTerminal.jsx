@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useMonetizationStore } from '../monetization/MonetizationStore.js';
 import { apiClient } from '../../shared/lib/apiClient.js';
+import { NgacService } from '../../shared/lib/NgacService.js';
 
 export const CommandTerminal = ({
   processFiles,
@@ -10,7 +11,7 @@ export const CommandTerminal = ({
   const [isOpen, setIsOpen] = useState(false);
   const [inputVal, setInputVal] = useState('');
   const [history, setHistory] = useState([
-    { type: 'system', text: 'Terminal de Comandos de NodeMerge. Escribe /help para ver la lista.' }
+    { type: 'system', text: 'Terminal de Comandos de NMergeIA. Escribe /help para ver la lista.' }
   ]);
 
   const appTheme = useAppStore(s => s.appTheme);
@@ -70,6 +71,8 @@ export const CommandTerminal = ({
         logText('  /clear          - Limpia la selección de carpetas actual');
         logText('  /theme          - Cambia el tema (Claro / Oscuro)');
         logText('  /filter <+|-|exclude|include> <patrón> - Agrega una regla de filtrado (ej. /filter - *.log)');
+        logText('  /premium-ngac <true|false> - Libera o bloquea opciones premium en base a Sentinel-NGAC');
+        logText('  /setup-ngac     - Preconfigura roles y nodos por defecto en Sentinel-NGAC');
         logText('  /cls            - Limpia la pantalla de la terminal');
         break;
 
@@ -121,6 +124,30 @@ export const CommandTerminal = ({
           addToast("Filtros actualizados", "success");
         } catch (e) {
           logText(`Error al guardar filtro: ${e.message}`, 'error');
+        }
+        break;
+
+      case '/premium-ngac':
+        if (args.length < 1) {
+          logText('Uso: /premium-ngac <true|false>. Ejemplo: /premium-ngac true', 'error');
+          break;
+        }
+        const setLocked = args[0] === 'true';
+        localStorage.setItem('nmergeia_ngac_locked', setLocked ? 'true' : 'false');
+        logText(`Sentinel-NGAC Bloqueo/Premium: ${setLocked ? 'ACTIVO (Ventas, Login, Licencias solo para ADMIN)' : 'DESACTIVADO (Opciones liberadas para todos)'}`);
+        addToast("Seguridad NGAC actualizada", "info");
+        // Refrescar la vista forzando un leve delay
+        setTimeout(() => window.location.reload(), 800);
+        break;
+
+      case '/setup-ngac':
+        logText('Configurando roles, nodos y enlaces de NMergeIA en Sentinel-NGAC...');
+        const success = await NgacService.setupNgacBasePolicies();
+        if (success) {
+          logText('Sentinel-NGAC inicializado con éxito. Nodos creados: Ventas, Login, Licencia vinculados al rol ADMINISTRADOR.');
+          addToast("Políticas Sentinel-NGAC inicializadas", "success");
+        } else {
+          logText('Error al configurar políticas. Asegúrate de tener conexión con sentinel-ngac o tu base de datos Oracle.', 'error');
         }
         break;
 

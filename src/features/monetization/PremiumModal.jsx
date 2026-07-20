@@ -25,7 +25,7 @@ export const PremiumModal = () => {
     <div className="custom-modal-overlay premium-modal" style={{zIndex: 9999}}>
       <div className="custom-modal-content">
         <header style={{background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', color: 'white', padding: '1rem', borderTopLeftRadius: '12px', borderTopRightRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <h2 style={{margin: 0, fontSize: '1.25rem'}}>Desbloquea NodeMerge Pro</h2>
+          <h2 style={{margin: 0, fontSize: '1.25rem'}}>Desbloquea NMergeIA Pro</h2>
           <button onClick={closePremiumModal} className="close-btn" style={{color: 'white'}}>
             <span className="material-symbols-rounded">close</span>
           </button>
