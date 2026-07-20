@@ -59,6 +59,25 @@ export const Sidebar = () => {
           <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>filter_alt</span> Filtros
         </button>
       )}
+
+      {userSession && (
+        <div style={{ marginTop: 'auto', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)', overflow: 'hidden' }}>
+            <span className="material-symbols-rounded" style={{ fontSize: '1.2rem', color: 'var(--accent-secondary)' }}>account_circle</span>
+            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', fontWeight: '500' }}>{userSession.email}</span>
+          </div>
+          <button 
+            className="sidebar-btn" 
+            style={{ padding: '8px 12px', height: '36px', border: '1px solid #ef4444', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '6px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+            onClick={() => {
+              localStorage.removeItem('nmerge_user_session');
+              window.location.reload();
+            }}
+          >
+            <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>logout</span> Cerrar Sesión
+          </button>
+        </div>
+      )}
     </aside>
   );
 };
