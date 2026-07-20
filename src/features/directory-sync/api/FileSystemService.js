@@ -114,6 +114,9 @@ export const getFileObject = async (fileOrHandle) => {
   if (fileOrHandle.getFile) {
     return await fileOrHandle.getFile();
   }
+  if (fileOrHandle.fileHandle && fileOrHandle.fileHandle.getFile) {
+    return await fileOrHandle.fileHandle.getFile();
+  }
   return fileOrHandle;
 };
 
