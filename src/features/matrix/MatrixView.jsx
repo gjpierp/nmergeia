@@ -294,10 +294,29 @@ export const MatrixView = memo(({
                   else fileColor = '#22c55e';
                }
 
+              const handleFileClick = () => {
+                const targetSlotIdx = row.statuses.findIndex(s => s.handle);
+                const slotIdx = targetSlotIdx !== -1 ? targetSlotIdx : 0;
+                const s = row.statuses[slotIdx];
+                openDiffTab(row.oFile, s ? s.file : null, slotIdx);
+              };
+
               return (
                 <div key={'file-'+row.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `4px 1rem 4px ${row.depth * 1.5 + 2.5}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', height: '36px', boxSizing: 'border-box' }}>
                   
-                  <div style={{ display: 'flex', alignItems: 'center', fontSize: '0.75rem', color: fileColor, fontWeight: '500' }}>
+                  <div 
+                    onClick={handleFileClick}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      fontSize: '0.75rem', 
+                      color: fileColor, 
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textDecoration: 'underline decoration-transparent hover:decoration-current transition-colors'
+                    }}
+                    data-tooltip="Ver comparación/diferencias de este archivo"
+                  >
                     <span className="file-icon" style={{fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#9ca3af'}}>insert_drive_file</span></span> {row.name}
                   </div>
 
