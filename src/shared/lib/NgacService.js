@@ -1,7 +1,7 @@
 /**
  * @file NgacService.js
- * @description Cliente de servicio para interactuar con Sentinel-NGAC.
- * Permite registrar usuarios, autenticar, gestionar roles y consultar políticas.
+ * @description Cliente de servicio para interactuar con Sentinel-NGAC puro.
+ * Permite registrar usuarios, autenticar, gestionar roles y consultar políticas usando nodos y enlaces.
  */
 
 const DEFAULT_NGAC_URL = 'https://sentinel-ngac.herokuapp.com/api/v1/admin';
@@ -16,51 +16,76 @@ const getNgacUrl = () => {
 
 export const NgacService = {
   /**
-   * Registra un nuevo usuario en la base de datos de SAFI/Sentinel-NGAC
+   * Registra un nuevo usuario como un nodo de tipo 'u' en Sentinel-NGAC
    */
   registerUser: async (email, password) => {
     const baseUrl = getNgacUrl();
-    const response = await fetch(`${baseUrl}/safi/procedimientos/crear-usuario`, {
+    
+    // 1. Crear el nodo de usuario en Sentinel
+    const userRes = await fetch(`${baseUrl}/nodos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: email,
-        username: email.split('@')[0],
-        password: password
+        codigo: email,
+        nombre: email.split('@')[0],
+        tipo: 'u' // tipo de nodo User
       })
     });
     
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(err || 'Error al registrar usuario en Sentinel-NGAC');
+    if (!userRes.ok) {
+      const err = await userRes.text();
+      throw new Error(err || 'Error al crear nodo de usuario en Sentinel-NGAC');
     }
-    return await response.json();
+
+    // 2. Asignar rol por defecto (ADMINISTRADOR si contiene admin, si no INVITADO)
+    const defaultRole = email.includes('admin') ? 'ADMINISTRADOR' : 'INVITADO';
+    const linkRes = await fetch(`${baseUrl}/enlaces`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        padre: defaultRole,
+        hijo: email
+      })
+    });
+
+    if (!linkRes.ok) {
+      const err = await linkRes.text();
+      throw new Error(err || 'Error al enlazar rol de usuario en Sentinel-NGAC');
+    }
+    
+    return { success: true, email, role: defaultRole };
   },
 
   /**
-   * Inicia sesión del usuario
+   * Inicia sesión del usuario buscando su nodo y roles vinculados en Sentinel-NGAC
    */
   loginUser: async (email, password) => {
     const baseUrl = getNgacUrl();
-    // Sentinel-NGAC valida contra su tabla de usuarios de SAFI
-    const response = await fetch(`${baseUrl}/safi/usuarios`);
-    if (!response.ok) throw new Error('Error al conectar con Sentinel-NGAC');
     
-    const users = await response.json();
-    const foundUser = users.find(u => u.EMAIL === email);
+    // 1. Obtener todos los nodos para validar la existencia del usuario
+    const nodesRes = await fetch(`${baseUrl}/nodos`);
+    if (!nodesRes.ok) throw new Error('Error al conectar con Sentinel-NGAC');
     
-    if (!foundUser) {
+    const nodes = await nodesRes.json();
+    const userNode = nodes.find(n => n.CODIGO === email || n.codigo === email);
+    
+    if (!userNode) {
       throw new Error('El usuario no existe en Sentinel-NGAC');
     }
     
-    // Obtenemos los roles del usuario asignados en Sentinel-NGAC
-    const rolesResponse = await fetch(`${baseUrl}/safi/usuarios/${foundUser.ID || foundUser.ID_USUARIO}/roles`);
-    const roles = rolesResponse.ok ? await rolesResponse.json() : [];
+    // 2. Obtener enlaces para extraer los roles (padres del nodo de usuario)
+    const linksRes = await fetch(`${baseUrl}/enlaces`);
+    if (!linksRes.ok) throw new Error('Error al obtener privilegios en Sentinel-NGAC');
+    
+    const links = await linksRes.json();
+    const userRoles = links
+      .filter(link => (link.HIJO === email || link.hijo === email))
+      .map(link => link.PADRE || link.padre);
     
     return {
-      id: foundUser.ID || foundUser.ID_USUARIO,
-      email: foundUser.EMAIL,
-      roles: roles.map(r => r.CODIGO_ROL || r.ROLE_CODE || 'USER'),
+      id: email,
+      email: email,
+      roles: userRoles.length > 0 ? userRoles : ['INVITADO'],
       method: 'sentinel-ngac'
     };
   },
@@ -78,7 +103,7 @@ export const NgacService = {
       }
     }
     
-    // Si está bloqueado/premium, solo Administrador tiene acceso a Ventas, Login y Licencia
+    // Si está bloqueado/premium, solo el rol ADMINISTRADOR tiene acceso a Ventas, Login y Licencia
     if (['Ventas', 'Login', 'Licencia'].includes(optionName)) {
       return userRoles.includes('ADMIN') || userRoles.includes('ADMINISTRADOR');
     }
@@ -91,29 +116,29 @@ export const NgacService = {
   setupNgacBasePolicies: async () => {
     const baseUrl = getNgacUrl();
     try {
-      // 1. Crear Roles
-      await fetch(`${baseUrl}/roles`, {
+      // 1. Crear Roles (como nodos User Attribute 'ua')
+      await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: 'ADMINISTRADOR', descripcion: 'Rol Administrador de NMergeIA' })
+        body: JSON.stringify({ codigo: 'ADMINISTRADOR', nombre: 'Administrador', tipo: 'ua' })
       });
-      await fetch(`${baseUrl}/roles`, {
+      await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: 'INVITADO', descripcion: 'Rol Invitado General' })
+        body: JSON.stringify({ codigo: 'INVITADO', nombre: 'Invitado', tipo: 'ua' })
       });
 
-      // 2. Crear Nodos para Opciones
+      // 2. Crear Nodos para Opciones (como nodos Target/Object 'o')
       const options = ['Ventas', 'Login', 'Licencia'];
       for (const opt of options) {
         await fetch(`${baseUrl}/nodos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ codigo: opt, nombre: opt, tipo: 'OPCION' })
+          body: JSON.stringify({ codigo: opt, nombre: opt, tipo: 'o' })
         });
       }
 
-      // 3. Crear Enlaces Jerárquicos / Decision Tree
+      // 3. Crear Enlaces Jerárquicos / Decision Tree (Roles -> Opciones)
       for (const opt of options) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
