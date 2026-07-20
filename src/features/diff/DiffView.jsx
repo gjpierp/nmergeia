@@ -546,103 +546,98 @@ export const DiffView = ({
             </div>
          )}
         <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-            <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
-                <DiffEditor
-                    height="100%"
-                    original={originalVal}
-                    modified={modifiedVal}
-                    language={getLanguage(tab.title)}
-                    theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
-                    options={{
-                        renderSideBySide: true,
-                        readOnly: isDocBinary,
-                        originalEditable: !isDocBinary,
-                        minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
-                    }}
-                    onMount={(editor, monaco) => {
-                        diffEditorRef.current = editor;
-                        monacoRef.current = monaco;
+            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
+                <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
+                    <DiffEditor
+                        height="100%"
+                        original={originalVal}
+                        modified={modifiedVal}
+                        language={getLanguage(tab.title)}
+                        theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
+                        options={{
+                            renderSideBySide: true,
+                            readOnly: isDocBinary,
+                            originalEditable: !isDocBinary,
+                            minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
+                        }}
+                        onMount={(editor, monaco) => {
+                            diffEditorRef.current = editor;
+                            monacoRef.current = monaco;
 
-                        editor.getModifiedEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                            saveFile(destDirHandle, tab.filePath, false, editor.getModifiedEditor().getValue(), false, tab.id, false);
-                        });
-
-                        editor.getOriginalEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                            saveFile(originHandle, tab.filePath, false, editor.getOriginalEditor().getValue(), false, tab.id, true);
-                        });
-
-                        const updateSelectedDiffFromEditor = (targetEditor, isModified) => {
-                            const changes = editor.getLineChanges();
-                            if (!changes || changes.length === 0) {
-                                setDiffContent(null);
-                                return;
-                            }
-                            
-                            const selection = targetEditor.getSelection();
-                            if (!selection) return;
-                            
-                            const startLine = selection.startLineNumber;
-                            const endLine = selection.endLineNumber;
-
-                            const targetChanges = changes.filter(c => {
-                                const start = isModified ? c.modifiedStartLineNumber : c.originalStartLineNumber;
-                                let end = isModified ? c.modifiedEndLineNumber : c.originalEndLineNumber;
-                                if (end === 0) end = start; 
-                                const s = start === 0 ? 1 : start;
-                                return startLine <= end && endLine >= s;
+                            editor.getModifiedEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                saveFile(destDirHandle, tab.filePath, false, editor.getModifiedEditor().getValue(), false, tab.id, false);
                             });
 
-                            if (targetChanges.length > 0) {
-                                const origModel = editor.getOriginalEditor().getModel();
-                                const modModel = editor.getModifiedEditor().getModel();
-                                let oLines = [];
-                                let mLines = [];
+                            editor.getOriginalEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                saveFile(originHandle, tab.filePath, false, editor.getOriginalEditor().getValue(), false, tab.id, true);
+                            });
+
+                            const updateSelectedDiffFromEditor = (activeSubEditor, isModifiedSide) => {
+                                const changes = editor.getLineChanges();
+                                if (!changes || changes.length === 0) {
+                                    setDiffContent(null);
+                                    return;
+                                }
                                 
-                                targetChanges.forEach(change => {
-                                    if (change.originalEndLineNumber > 0) {
-                                        for(let i = change.originalStartLineNumber; i <= change.originalEndLineNumber; i++) oLines.push(origModel.getLineContent(i));
+                                const pos = activeSubEditor.getPosition();
+                                if (!pos) return;
+                                
+                                const currentLine = pos.lineNumber;
+                                
+                                const activeChange = changes.find(change => {
+                                    if (isModifiedSide) {
+                                        return currentLine >= change.modifiedStartLineNumber && currentLine <= (change.modifiedEndLineNumber || change.modifiedStartLineNumber);
+                                    } else {
+                                        return currentLine >= change.originalStartLineNumber && currentLine <= (change.originalEndLineNumber || change.originalStartLineNumber);
                                     }
-                                    if (change.modifiedEndLineNumber > 0) {
-                                        for(let i = change.modifiedStartLineNumber; i <= change.modifiedEndLineNumber; i++) mLines.push(modModel.getLineContent(i));
-                                    }
-                                    oLines.push('---');
-                                    mLines.push('---');
                                 });
                                 
-                                if (oLines.length > 0) oLines.pop();
-                                if (mLines.length > 0) mLines.pop();
-                                
-                                setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
-                            } else {
-                                setDiffContent(null);
-                            }
-                        };
+                                if (activeChange) {
+                                    const origModel = editor.getOriginalEditor().getModel();
+                                    const modModel = editor.getModifiedEditor().getModel();
+                                    
+                                    const oLines = [];
+                                    const mLines = [];
+                                    
+                                    if (activeChange.originalEndLineNumber > 0) {
+                                        for(let i = activeChange.originalStartLineNumber; i <= activeChange.originalEndLineNumber; i++) oLines.push(origModel.getLineContent(i));
+                                    }
+                                    if (activeChange.modifiedEndLineNumber > 0) {
+                                        for(let i = activeChange.modifiedStartLineNumber; i <= activeChange.modifiedEndLineNumber; i++) mLines.push(modModel.getLineContent(i));
+                                    }
+                                    
+                                    setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
+                                } else {
+                                    setDiffContent(null);
+                                }
+                            };
 
-                        const updateSelectedDiff = () => updateSelectedDiffFromEditor(editor.getModifiedEditor(), true);
+                            const updateSelectedDiff = () => updateSelectedDiffFromEditor(editor.getModifiedEditor(), true);
 
-                        editor.getModifiedEditor().onDidChangeCursorSelection(updateSelectedDiff);
-                        editor.getOriginalEditor().onDidChangeCursorSelection(() => updateSelectedDiffFromEditor(editor.getOriginalEditor(), false));
-                        
-                        editor.onDidUpdateDiff(() => {
-                            if (pendingNavigationRef.current) {
-                                const action = pendingNavigationRef.current;
-                                pendingNavigationRef.current = null;
-                                navigateDiff(action);
-                            }
-                            updateSelectedDiff();
-                        });
+                            editor.getModifiedEditor().onDidChangeCursorSelection(updateSelectedDiff);
+                            editor.getOriginalEditor().onDidChangeCursorSelection(() => updateSelectedDiffFromEditor(editor.getOriginalEditor(), false));
+                            
+                            editor.onDidUpdateDiff(() => {
+                                if (pendingNavigationRef.current) {
+                                    const action = pendingNavigationRef.current;
+                                    pendingNavigationRef.current = null;
+                                    navigateDiff(action);
+                                }
+                                updateSelectedDiff();
+                            });
 
-                        editor.getModifiedEditor().onDidChangeModelContent(() => {
-                            const val = editor.getModifiedEditor().getValue();
-                            setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: val } : t));
-                        });
-                        editor.getOriginalEditor().onDidChangeModelContent(() => {
-                            const val = editor.getOriginalEditor().getValue();
-                            setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val } : t));
-                        });
-                    }}
-                />
-            </Suspense>
+                            editor.getModifiedEditor().onDidChangeModelContent(() => {
+                                const val = editor.getModifiedEditor().getValue();
+                                setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: val } : t));
+                            });
+                            editor.getOriginalEditor().onDidChangeModelContent(() => {
+                                const val = editor.getOriginalEditor().getValue();
+                                setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val } : t));
+                            });
+                        }}
+                    />
+                </Suspense>
+            </div>
         </div>
         {diffContent && (
              <div style={{ flexShrink: 0, background: 'var(--bg-secondary)', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: '300px' }}>
