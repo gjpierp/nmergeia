@@ -280,18 +280,41 @@ export const useMatrixProcessor = () => {
           relPath = originFile ? getRelativePath(originFile.webkitRelativePath, currentOriginHandle.name) : getRelativePath(destFile.webkitRelativePath, currentDestSlots[slotIndex].handle.name);
       }
 
+      const destValues = [];
+      if (!isBackendFile && currentDestSlots) {
+          for (let i = 0; i < currentDestSlots.length; i++) {
+              const slot = currentDestSlots[i];
+              let slotContent = '';
+              if (slot && slot.files) {
+                  const foundFile = slot.files.find(f => {
+                      const fRel = getRelativePath(f.webkitRelativePath, slot.handle.name);
+                      return fRel === relPath;
+                  });
+                  if (foundFile && foundFile.fileHandle) {
+                      const fileData = await readFileAsync(foundFile);
+                      slotContent = fileData.content;
+                  }
+              }
+              destValues.push(slotContent);
+          }
+      } else {
+          destValues.push(modifiedTxt);
+      }
+
       const newTab = {
         id: `diff-${Date.now()}`,
         title: relPath.split('/').pop(),
         filePath: relPath,
         original: originalTxt,
-        modified: modifiedTxt,
+        modified: destValues[slotIndex] || '',
         initialOriginal: originalTxt,
-        initialModified: modifiedTxt,
+        initialModified: destValues[slotIndex] || '',
         destSlotIdx: slotIndex,
         isBackendFile: isBackendFile,
         originHandle: isBackendFile ? null : currentOriginHandle,
-        destHandle: isBackendFile ? null : currentDestSlots[slotIndex].handle
+        destHandle: isBackendFile ? null : (currentDestSlots[slotIndex] ? currentDestSlots[slotIndex].handle : null),
+        destValues: destValues,
+        initialDestValues: [...destValues]
       };
 
       setTabs(prev => [...prev.filter(t => t.filePath !== relPath), newTab]);

@@ -1,5 +1,5 @@
 import React, { useRef, useState, Suspense } from 'react';
-import { DiffEditor } from '@monaco-editor/react';
+import { DiffEditor, Editor } from '@monaco-editor/react';
 import { getRelativePath } from "../../utils/pathUtils.js";
 import { PremiumLock } from '../monetization/PremiumLock.jsx';
 import { apiClient } from '../../shared/lib/apiClient.js';
@@ -548,94 +548,169 @@ export const DiffView = ({
         <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
             <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
                 <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
-                    <DiffEditor
-                        height="100%"
-                        original={originalVal}
-                        modified={modifiedVal}
-                        language={getLanguage(tab.title)}
-                        theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
-                        options={{
-                            renderSideBySide: true,
-                            readOnly: isDocBinary,
-                            originalEditable: !isDocBinary,
-                            minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
-                        }}
-                        onMount={(editor, monaco) => {
-                            diffEditorRef.current = editor;
-                            monacoRef.current = monaco;
+                    {tab.destValues && tab.destValues.length > 1 ? (
+                        <div style={{ display: 'flex', height: '100%', width: '100%', gap: '15px' }}>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0 }}>
+                                <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Origen: {originPath}</span>
+                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                        <button className="btn clear-btn small-btn" disabled={isDocBinary || tab.original === tab.initialOriginal} onClick={() => {
+                                            setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: t.initialOriginal } : t));
+                                        }} data-tooltip="Revertir Origen"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
+                                        <button className="btn clear-btn small-btn" disabled={isDocBinary} onClick={() => {
+                                            handleDelete(originHandle, tab.filePath, true);
+                                        }} data-tooltip="Eliminar de Origen"><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
+                                    </div>
+                                </div>
+                                <Editor
+                                    height="100%"
+                                    value={originalVal}
+                                    language={getLanguage(tab.title)}
+                                    theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
+                                    options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'on' }}
+                                    onChange={(val) => {
+                                        setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val || '' } : t));
+                                    }}
+                                />
+                            </div>
+                            {tab.destValues.map((val, idx) => {
+                                const slot = destSlots[idx];
+                                const slotPath = slot ? slot.path : `Destino ${idx + 1}`;
+                                const isDirty = val !== (tab.initialDestValues ? tab.initialDestValues[idx] : '');
+                                return (
+                                    <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, borderLeft: '1px solid var(--border-color)' }}>
+                                        <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#a78bfa' }}>{slotPath}</span>
+                                            <div style={{ display: 'flex', gap: '4px' }}>
+                                                <button className="btn clear-btn small-btn" disabled={isDocBinary || !isDirty} onClick={() => {
+                                                    setTabs(prev => prev.map(t => {
+                                                        if (t.id === tab.id) {
+                                                            const newVals = [...t.destValues];
+                                                            newVals[idx] = t.initialDestValues[idx] || '';
+                                                            return { ...t, destValues: newVals, modified: idx === t.destSlotIdx ? t.initialDestValues[idx] || '' : t.modified };
+                                                        }
+                                                        return t;
+                                                    }));
+                                                }} data-tooltip="Revertir"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
+                                                <button className="btn primary-btn small-btn" disabled={isDocBinary || !isDirty} onClick={() => {
+                                                    saveFile(slot.handle, tab.filePath, false, val, false, tab.id, false);
+                                                }} data-tooltip="Guardar"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>save</span></button>
+                                                <button className="btn clear-btn small-btn" disabled={isDocBinary} onClick={() => {
+                                                    handleDelete(slot.handle, tab.filePath, false);
+                                                }} data-tooltip="Eliminar de Destino"><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
+                                            </div>
+                                        </div>
+                                        <Editor
+                                            height="100%"
+                                            value={val}
+                                            language={getLanguage(tab.title)}
+                                            theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
+                                            options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'on' }}
+                                            onChange={(newVal) => {
+                                                setTabs(prev => prev.map(t => {
+                                                    if (t.id === tab.id) {
+                                                        const newVals = [...t.destValues];
+                                                        newVals[idx] = newVal || '';
+                                                        return { ...t, destValues: newVals, modified: idx === t.destSlotIdx ? newVal || '' : t.modified };
+                                                    }
+                                                    return t;
+                                                }));
+                                            }}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <DiffEditor
+                            height="100%"
+                            original={originalVal}
+                            modified={modifiedVal}
+                            language={getLanguage(tab.title)}
+                            theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
+                            options={{
+                                renderSideBySide: true,
+                                readOnly: isDocBinary,
+                                originalEditable: !isDocBinary,
+                                minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
+                            }}
+                            onMount={(editor, monaco) => {
+                                diffEditorRef.current = editor;
+                                monacoRef.current = monaco;
 
-                            editor.getModifiedEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                                saveFile(destDirHandle, tab.filePath, false, editor.getModifiedEditor().getValue(), false, tab.id, false);
-                            });
-
-                            editor.getOriginalEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                                saveFile(originHandle, tab.filePath, false, editor.getOriginalEditor().getValue(), false, tab.id, true);
-                            });
-
-                            const updateSelectedDiffFromEditor = (activeSubEditor, isModifiedSide) => {
-                                const changes = editor.getLineChanges();
-                                if (!changes || changes.length === 0) {
-                                    setDiffContent(null);
-                                    return;
-                                }
-                                
-                                const pos = activeSubEditor.getPosition();
-                                if (!pos) return;
-                                
-                                const currentLine = pos.lineNumber;
-                                
-                                const activeChange = changes.find(change => {
-                                    if (isModifiedSide) {
-                                        return currentLine >= change.modifiedStartLineNumber && currentLine <= (change.modifiedEndLineNumber || change.modifiedStartLineNumber);
-                                    } else {
-                                        return currentLine >= change.originalStartLineNumber && currentLine <= (change.originalEndLineNumber || change.originalStartLineNumber);
-                                    }
+                                editor.getModifiedEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                    saveFile(destDirHandle, tab.filePath, false, editor.getModifiedEditor().getValue(), false, tab.id, false);
                                 });
+
+                                editor.getOriginalEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                    saveFile(originHandle, tab.filePath, false, editor.getOriginalEditor().getValue(), false, tab.id, true);
+                                });
+
+                                const updateSelectedDiffFromEditor = (activeSubEditor, isModifiedSide) => {
+                                    const changes = editor.getLineChanges();
+                                    if (!changes || changes.length === 0) {
+                                        setDiffContent(null);
+                                        return;
+                                    }
+                                    
+                                    const pos = activeSubEditor.getPosition();
+                                    if (!pos) return;
+                                    
+                                    const currentLine = pos.lineNumber;
+                                    
+                                    const activeChange = changes.find(change => {
+                                        if (isModifiedSide) {
+                                            return currentLine >= change.modifiedStartLineNumber && currentLine <= (change.modifiedEndLineNumber || change.modifiedStartLineNumber);
+                                        } else {
+                                            return currentLine >= change.originalStartLineNumber && currentLine <= (change.originalEndLineNumber || change.originalStartLineNumber);
+                                        }
+                                    });
+                                    
+                                    if (activeChange) {
+                                        const origModel = editor.getOriginalEditor().getModel();
+                                        const modModel = editor.getModifiedEditor().getModel();
+                                        
+                                        const oLines = [];
+                                        const mLines = [];
+                                        
+                                        if (activeChange.originalEndLineNumber > 0) {
+                                            for(let i = activeChange.originalStartLineNumber; i <= activeChange.originalEndLineNumber; i++) oLines.push(origModel.getLineContent(i));
+                                        }
+                                        if (activeChange.modifiedEndLineNumber > 0) {
+                                            for(let i = activeChange.modifiedStartLineNumber; i <= activeChange.modifiedEndLineNumber; i++) mLines.push(modModel.getLineContent(i));
+                                        }
+                                        
+                                        setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
+                                    } else {
+                                        setDiffContent(null);
+                                    }
+                                };
+
+                                const updateSelectedDiff = () => updateSelectedDiffFromEditor(editor.getModifiedEditor(), true);
+
+                                editor.getModifiedEditor().onDidChangeCursorSelection(updateSelectedDiff);
+                                editor.getOriginalEditor().onDidChangeCursorSelection(() => updateSelectedDiffFromEditor(editor.getOriginalEditor(), false));
                                 
-                                if (activeChange) {
-                                    const origModel = editor.getOriginalEditor().getModel();
-                                    const modModel = editor.getModifiedEditor().getModel();
-                                    
-                                    const oLines = [];
-                                    const mLines = [];
-                                    
-                                    if (activeChange.originalEndLineNumber > 0) {
-                                        for(let i = activeChange.originalStartLineNumber; i <= activeChange.originalEndLineNumber; i++) oLines.push(origModel.getLineContent(i));
+                                editor.onDidUpdateDiff(() => {
+                                    if (pendingNavigationRef.current) {
+                                        const action = pendingNavigationRef.current;
+                                        pendingNavigationRef.current = null;
+                                        navigateDiff(action);
                                     }
-                                    if (activeChange.modifiedEndLineNumber > 0) {
-                                        for(let i = activeChange.modifiedStartLineNumber; i <= activeChange.modifiedEndLineNumber; i++) mLines.push(modModel.getLineContent(i));
-                                    }
-                                    
-                                    setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
-                                } else {
-                                    setDiffContent(null);
-                                }
-                            };
+                                    updateSelectedDiff();
+                                });
 
-                            const updateSelectedDiff = () => updateSelectedDiffFromEditor(editor.getModifiedEditor(), true);
-
-                            editor.getModifiedEditor().onDidChangeCursorSelection(updateSelectedDiff);
-                            editor.getOriginalEditor().onDidChangeCursorSelection(() => updateSelectedDiffFromEditor(editor.getOriginalEditor(), false));
-                            
-                            editor.onDidUpdateDiff(() => {
-                                if (pendingNavigationRef.current) {
-                                    const action = pendingNavigationRef.current;
-                                    pendingNavigationRef.current = null;
-                                    navigateDiff(action);
-                                }
-                                updateSelectedDiff();
-                            });
-
-                            editor.getModifiedEditor().onDidChangeModelContent(() => {
-                                const val = editor.getModifiedEditor().getValue();
-                                setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: val } : t));
-                            });
-                            editor.getOriginalEditor().onDidChangeModelContent(() => {
-                                const val = editor.getOriginalEditor().getValue();
-                                setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val } : t));
-                            });
-                        }}
-                    />
+                                editor.getModifiedEditor().onDidChangeModelContent(() => {
+                                    const val = editor.getModifiedEditor().getValue();
+                                    setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: val } : t));
+                                });
+                                editor.getOriginalEditor().onDidChangeModelContent(() => {
+                                    const val = editor.getOriginalEditor().getValue();
+                                    setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val } : t));
+                                });
+                            }}
+                        />
+                    )}
                 </Suspense>
             </div>
         </div>
