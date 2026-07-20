@@ -545,12 +545,12 @@ export const DiffView = ({
               <span>Comparación de documento binario activa (Modo Lectura). Los cambios o transferencias de bloques no están disponibles en este formato.</span>
             </div>
          )}
-        <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
+        <div style={{ flex: 1, position: 'relative', minHeight: 0, overflowX: 'auto' }}>
+            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, minWidth: '920px', display: 'flex', flexDirection: 'column' }}>
                 <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
                     {tab.destValues && tab.destValues.length > 1 ? (
-                        <div style={{ display: 'flex', height: '100%', width: '100%', gap: '15px' }}>
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0 }}>
+                        <div style={{ display: 'flex', height: '100%', width: '100%', gap: '15px', overflowX: 'auto' }}>
+                            <div style={{ flex: '1 0 460px', display: 'flex', flexDirection: 'column', height: '100%', minWidth: '460px' }}>
                                 <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Origen: {originPath}</span>
                                     <div style={{ display: 'flex', gap: '4px' }}>
@@ -567,7 +567,7 @@ export const DiffView = ({
                                     value={originalVal}
                                     language={getLanguage(tab.title)}
                                     theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
-                                    options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'on' }}
+                                    options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'off' }}
                                     onChange={(val) => {
                                         setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val || '' } : t));
                                     }}
@@ -578,7 +578,7 @@ export const DiffView = ({
                                 const slotPath = slot ? slot.path : `Destino ${idx + 1}`;
                                 const isDirty = val !== (tab.initialDestValues ? tab.initialDestValues[idx] : '');
                                 return (
-                                    <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, borderLeft: '1px solid var(--border-color)' }}>
+                                    <div key={idx} style={{ flex: '1 0 460px', display: 'flex', flexDirection: 'column', height: '100%', minWidth: '460px', borderLeft: '1px solid var(--border-color)' }}>
                                         <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#a78bfa' }}>{slotPath}</span>
                                             <div style={{ display: 'flex', gap: '4px' }}>
@@ -605,7 +605,7 @@ export const DiffView = ({
                                             value={val}
                                             language={getLanguage(tab.title)}
                                             theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
-                                            options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'on' }}
+                                            options={{ readOnly: isDocBinary, minimap: { enabled: false }, wordWrap: 'off' }}
                                             onChange={(newVal) => {
                                                 setTabs(prev => prev.map(t => {
                                                     if (t.id === tab.id) {
@@ -632,7 +632,7 @@ export const DiffView = ({
                                 renderSideBySide: true,
                                 readOnly: isDocBinary,
                                 originalEditable: !isDocBinary,
-                                minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
+                                minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'off'
                             }}
                             onMount={(editor, monaco) => {
                                 diffEditorRef.current = editor;
