@@ -91,6 +91,52 @@ export const NgacService = {
   },
 
   /**
+   * Obtiene el menú dinámico filtrado por roles de Sentinel-NGAC
+   */
+  getDynamicMenu: async (userRoles = []) => {
+    const baseUrl = getNgacUrl();
+    try {
+      const isNgacLocked = typeof window !== 'undefined' ? localStorage.getItem('nmergeia_ngac_locked') === 'true' : true;
+      if (!isNgacLocked) {
+        // Si no está bloqueado, devolvemos acceso a todas las opciones de manera libre
+        return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
+      }
+
+      const response = await fetch(`${baseUrl}/menu/context`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ atributos: userRoles })
+      });
+
+      if (!response.ok) throw new Error('Error de menú dinámico');
+      const menuData = await response.json();
+      
+      // Mapear los códigos técnicos de los nodos autorizados
+      const collectCodes = (items) => {
+        let codes = [];
+        if (!items) return codes;
+        const array = Array.isArray(items) ? items : [items];
+        for (const item of array) {
+          const code = item.codigo_tecnico || item.codigo || item.CODIGO_TECNICO || item.CODIGO;
+          if (code) codes.push(code);
+          if (item.children) codes = codes.concat(collectCodes(item.children));
+          if (item.children_nodos) codes = codes.concat(collectCodes(item.children_nodos));
+        }
+        return codes;
+      };
+
+      return collectCodes(menuData);
+    } catch (e) {
+      console.warn("Sentinel-NGAC /menu/context falló, usando fallback local:", e.message);
+      // Fallback local basado en roles
+      if (userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN')) {
+        return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
+      }
+      return ['Comparar', 'Historial', 'Filtros'];
+    }
+  },
+
+  /**
    * Consulta si una opción/recurso está disponible
    * Si las opciones están liberadas (free mode), permite el acceso a todos.
    */
@@ -147,9 +193,9 @@ export const NgacService = {
         body: JSON.stringify({ padre: 'POLITICA_NMERGEIA', hijo: 'NMERGEIA_ROOT' })
       });
 
-      // 3. Crear Nodos para Opciones (como nodos Target/Object 'o')
-      const options = ['Ventas', 'Login', 'Licencia'];
-      for (const opt of options) {
+      // 3. Crear Nodos para todas las opciones de NMergeIA
+      const allOptions = ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
+      for (const opt of allOptions) {
         await fetch(`${baseUrl}/nodos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -157,8 +203,8 @@ export const NgacService = {
         });
       }
 
-      // Enlazar Nodo Raíz a Opciones del Dominio
-      for (const opt of options) {
+      // Enlazar Nodo Raíz a todas las Opciones del Dominio
+      for (const opt of allOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -166,12 +212,23 @@ export const NgacService = {
         });
       }
 
-      // 4. Crear Enlaces Jerárquicos de Acceso (Roles -> Opciones)
-      for (const opt of options) {
+      // 4. Otorgar permisos de acceso (Roles -> Opciones)
+      // El Administrador tiene acceso a todo
+      for (const opt of allOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ padre: 'ROLE_ADMINISTRADOR', hijo: opt })
+        });
+      }
+
+      // El Invitado solo tiene acceso a comparar, historial y filtros
+      const guestOptions = ['Comparar', 'Historial', 'Filtros'];
+      for (const opt of guestOptions) {
+        await fetch(`${baseUrl}/enlaces`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ padre: 'ROLE_INVITADO', hijo: opt })
         });
       }
       
