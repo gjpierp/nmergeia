@@ -754,3 +754,16 @@ input, select, button {
   justify-content: center;
 }
 
+.config-row {
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.config-row.drag-over {
+  border: 2px dashed #a78bfa;
+  background: rgba(167, 139, 250, 0.08);
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.15);
+}
+
