@@ -415,6 +415,9 @@ export const DiffView = ({
     const destSlot = destSlots[tab.destSlotIdx];
     const destDirHandle = destSlot ? destSlot.handle : null;
 
+    const extension = tab.filePath.split('.').pop().toLowerCase();
+    const isDocBinary = ['pdf', 'docx', 'xlsx', 'xls', 'zip', 'pem', 'crt', 'key', 'jpg', 'jpeg', 'png'].includes(extension);
+
     const getLanguage = (filename) => {
         if(!filename) return "plaintext";
         const ext = filename.split('.').pop().toLowerCase();
@@ -456,18 +459,18 @@ export const DiffView = ({
            
            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                <div style={{display: 'flex', alignItems: 'center', gap: '0px'}}>
-                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Origen" onClick={() => {
+                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Origen" disabled={isDocBinary} onClick={() => {
                       handleDelete(originHandle, tab.filePath, true);
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
                   <button className="btn clear-btn small-btn" data-tooltip="Descartar Cambios" 
-                      disabled={tab.original === tab.initialOriginal}
+                      disabled={isDocBinary || tab.original === tab.initialOriginal}
                       onClick={() => {
                           setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: t.initialOriginal } : t));
                       }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>close</span></button>
                   <button className="btn primary-btn small-btn" data-tooltip="Guardar Origen y Continuar" 
-                      disabled={tab.original === tab.initialOriginal}
+                      disabled={isDocBinary || tab.original === tab.initialOriginal}
                       onClick={() => handleSaveAndNext(true)}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>save</span></button>
-                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Destino a Origen" onClick={() => {
+                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Destino a Origen" disabled={isDocBinary} onClick={() => {
                       saveFile(originHandle, tab.filePath, false, tab.modified, false, tab.id, true);
                       setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: tab.modified, initialOriginal: tab.modified } : t));
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
@@ -475,13 +478,13 @@ export const DiffView = ({
                
                <div style={{display: 'flex', gap: '0px', margin: '0 10px'}}>
 
-                    <button className="btn secondary-btn small-btn" onClick={() => {
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => {
                         setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: t.initialModified, original: t.initialOriginal } : t));
                     }} data-tooltip="Revertir a estado inicial (Descartar cambios no guardados)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>restore</span></button>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
 
-                     <button className="btn secondary-btn small-btn" onClick={handleUndo} data-tooltip="Deshacer (Undo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>undo</span></button>
-                     <button className="btn secondary-btn small-btn" onClick={handleRedo} data-tooltip="Rehacer (Redo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>redo</span></button>
+                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleUndo} data-tooltip="Deshacer (Undo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>undo</span></button>
+                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleRedo} data-tooltip="Rehacer (Redo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>redo</span></button>
                      <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
                                       {isNormalizable && (
                          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer', marginRight: '10px', userSelect: 'none' }}>
@@ -498,13 +501,13 @@ export const DiffView = ({
                      )}
                     <div className="diff-headers">
                     <PremiumLock>
-                    <button className="btn secondary-btn small-btn" onClick={() => transferAllDiffs('to_origin')} data-tooltip="Autocombinar TODO hacia Origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_left</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_origin')} data-tooltip="Autocombinar TODO hacia Origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_left</span></button>
                     </PremiumLock>
                     <span>{originPath || "Origen"}</span>
                     <span>vs</span>
                     <span>{destSlots[0]?.path || "Destino"}</span>
                     <PremiumLock>
-                    <button className="btn secondary-btn small-btn" onClick={() => transferAllDiffs('to_dest')} data-tooltip="Autocombinar TODO hacia Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_right</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_dest')} data-tooltip="Autocombinar TODO hacia Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_right</span></button>
                     </PremiumLock>
                     </div>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
@@ -514,30 +517,36 @@ export const DiffView = ({
                     <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('next')} data-tooltip="Siguiente Diferencia"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>keyboard_arrow_down</span></button>
                     <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('last')} data-tooltip="Última Diferencia"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>last_page</span></button>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
-                    <button className="btn secondary-btn small-btn" onClick={() => transferCurrentDiff('to_origin')} data-tooltip="Copiar bloque seleccinado a Origen y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>subdirectory_arrow_left</span></button>
-                    <button className="btn secondary-btn small-btn" onClick={() => transferCurrentDiff('to_dest')} data-tooltip="Copiar bloque seleccinado a Destino y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>subdirectory_arrow_right</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_origin')} data-tooltip="Copiar bloque seleccinado a Origen y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>subdirectory_arrow_left</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_dest')} data-tooltip="Copiar bloque seleccinado a Destino y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>subdirectory_arrow_right</span></button>
                 </div>
                
                <div style={{display: 'flex', alignItems: 'center', gap: '0px'}}>
-                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Origen a Destino" onClick={() => {
+                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Origen a Destino" disabled={isDocBinary} onClick={() => {
                       saveFile(destDirHandle, tab.filePath, false, tab.original, false, tab.id, false);
                       setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: tab.original, initialModified: tab.original } : t));
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
                   <button className="btn primary-btn small-btn" data-tooltip="Guardar Destino y Continuar" 
-                      disabled={tab.modified === tab.initialModified}
+                      disabled={isDocBinary || tab.modified === tab.initialModified}
                       onClick={() => handleSaveAndNext(false)}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>save</span></button>
                   <button className="btn clear-btn small-btn" data-tooltip="Descartar Cambios" 
-                      disabled={tab.modified === tab.initialModified}
+                      disabled={isDocBinary || tab.modified === tab.initialModified}
                       onClick={() => {
                           setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: t.initialModified } : t));
                       }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>close</span></button>
-                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Destino" onClick={() => {
+                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Destino" disabled={isDocBinary} onClick={() => {
                       handleDelete(destDirHandle, tab.filePath, false);
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
                </div>
            </div>
 
         </div>
+        {isDocBinary && (
+            <div style={{ flexShrink: 0, background: 'rgba(245, 158, 11, 0.1)', borderBottom: '1px solid rgba(245, 158, 11, 0.2)', padding: '8px 15px', color: '#f59e0b', fontSize: '0.8rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>warning</span>
+              <span>Comparación de documento binario activa (Modo Lectura). Los cambios o transferencias de bloques no están disponibles en este formato.</span>
+            </div>
+         )}
         <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
             <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
                 <DiffEditor
@@ -548,8 +557,8 @@ export const DiffView = ({
                     theme={appTheme === 'dark' ? 'vs-dark' : 'vs'}
                     options={{
                         renderSideBySide: true,
-                        readOnly: false,
-                        originalEditable: true,
+                        readOnly: isDocBinary,
+                        originalEditable: !isDocBinary,
                         minimap: { enabled: true, renderCharacters: false, scale: 0.75 }, wordWrap: 'on'
                     }}
                     onMount={(editor, monaco) => {

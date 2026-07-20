@@ -4,20 +4,35 @@ import { verifyPermission, getFilesFromHandle, saveFileToHandle, deleteFileFromH
 import { apiClient } from '../shared/lib/apiClient.js';
 import { showModal } from '../shared/ui/CustomModal.jsx';
 import { saveHandle } from '../shared/lib/DatabaseService.js';
+import { extractTextFromDocument } from '../shared/lib/DocumentExtractor.js';
 
 export const readFileAsync = (file) => {
   return new Promise((resolve) => {
+    const extension = file.name.split('.').pop().toLowerCase();
+    const isBinary = ['pdf', 'docx', 'xlsx', 'xls', 'zip', 'pem', 'crt', 'key', 'jpg', 'jpeg', 'png'].includes(extension);
+
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
+      let content = '';
+      if (isBinary) {
+        content = await extractTextFromDocument(file.name, e.target.result);
+      } else {
+        content = e.target.result;
+      }
       resolve({
         id: Math.random().toString(36).substr(2, 9),
         name: file.name,
         path: file.webkitRelativePath || file.name,
-        content: e.target.result,
+        content: content,
         fileHandle: file.fileHandle || null
       });
     };
-    reader.readAsText(file);
+
+    if (isBinary) {
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.readAsText(file);
+    }
   });
 };
 
