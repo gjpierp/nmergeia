@@ -326,6 +326,7 @@ export const MatrixView = memo(({
                       // buildMatrix sometimes assigns 'different' to files missing in origin, so we isolate the logic:
                       const isMissingOrig = isMissingInOrigin && s.file;
                       const isDiff = s.status === 'different' && !isMissingInOrigin;
+                      const isIdentical = s.status === 'identical';
 
                       return (
                         <div key={i} style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
@@ -351,12 +352,14 @@ export const MatrixView = memo(({
                             <div style={{display: 'flex', gap: '4px'}}>
                               {isMissingDest && (
                                   <>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, null, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
                                   </>
                               )}
                               {isDiff && (
                                   <>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar de destino a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Diferencias"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
@@ -368,6 +371,13 @@ export const MatrixView = memo(({
                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(null, s.file, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                  </>
+                              )}
+                              {isIdentical && (
+                                  <>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Archivo"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
                                   </>
                               )}
                             </div>
