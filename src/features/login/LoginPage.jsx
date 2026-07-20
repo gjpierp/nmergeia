@@ -27,7 +27,7 @@ export const LoginPage = () => {
       localStorage.setItem('nmerge_user_session', JSON.stringify({ 
         email, 
         method: 'local-fallback', 
-        roles: email.includes('admin') ? ['ADMINISTRADOR'] : ['INVITADO'] 
+        roles: email.includes('admin') ? ['ROLE_ADMINISTRADOR'] : ['ROLE_INVITADO'] 
       }));
       addToast('Sesión iniciada (Modo Local Offline)', 'success');
       setActiveTab('main');

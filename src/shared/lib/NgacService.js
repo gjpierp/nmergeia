@@ -37,8 +37,8 @@ export const NgacService = {
       throw new Error(err || 'Error al crear nodo de usuario en Sentinel-NGAC');
     }
 
-    // 2. Asignar rol por defecto (ADMINISTRADOR si contiene admin, si no INVITADO)
-    const defaultRole = email.includes('admin') ? 'ADMINISTRADOR' : 'INVITADO';
+    // 2. Asignar rol por defecto (ROLE_ADMINISTRADOR si contiene admin, si no ROLE_INVITADO)
+    const defaultRole = email.includes('admin') ? 'ROLE_ADMINISTRADOR' : 'ROLE_INVITADO';
     const linkRes = await fetch(`${baseUrl}/enlaces`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -85,7 +85,7 @@ export const NgacService = {
     return {
       id: email,
       email: email,
-      roles: userRoles.length > 0 ? userRoles : ['INVITADO'],
+      roles: userRoles.length > 0 ? userRoles : ['ROLE_INVITADO'],
       method: 'sentinel-ngac'
     };
   },
@@ -103,9 +103,9 @@ export const NgacService = {
       }
     }
     
-    // Si está bloqueado/premium, solo el rol ADMINISTRADOR tiene acceso a Ventas, Login y Licencia
+    // Si está bloqueado/premium, solo el rol ROLE_ADMINISTRADOR/ROLE_ADMIN tiene acceso a Ventas, Login y Licencia
     if (['Ventas', 'Login', 'Licencia'].includes(optionName)) {
-      return userRoles.includes('ADMIN') || userRoles.includes('ADMINISTRADOR');
+      return userRoles.includes('ROLE_ADMIN') || userRoles.includes('ROLE_ADMINISTRADOR');
     }
     return true;
   },
@@ -116,19 +116,38 @@ export const NgacService = {
   setupNgacBasePolicies: async () => {
     const baseUrl = getNgacUrl();
     try {
-      // 1. Crear Roles (como nodos User Attribute 'ua')
+      // 1. Crear Roles (como nodos User Attribute 'ua' con prefijo ROLE_)
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: 'ADMINISTRADOR', nombre: 'Administrador', tipo: 'ua' })
+        body: JSON.stringify({ codigo: 'ROLE_ADMINISTRADOR', nombre: 'Administrador', tipo: 'ua' })
       });
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: 'INVITADO', nombre: 'Invitado', tipo: 'ua' })
+        body: JSON.stringify({ codigo: 'ROLE_INVITADO', nombre: 'Invitado', tipo: 'ua' })
       });
 
-      // 2. Crear Nodos para Opciones (como nodos Target/Object 'o')
+      // 2. Crear Nodo Política y Nodo Raíz del dominio NMergeIA
+      await fetch(`${baseUrl}/nodos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: 'POLITICA_NMERGEIA', nombre: 'Politica NMergeIA', tipo: 'p' })
+      });
+      await fetch(`${baseUrl}/nodos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: 'NMERGEIA_ROOT', nombre: 'NMergeIA Root', tipo: 'o' })
+      });
+
+      // Enlazar Política a Nodo Raíz
+      await fetch(`${baseUrl}/enlaces`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ padre: 'POLITICA_NMERGEIA', hijo: 'NMERGEIA_ROOT' })
+      });
+
+      // 3. Crear Nodos para Opciones (como nodos Target/Object 'o')
       const options = ['Ventas', 'Login', 'Licencia'];
       for (const opt of options) {
         await fetch(`${baseUrl}/nodos`, {
@@ -138,12 +157,21 @@ export const NgacService = {
         });
       }
 
-      // 3. Crear Enlaces Jerárquicos / Decision Tree (Roles -> Opciones)
+      // Enlazar Nodo Raíz a Opciones del Dominio
       for (const opt of options) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ padre: 'ADMINISTRADOR', hijo: opt })
+          body: JSON.stringify({ padre: 'NMERGEIA_ROOT', hijo: opt })
+        });
+      }
+
+      // 4. Crear Enlaces Jerárquicos de Acceso (Roles -> Opciones)
+      for (const opt of options) {
+        await fetch(`${baseUrl}/enlaces`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ padre: 'ROLE_ADMINISTRADOR', hijo: opt })
         });
       }
       
