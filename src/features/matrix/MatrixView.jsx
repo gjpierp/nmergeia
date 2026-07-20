@@ -26,8 +26,10 @@ export const MatrixView = memo(({
         const el = containerRef.current;
         if (!el) return;
 
-        // Restaura la posición de scroll guardada en el store
-        el.scrollTop = matrixScrollTop;
+        // Restaura la posición de scroll guardada en el store tras el ciclo de renderizado
+        const timer = setTimeout(() => {
+            el.scrollTop = matrixScrollTop;
+        }, 50);
 
         const handleScroll = () => {
             setMatrixScrollTop(el.scrollTop);
@@ -46,10 +48,11 @@ export const MatrixView = memo(({
         el.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => {
+            clearTimeout(timer);
             el.removeEventListener('scroll', handleScroll);
             if (resizeObserver) resizeObserver.disconnect();
         };
-    }, []);
+    }, [matrixScrollTop]);
 
     const originMap = new Map();
     if (tab.processedOrigin) {
