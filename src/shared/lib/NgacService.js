@@ -93,12 +93,17 @@ export const NgacService = {
   /**
    * Obtiene el menú dinámico filtrado por roles de Sentinel-NGAC
    */
-  getDynamicMenu: async (userRoles = []) => {
+  getDynamicMenu: async (userRoles = [], isLoggedIn = false) => {
     const baseUrl = getNgacUrl();
     try {
+      if (!isLoggedIn) {
+        // Si no está logueado, forzar estrictamente solo el menú free de usuario libre
+        return ['Comparar', 'Historial', 'Filtros'];
+      }
+
       const isNgacLocked = typeof window !== 'undefined' ? localStorage.getItem('nmergeia_ngac_locked') === 'true' : true;
       if (!isNgacLocked) {
-        // Si no está bloqueado, devolvemos acceso a todas las opciones de manera libre
+        // Si no está bloqueado y está logueado, devolvemos acceso a todas las opciones de manera libre
         return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
       }
 
@@ -129,7 +134,7 @@ export const NgacService = {
     } catch (e) {
       console.warn("Sentinel-NGAC /menu/context falló, usando fallback local:", e.message);
       // Fallback local basado en roles
-      if (userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN')) {
+      if (isLoggedIn && (userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN'))) {
         return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
       }
       return ['Comparar', 'Historial', 'Filtros'];

@@ -11,7 +11,7 @@ export const Sidebar = () => {
   const userRoles = userSession ? userSession.roles || [] : ['ROLE_INVITADO'];
 
   useEffect(() => {
-    NgacService.getDynamicMenu(userRoles)
+    NgacService.getDynamicMenu(userRoles, !!userSession)
       .then(options => {
         if (options && options.length > 0) {
           setAllowedOptions(options);
