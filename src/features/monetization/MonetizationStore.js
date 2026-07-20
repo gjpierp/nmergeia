@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { apiClient } from '../../shared/lib/apiClient.js';
 
+export const MonetizationConfig = {
+  // Activa el modo Lanzamiento/Beta: todas las opciones premium habilitadas, pero con anuncios activos
+  ALL_FEATURES_FREE: true,
+};
+
 export const useMonetizationStore = create((set, get) => ({
   isPro: false,
   licenseKey: '',

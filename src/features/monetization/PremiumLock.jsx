@@ -1,11 +1,11 @@
 import React from 'react';
-import { useMonetizationStore } from './MonetizationStore';
+import { useMonetizationStore, MonetizationConfig } from './MonetizationStore';
 
 export const PremiumLock = ({ children }) => {
   const isPro = useMonetizationStore(s => s.isPro);
   const openPremiumModal = useMonetizationStore(s => s.openPremiumModal);
 
-  if (isPro) {
+  if (isPro || MonetizationConfig.ALL_FEATURES_FREE) {
     return <>{children}</>;
   }
 

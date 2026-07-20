@@ -5,7 +5,8 @@ import { PremiumLock } from './PremiumLock.jsx';
 import { useMonetizationStore } from './MonetizationStore.js';
 
 vi.mock('./MonetizationStore.js', () => ({
-  useMonetizationStore: vi.fn()
+  useMonetizationStore: vi.fn(),
+  MonetizationConfig: { ALL_FEATURES_FREE: false }
 }));
 
 describe('PremiumLock', () => {
