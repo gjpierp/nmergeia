@@ -23,6 +23,8 @@ export async function extractTextFromDocument(fileName, arrayBuffer) {
         return await extractPdf(arrayBuffer);
       case 'docx':
         return await extractDocx(arrayBuffer);
+      case 'pptx':
+        return await extractPptx(arrayBuffer);
       case 'xlsx':
       case 'xls':
         return await extractXlsx(arrayBuffer);
@@ -36,6 +38,12 @@ export async function extractTextFromDocument(fileName, arrayBuffer) {
       case 'jpeg':
       case 'png':
         return await extractImageMetadata(fileName, arrayBuffer);
+      case 'mp3':
+      case 'wav':
+      case 'mp4':
+      case 'mkv':
+      case 'mov':
+        return await extractMediaMetadata(fileName, arrayBuffer);
       default:
         // Fallback para tipos de archivo no binarios
         const decoder = new TextDecoder('utf-8');
@@ -153,12 +161,75 @@ async function extractPem(arrayBuffer) {
   return text;
 }
 
-/**
- * Extractor de metadatos básicos de Imagen
- */
 async function extractImageMetadata(fileName, arrayBuffer) {
   const sizeBytes = arrayBuffer.byteLength;
-  return `=== METADATOS DE IMAGEN ===\n\nArchivo: ${fileName}\nTamaño del archivo: ${formatBytes(sizeBytes)}\nFormatos de visualización soportados: PNG, JPG, JPEG\n`;
+  let text = `=== METADATOS DE IMAGEN ===\n\nArchivo: ${fileName}\nTamaño del archivo: ${formatBytes(sizeBytes)}\n`;
+  if (typeof window !== 'undefined') {
+    try {
+      const dimensions = await getImageDimensions(arrayBuffer);
+      text += `Dimensiones: ${dimensions.width} x ${dimensions.height} píxeles\n`;
+    } catch (e) {
+      // Ignorar fallo en entornos de test sin DOM completo
+    }
+  }
+  return text;
+}
+
+/**
+ * Extractor de diapositivas PPTX
+ */
+async function extractPptx(arrayBuffer) {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  let text = '=== PRESENTACIÓN POWERPOINT (PPTX) ===\n\n';
+  const slideFiles = Object.keys(zip.files).filter(name => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'));
+  
+  slideFiles.sort((a, b) => {
+    const numA = parseInt(a.replace(/^\D+/g, ''), 10);
+    const numB = parseInt(b.replace(/^\D+/g, ''), 10);
+    return numA - numB;
+  });
+
+  for (let i = 0; i < slideFiles.length; i++) {
+    const slideName = slideFiles[i];
+    const content = await zip.files[slideName].async('text');
+    text += `--- Diapositiva ${i + 1} ---\n`;
+    const matches = [...content.matchAll(/<a:t>([^<]+)<\/a:t>/g)];
+    const slideText = matches.map(m => m[1]).join(' ');
+    text += slideText.trim() ? slideText : '[Diapositiva vacía o sin texto]';
+    text += '\n\n';
+  }
+  return text;
+}
+
+/**
+ * Extractor de archivos de audio y video
+ */
+async function extractMediaMetadata(fileName, arrayBuffer) {
+  const sizeBytes = arrayBuffer.byteLength;
+  const ext = fileName.split('.').pop().toLowerCase();
+  const isVideo = ['mp4', 'mkv', 'mov'].includes(ext);
+  
+  return `=== METADATOS MULTIMEDIA (${isVideo ? 'VIDEO' : 'AUDIO'}) ===\n\nArchivo: ${fileName}\nTamaño del archivo: ${formatBytes(sizeBytes)}\nFormato: ${ext.toUpperCase()}\n`;
+}
+
+/**
+ * Helper para leer dimensiones de imagen
+ */
+function getImageDimensions(arrayBuffer) {
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([arrayBuffer]);
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = (e) => {
+      reject(e);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
 }
 
 /**

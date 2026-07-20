@@ -44,7 +44,11 @@ vi.mock('jszip', () => {
     default: {
       loadAsync: vi.fn().mockResolvedValue({
         files: {
-          'test.txt': { dir: false, _data: { uncompressedSize: 100 } }
+          'test.txt': { dir: false, _data: { uncompressedSize: 100 } },
+          'ppt/slides/slide1.xml': {
+            dir: false,
+            async: vi.fn().mockResolvedValue('<a:t>Texto de Diapositiva</a:t>')
+          }
         },
         forEach: function(cb) {
           cb('test.txt', { dir: false, _data: { uncompressedSize: 100 } });
@@ -76,6 +80,14 @@ describe('DocumentExtractor Tests', () => {
     expect(result).toContain('Texto del Word');
   });
 
+  it('should process PowerPoint PPTX files and extract slide text', async () => {
+    const buffer = new ArrayBuffer(8);
+    const result = await extractTextFromDocument('test.pptx', buffer);
+    expect(result).toContain('=== PRESENTACIÓN POWERPOINT (PPTX) ===');
+    expect(result).toContain('--- Diapositiva 1 ---');
+    expect(result).toContain('Texto de Diapositiva');
+  });
+
   it('should process Excel sheets and output CSV representations', async () => {
     const buffer = new ArrayBuffer(8);
     const result = await extractTextFromDocument('test.xlsx', buffer);
@@ -96,5 +108,12 @@ describe('DocumentExtractor Tests', () => {
     const result = await extractTextFromDocument('cert.pem', buffer);
     expect(result).toContain('=== CERTIFICADO / CLAVE CRIPTOGRÁFICA (PEM) ===');
     expect(result).toContain('Bloque 1: [PUBLIC KEY]');
+  });
+
+  it('should display metadata for media files', async () => {
+    const buffer = new ArrayBuffer(8);
+    const result = await extractTextFromDocument('video.mp4', buffer);
+    expect(result).toContain('=== METADATOS MULTIMEDIA (VIDEO) ===');
+    expect(result).toContain('Formato: MP4');
   });
 });
