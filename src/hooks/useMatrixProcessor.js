@@ -340,7 +340,7 @@ export const useMatrixProcessor = () => {
           if (filePath === 'filtro.txt') {
                setSessionFilterConfig(contentToSave);
                apiClient.writeFilter('filtro.txt', contentToSave).catch(_e => {});
-               addToast("Filtro de sesiÃ³n guardado con Ã©xito.", "success");
+               addToast("Filtro de sesión guardado con éxito.", "success");
              if (loadedProfileId) {
                   setSavedProfiles(prev => {
                       const updated = prev.map(p => p.id === loadedProfileId ? { ...p, filterContent: contentToSave } : p);
