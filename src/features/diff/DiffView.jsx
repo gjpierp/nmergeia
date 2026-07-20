@@ -121,8 +121,8 @@ export const DiffView = ({
         return normalizeWhitespace(str);
     };
 
-    const originalVal = applyNormalization(tab.original);
-    const modifiedVal = applyNormalization(tab.modified);
+    const originalVal = applyNormalization(tab.original) || '';
+    const modifiedVal = applyNormalization(tab.modified) || '';
 
     const handleCallAI = async () => {
         if (!diffContent) return;

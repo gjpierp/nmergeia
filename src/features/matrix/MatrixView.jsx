@@ -348,25 +348,29 @@ export const MatrixView = memo(({
                             {isMissingOrig && <span style={{fontSize: '0.75rem', color: '#eab308', fontWeight: 'bold'}}>Falta en Origen</span>}
                             {isMissingDest && <span style={{fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 'bold'}}>Falta en Destino</span>}
                            
-                           <div style={{display: 'flex', gap: '4px'}}>
-                             {isMissingDest && (
-                                 <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
-                             )}
-                             {isDiff && (
-                                 <>
-                                   <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                                   <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar de destino a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
-                                   <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Diferencias"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
-                                   <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar de origen a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
-                                 </>
-                             )}
-                             {isMissingOrig && (
-                                 <>
-                                   <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                                   <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
-                                 </>
-                             )}
-                           </div>
+                            <div style={{display: 'flex', gap: '4px'}}>
+                              {isMissingDest && (
+                                  <>
+                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, null, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
+                                  </>
+                              )}
+                              {isDiff && (
+                                  <>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar de destino a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Diferencias"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar de origen a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
+                                  </>
+                              )}
+                              {isMissingOrig && (
+                                  <>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(null, s.file, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                  </>
+                              )}
+                            </div>
                         </div>
                       );
                     })}
