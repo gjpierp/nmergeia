@@ -123,6 +123,38 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     serializeAndSave(updated);
   };
 
+  const [editingRuleId, setEditingRuleId] = useState(null);
+  const [editPattern, setEditPattern] = useState('');
+  const [editType, setEditType] = useState('exclude');
+  const [editTarget, setEditTarget] = useState('file');
+
+  const startEditRule = (rule) => {
+    setEditingRuleId(rule.id);
+    const isDir = rule.pattern.endsWith('/');
+    setEditPattern(isDir ? rule.pattern.slice(0, -1) : rule.pattern);
+    setEditType(rule.type);
+    setEditTarget(isDir ? 'directory' : 'file');
+  };
+
+  const handleSaveEditRule = (id) => {
+    let finalPattern = editPattern.trim();
+    if (!finalPattern) return;
+    if (editTarget === 'directory' && !finalPattern.endsWith('/')) {
+      finalPattern += '/';
+    }
+    
+    const updated = rules.map(r => {
+      if (r.id === id) {
+        return { ...r, type: editType, pattern: finalPattern };
+      }
+      return r;
+    });
+
+    setRules(updated);
+    setEditingRuleId(null);
+    serializeAndSave(updated);
+  };
+
   const activeRules = rules.filter(r => r.type !== 'comment');
 
   const [rawText, setRawText] = useState('');
@@ -217,6 +249,76 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
             ) : (
               activeRules.map((rule) => {
                 const isDir = rule.pattern.endsWith('/');
+                const isEditing = rule.id === editingRuleId;
+
+                if (isEditing) {
+                  return (
+                    <div
+                      key={rule.id}
+                      style={{
+                        display: 'flex',
+                        gap: '8px',
+                        alignItems: 'center',
+                        padding: '6px 10px',
+                        background: 'var(--bg-tertiary)',
+                        border: '1px solid var(--accent-primary)',
+                        borderRadius: '10px',
+                        height: '46px',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <select
+                        value={editType}
+                        onChange={(e) => setEditType(e.target.value)}
+                        className="input-field"
+                        style={{ width: '90px', padding: '4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '6px', height: '30px', fontSize: '0.75rem' }}
+                      >
+                        <option value="exclude">Excluir</option>
+                        <option value="include">Incluir</option>
+                      </select>
+
+                      <select
+                        value={editTarget}
+                        onChange={(e) => setEditTarget(e.target.value)}
+                        className="input-field"
+                        style={{ width: '100px', padding: '4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '6px', height: '30px', fontSize: '0.75rem' }}
+                      >
+                        <option value="file">Archivo</option>
+                        <option value="directory">Carpeta</option>
+                      </select>
+
+                      <input
+                        type="text"
+                        value={editPattern}
+                        onChange={(e) => setEditPattern(e.target.value)}
+                        className="input-field"
+                        style={{ flex: 1, padding: '4px 8px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '6px', height: '30px', fontSize: '0.8rem', minWidth: '50px' }}
+                      />
+
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button
+                          type="button"
+                          className="btn clear-btn small-btn"
+                          onClick={() => handleSaveEditRule(rule.id)}
+                          style={{ color: '#10b981', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
+                          data-tooltip="Guardar cambios"
+                        >
+                          <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>check</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="btn clear-btn small-btn"
+                          onClick={() => setEditingRuleId(null)}
+                          style={{ color: 'var(--text-secondary)', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
+                          data-tooltip="Cancelar edición"
+                        >
+                          <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>close</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <div
                     key={rule.id}
@@ -260,15 +362,26 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                       </span>
                       <code style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{rule.pattern}</code>
                     </div>
-                    <button
-                      type="button"
-                      className="btn clear-btn small-btn"
-                      onClick={() => handleDeleteRule(rule.id)}
-                      style={{ color: '#ef4444', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
-                      data-tooltip="Eliminar regla"
-                    >
-                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>delete</span>
-                    </button>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        type="button"
+                        className="btn clear-btn small-btn"
+                        onClick={() => startEditRule(rule)}
+                        style={{ color: '#3b82f6', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
+                        data-tooltip="Editar regla"
+                      >
+                        <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn clear-btn small-btn"
+                        onClick={() => handleDeleteRule(rule.id)}
+                        style={{ color: '#ef4444', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
+                        data-tooltip="Eliminar regla"
+                      >
+                        <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>delete</span>
+                      </button>
+                    </div>
                   </div>
                 );
               })
