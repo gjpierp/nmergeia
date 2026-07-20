@@ -17,12 +17,25 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     if (sessionFilterConfig !== null) {
       parseRules(sessionFilterConfig);
     } else {
-      apiClient.readFilter('filtro.txt')
-        .then(txt => {
-          setSessionFilterConfig(txt);
-          parseRules(txt);
-        })
-        .catch(e => console.error("Error reading filter:", e));
+      const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('nmerge_user_session') : null;
+      const userSession = userSessionStr ? JSON.parse(userSessionStr) : null;
+      const userEmail = userSession ? userSession.email : null;
+      const savedUserFilters = userEmail ? localStorage.getItem(`nmergeia_filters_${userEmail}`) : null;
+
+      if (savedUserFilters !== null) {
+        setSessionFilterConfig(savedUserFilters);
+        parseRules(savedUserFilters);
+      } else {
+        apiClient.readFilter('filtro.txt')
+          .then(txt => {
+            setSessionFilterConfig(txt);
+            parseRules(txt);
+            if (userEmail) {
+              localStorage.setItem(`nmergeia_filters_${userEmail}`, txt);
+            }
+          })
+          .catch(e => console.error("Error reading filter:", e));
+      }
     }
   }, [sessionFilterConfig, setSessionFilterConfig]);
 
@@ -62,6 +75,14 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     try {
       await apiClient.writeFilter('filtro.txt', serialized);
       setSessionFilterConfig(serialized);
+
+      // Persistir filtros para la sesión activa del usuario
+      const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('nmerge_user_session') : null;
+      const userSession = userSessionStr ? JSON.parse(userSessionStr) : null;
+      if (userSession && userSession.email) {
+        localStorage.setItem(`nmergeia_filters_${userSession.email}`, serialized);
+      }
+
       addToast("Filtros actualizados con éxito", "success");
       
       // Actualizar la comparación de directorios en caliente automáticamente
