@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export const MainScreen = ({
   originPath,
@@ -11,8 +11,67 @@ export const MainScreen = ({
   removeDestSlot,
   handleClear,
   saveCurrentProfile,
-  processFiles
+  processFiles,
+  setOriginDirect,
+  setDestDirect
 }) => {
+  const [isDraggingOrigin, setIsDraggingOrigin] = useState(false);
+  const [draggingDestSlot, setDraggingDestSlot] = useState(null);
+
+  const handleDragOverOrigin = (e) => {
+    e.preventDefault();
+    setIsDraggingOrigin(true);
+  };
+
+  const handleDragLeaveOrigin = () => {
+    setIsDraggingOrigin(false);
+  };
+
+  const handleDropOrigin = async (e) => {
+    e.preventDefault();
+    setIsDraggingOrigin(false);
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      const item = e.dataTransfer.items[0];
+      if (typeof item.getAsFileSystemHandle === 'function') {
+        try {
+          const handle = await item.getAsFileSystemHandle();
+          if (handle) {
+            setOriginDirect(handle);
+          }
+        } catch (err) {
+          console.error("Error al obtener handle de origen:", err);
+        }
+      }
+    }
+  };
+
+  const handleDragOverDest = (e, slotId) => {
+    e.preventDefault();
+    setDraggingDestSlot(slotId);
+  };
+
+  const handleDragLeaveDest = () => {
+    setDraggingDestSlot(null);
+  };
+
+  const handleDropDest = async (e, slotId) => {
+    e.preventDefault();
+    setDraggingDestSlot(null);
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      const item = e.dataTransfer.items[0];
+      if (typeof item.getAsFileSystemHandle === 'function') {
+        try {
+          const handle = await item.getAsFileSystemHandle();
+          if (handle) {
+            setDestDirect(slotId, handle);
+          }
+        } catch (err) {
+          console.error("Error al obtener handle de destino:", err);
+        }
+      }
+    }
+  };
+
   return (
     <div className="main-screen">
       <h2 className="main-screen-title">Configuración de Comparación</h2>
@@ -20,12 +79,19 @@ export const MainScreen = ({
       <div className="section-card config-card">
         <h3 className="config-card-title">Seleccionar Carpetas</h3>
 
-        <div className="config-row">
+        <div 
+          className={`config-row ${isDraggingOrigin ? 'drag-over' : ''}`}
+          onDragOver={handleDragOverOrigin}
+          onDragLeave={handleDragLeaveOrigin}
+          onDrop={handleDropOrigin}
+          style={{ cursor: 'pointer' }}
+          title="Arrastra una carpeta o archivo aquí"
+        >
           <label className="config-label">Origen:</label>
           <input
             type="text"
             readOnly
-            value={originPath || 'Ninguna selección...'}
+            value={originPath || 'Ninguna selección o arrastra carpeta aquí...'}
             className="config-input-readonly"
           />
           <button className="btn secondary-btn config-action-btn" onClick={() => openOrigin('folder')} data-tooltip="Seleccionar Carpeta">
@@ -44,14 +110,22 @@ export const MainScreen = ({
         </div>
 
         {destSlots.map((slot, i) => (
-          <div key={slot.id} className="config-row">
+          <div 
+            key={slot.id} 
+            className={`config-row ${draggingDestSlot === slot.id ? 'drag-over' : ''}`}
+            onDragOver={(e) => handleDragOverDest(e, slot.id)}
+            onDragLeave={handleDragLeaveDest}
+            onDrop={(e) => handleDropDest(e, slot.id)}
+            style={{ cursor: 'pointer' }}
+            title="Arrastra una carpeta o archivo aquí"
+          >
             <label className="config-label">
               Destino{i === 0 ? '' : ` ${i + 1}`}:
             </label>
             <input
               type="text"
               readOnly
-              value={slot.path || 'Ninguna selección...'}
+              value={slot.path || 'Ninguna selección o arrastra carpeta aquí...'}
               className="config-input-readonly"
             />
             <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'folder')} data-tooltip="Seleccionar Carpeta">

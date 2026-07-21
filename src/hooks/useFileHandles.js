@@ -57,5 +57,16 @@ export const useFileHandles = () => {
         setDestSlots(prev => prev.filter(s => s.id !== id));
     };
 
-    return { openOrigin, openDest, addDestSlot, removeDestSlot };
+    const setOriginDirect = (handleObj) => {
+        setOriginHandle(handleObj);
+        setOriginPath(handleObj.name);
+        setHasProcessed(false);
+    };
+
+    const setDestDirect = (slotId, handleObj) => {
+        setDestSlots(prev => prev.map(s => s.id === slotId ? { ...s, handle: handleObj, path: handleObj.name } : s));
+        setHasProcessed(false);
+    };
+
+    return { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect };
 };

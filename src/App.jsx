@@ -46,7 +46,7 @@ const Toasts = () => {
 function App() {
   // Hooks de lógica de negocio
   const { processFiles, openDiffTab, closeTab, saveFile, handleDelete, handleTransfer, handleTransferFolder, handleClear } = useMatrixProcessor();
-  const { openOrigin, openDest, addDestSlot, removeDestSlot } = useFileHandles();
+  const { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect } = useFileHandles();
   const { loadProfile, saveCurrentProfile, renameProfile, deleteProfile } = useProfiles();
   const initializeLicense = useMonetizationStore(s => s.initializeLicense);
   useEqualityWorker();
@@ -160,6 +160,8 @@ function App() {
           handleClear={handleClear}
           saveCurrentProfile={saveCurrentProfile}
           processFiles={processFiles}
+          setOriginDirect={setOriginDirect}
+          setDestDirect={setDestDirect}
         />
       );
     }

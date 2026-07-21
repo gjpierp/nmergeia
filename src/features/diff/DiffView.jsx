@@ -191,7 +191,7 @@ export const DiffView = ({
         if (!changes || changes.length === 0) return;
         
         const modEditor = diffEditorRef.current.getModifiedEditor();
-        const currentLine = modEditor.getPosition().lineNumber;
+        const currentLine = modEditor.getPosition()?.lineNumber || 1;
         
         let targetChange = null;
         if (direction === 'first') {
@@ -228,7 +228,7 @@ export const DiffView = ({
     
         const origEditor = diffEditorRef.current.getOriginalEditor();
         const modEditor = diffEditorRef.current.getModifiedEditor();
-        const currentLine = modEditor.getPosition().lineNumber;
+        const currentLine = modEditor.getPosition()?.lineNumber || 1;
     
         let currentChange = changes.find(c => {
            const modStart = c.modifiedStartLineNumber === 0 ? c.modifiedStartLineNumber + 1 : c.modifiedStartLineNumber;
