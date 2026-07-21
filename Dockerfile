@@ -1,5 +1,5 @@
 # --- Etapa 1: Construcción (Build) ---
-FROM node:20.12.2-alpine3.19 AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # --- Etapa 2: Servidor Node Backend + Frontend ---
-FROM node:20.12.2-alpine3.19
+FROM node:22-alpine
 WORKDIR /app
 
 # Configurar permisos para usuario non-root (node)
