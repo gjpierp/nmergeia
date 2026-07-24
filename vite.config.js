@@ -9,6 +9,7 @@ export default defineConfig({
     host: true,
     port: 3001,
     strictPort: true,
+    allowedHosts: ['nmerge.local', 'nmergeia.local', 'nmerge.com'],
     hmr: {
       clientPort: 443
     },
