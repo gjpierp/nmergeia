@@ -25,7 +25,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-<tu_contraseña_segura>}
-      POSTGRES_DB: nmerge_db
+      POSTGRES_DB: [NOMBRE_DE_TU_BD]
     ports:
       - "5432:5432"
     volumes:
@@ -68,7 +68,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=root
 DB_PASSWORD=<tu_contraseña_segura>
-DB_NAME=nmerge_db
+DB_NAME=[NOMBRE_DE_TU_BD]
 ```
 
 ---

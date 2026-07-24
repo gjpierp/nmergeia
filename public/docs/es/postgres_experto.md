@@ -49,7 +49,7 @@ Para mitigar el consumo masivo de memoria, es obligatorio el uso de un Pooler tr
 
 ```ini
 [databases]
-nmerge_db = host=127.0.0.1 port=5432 dbname=nmerge_db
+nmerge_db = host=127.0.0.1 port=5432 dbname=[NOMBRE_DE_TU_BD]
 
 [pgbouncer]
 listen_port = 6432
