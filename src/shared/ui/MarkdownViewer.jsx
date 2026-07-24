@@ -36,10 +36,10 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
   return (
     <div style={{
       padding: '2rem',
-      background: 'var(--bg-tertiary, #1e1e1e)',
-      color: 'var(--text-primary, #ffffff)',
+      background: 'var(--bg-tertiary)',
+      color: 'var(--text-primary)',
       borderRadius: '8px',
-      border: '1px solid var(--border-color, #333)',
+      border: '1px solid var(--border-color)',
       boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
       minHeight: '600px',
       position: 'relative'
@@ -49,20 +49,20 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid var(--border-color, #333)',
+        borderBottom: '1px solid var(--border-color)',
         paddingBottom: '1rem',
         marginBottom: '2rem'
       }}>
-        <h2 style={{ fontSize: '1.8rem', margin: 0, color: 'var(--accent-primary, #646cff)' }}>{title}</h2>
+        <h2 style={{ fontSize: '1.8rem', margin: 0, color: 'var(--accent-primary)' }}>{title}</h2>
         {requiredRole && (
           <span style={{
-            background: 'var(--bg-secondary, #2a2a2a)',
+            background: 'var(--bg-secondary)',
             padding: '0.4rem 0.8rem',
             borderRadius: '4px',
             fontSize: '0.85rem',
             fontWeight: '600',
-            border: '1px solid var(--accent-secondary, #444)',
-            color: 'var(--text-secondary, #aaa)'
+            border: '1px solid var(--accent-secondary)',
+            color: 'var(--text-secondary)'
           }}>
             🔐 NGAC Policy: {requiredRole}
           </span>
