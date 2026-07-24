@@ -142,7 +142,7 @@ describe('DiffView Component', () => {
                 destSlots={mockDestSlots}
             />
         );
-        expect(screen.getByText('Origen: src/main.js')).toBeInTheDocument();
+        expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
     });
 
     it('displays the normalizer checkbox for JSON files and sorts keys on toggle', async () => {
@@ -164,7 +164,7 @@ describe('DiffView Component', () => {
             />
         );
 
-        const checkbox = screen.getByLabelText('Normalizar JSON');
+        const checkbox = screen.getByLabelText(/normalize json|normalizar json/i);
         expect(checkbox).toBeInTheDocument();
 
         expect(screen.getByTestId('original-code').textContent).toBe(rawJsonOriginal);
@@ -191,7 +191,7 @@ describe('DiffView Component', () => {
             />
         );
 
-        const checkbox = screen.getByLabelText('Limpiar Espacios');
+        const checkbox = screen.getByLabelText(/clean spaces|limpiar espacios/i);
         expect(checkbox).toBeInTheDocument();
 
         fireEvent.click(checkbox);
@@ -210,7 +210,7 @@ describe('DiffView Component', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('Origen: src/main.js')).toBeInTheDocument();
+            expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
         });
 
         // Test navigation action: first (text is 'first_page')
@@ -246,7 +246,7 @@ describe('DiffView Component', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('Origen: src/main.js')).toBeInTheDocument();
+            expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
         });
 
         const nextBtn = screen.getByRole('button', { name: /keyboard_arrow_down/i });

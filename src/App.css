@@ -19,31 +19,31 @@
   --bg-primary: #050505;
   --bg-secondary: #0a0a0c;
   --bg-tertiary: #131316;
-  --bg-hover: #1f1f23;
+  --bg-hover: #16242c;
   --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --text-secondary: #a5b4fc; /* Modern soft indigo/slate text */
   --text-tertiary: #64748b;
-  --accent-primary: #6366f1; /* Deep Indigo */
-  --accent-secondary: #8b5cf6; /* Vibrant Purple */
-  --accent-glow: rgba(99, 102, 241, 0.4);
-  --border-color: #27272a;
-  --border-light: rgba(255, 255, 255, 0.08);
-  --bg-glass: rgba(10, 10, 12, 0.65);
+  --accent-primary: #06b6d4; /* Electric Cyan */
+  --accent-secondary: #10b981; /* Neon Emerald */
+  --accent-glow: rgba(6, 182, 212, 0.35);
+  --border-color: #1e293b;
+  --border-light: rgba(6, 182, 212, 0.12);
+  --bg-glass: rgba(10, 10, 12, 0.75);
 }
 
 [data-theme="light"] {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e2e8f0;
-  --bg-hover: #cbd5e1;
+  --bg-hover: #e0f2fe;
   --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #334155;
   --text-tertiary: #64748b;
-  --accent-primary: #2563eb;
-  --accent-secondary: #3b82f6;
+  --accent-primary: #4f46e5; /* Royal Indigo */
+  --accent-secondary: #0891b2; /* Deep Cyan */
   --border-color: #cbd5e1;
-  --border-light: rgba(0,0,0,0.1);
-  --bg-glass: rgba(248, 250, 252, 0.8);
+  --border-light: rgba(79, 70, 229, 0.1);
+  --bg-glass: rgba(248, 250, 252, 0.85);
 }
 
 
@@ -299,7 +299,8 @@ body {
 
 /* Buttons */
 .btn {
-  padding: 0.85rem 1.5rem;
+  padding: 0 1.2rem;
+  height: 38px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -604,6 +605,9 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .app-body {
   display: flex;
@@ -618,6 +622,21 @@ body {
   flex-direction: column;
   flex-shrink: 0;
   padding-top: 10px;
+  transition: width 0.3s ease;
+}
+.app-sidebar.collapsed {
+  width: 68px;
+}
+.app-sidebar.collapsed .sidebar-btn {
+  justify-content: center;
+  padding: 12px 0;
+  gap: 0;
+}
+.app-sidebar.collapsed .sidebar-btn span:not(.material-symbols-rounded) {
+  display: none;
+}
+.app-sidebar.collapsed .sidebar-btn .material-symbols-rounded {
+  margin-right: 0 !important;
 }
 .sidebar-btn {
   display: flex;
@@ -746,7 +765,8 @@ input, select, button {
   border-radius: 4px;
 }
 .config-action-btn {
-  padding: 10px 15px !important;
+  padding: 0 12px !important;
+  height: 38px;
 }
 .config-action-bar {
   display: flex;

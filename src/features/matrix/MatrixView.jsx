@@ -1,6 +1,8 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { getRelativePath } from "../../utils/pathUtils.js";
+import { NgacAdBanner } from '../monetization/NgacAdBanner.jsx';
 
 export const MatrixView = memo(({ 
     tab, 
@@ -10,6 +12,7 @@ export const MatrixView = memo(({
     handleTransfer, 
     openDiffTab 
 }) => {
+    const { t } = useTranslation();
     const { 
         filterText, setFilterText, 
         showOnlyChanges, setShowOnlyChanges, 
@@ -86,9 +89,9 @@ export const MatrixView = memo(({
             <div className="main-screen" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                <div className="section-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', background: 'transparent', border: 'none' }}>
                   <div style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.8, filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.1))' }}>👻</div>
-                  <h2 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1.8rem' }}>No hay archivos para comparar</h2>
+                  <h2 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1.8rem' }}>{t('matrix_no_files_title')}</h2>
                   <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', lineHeight: '1.5' }}>
-                     Para ver la matriz de diferencias, dirígete a la pestaña de <strong>Configuración</strong>, selecciona al menos una carpeta de Origen y otra de Destino, y presiona el botón "Procesar y Comparar".
+                     {t('matrix_no_files_desc_start')}<strong>{t('matrix_no_files_desc_config')}</strong>{t('matrix_no_files_desc_end')}
                   </p>
                </div>
             </div>
@@ -213,7 +216,7 @@ export const MatrixView = memo(({
         <div className="section-card" style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '10px', padding: '10px 20px'}}>
            <input 
              type="text" 
-             placeholder="🔍 Buscar archivo..."
+             placeholder={t('matrix_search_placeholder')}
              className="input-field"
              style={{ flex: 1, padding: '12px 20px', fontSize: '1.1rem', background: 'var(--bg-tertiary)', border: 'none', color: 'var(--text-primary)', borderRadius: '12px' }}
              value={filterText}
@@ -223,7 +226,7 @@ export const MatrixView = memo(({
               className={`btn ${showOnlyChanges ? 'primary-btn' : 'secondary-btn'}`} 
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.5rem', width: '40px', height: '40px', borderRadius: '8px' }}
               onClick={() => setShowOnlyChanges(!showOnlyChanges)}
-              data-tooltip="Ver solo archivos con diferencias"
+              data-tooltip={t('matrix_tooltip_only_changes')}
             >
               <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>difference</span>
             </button>
@@ -231,7 +234,7 @@ export const MatrixView = memo(({
              className="btn primary-btn" 
              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.5rem', width: '40px', height: '40px', borderRadius: '8px' }}
              onClick={() => processFiles(true, tab)}
-             data-tooltip="Actualizar Comparación"
+             data-tooltip={t('matrix_tooltip_refresh')}
              disabled={isProcessing}
            >
              <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>{isProcessing ? 'hourglass_empty' : 'sync'}</span>
@@ -242,11 +245,11 @@ export const MatrixView = memo(({
           
           <div className="matrix-header" style={{ display: 'flex', flexDirection: 'column', padding: '15px 1rem', background: 'var(--bg-tertiary)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '8px' }}>
-              <strong>Origen:</strong> <span style={{ color: 'var(--accent-primary)' }}>{tab.originHandle ? tab.originHandle.name : 'N/A'}</span> 
+              <strong>{t('matrix_origin')}:</strong> <span style={{ color: 'var(--accent-primary)' }}>{tab.originHandle ? tab.originHandle.name : 'N/A'}</span> 
               <span style={{ margin: '0 10px' }}>|</span> 
-              <strong>Destino(s):</strong> <span style={{ color: '#22c55e' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span>
+              <strong>{t('matrix_destinations')}:</strong> <span style={{ color: '#22c55e' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span>
             </div>
-            <div style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>- Estructura de Archivos</div>
+            <div style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>- {t('matrix_file_structure')}</div>
           </div>
 
           <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
@@ -271,132 +274,132 @@ export const MatrixView = memo(({
                  }
 
                  return (
-                   <div key={'folder-'+row.path} onClick={() => toggleFolder(row.path)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', padding: `6px 1rem 6px ${row.depth * 1.5 + 1}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '0.75rem', height: '36px', boxSizing: 'border-box' }}>
-                      <div style={{display: 'flex', alignItems: 'center'}}>
-                         <span style={{marginRight: '8px', fontSize: '0.70rem', color: 'var(--text-tertiary)'}}>{row.isCollapsed ? '▶︎' : '▼'}</span>
-                         <span className="file-icon" style={{fontSize: '0.8rem', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>folder</span></span> {row.name}
-                      </div>
-                      <div style={{display: 'flex', gap: '10px'}}>
-                         {needsToOrigin && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_origin', e)} data-tooltip="Copiar toda la carpeta de Destino a Origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>}
-                         {needsToDest && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_dest', e)} data-tooltip="Copiar toda la carpeta de Origen a Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>}
-                      </div>
-                   </div>
-                 );
-              }
-              
-              let fileColor = 'var(--text-secondary)';
-              let hasDiff = false;
-              let isMissingInOrigin = false;
-              let isMissingInAllDests = true;
-
-              if (!row.oFile) {
-                  fileColor = '#eab308';
-                  isMissingInOrigin = true;
-              } else {
-                  hasDiff = row.statuses.some(s => s.status === 'different');
-                  isMissingInAllDests = row.statuses.every(s => s.status === 'missing');
-                  if (hasDiff) fileColor = '#ef4444';
-                  else if (isMissingInAllDests) fileColor = 'var(--accent-primary)';
-                  else fileColor = '#22c55e';
+                    <div key={'folder-'+row.path} onClick={() => toggleFolder(row.path)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', padding: `6px 1rem 6px ${row.depth * 1.5 + 1}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '0.75rem', height: '36px', boxSizing: 'border-box' }}>
+                       <div style={{display: 'flex', alignItems: 'center'}}>
+                          <span style={{marginRight: '8px', fontSize: '0.70rem', color: 'var(--text-tertiary)'}}>{row.isCollapsed ? '▶︎' : '▼'}</span>
+                          <span className="file-icon" style={{fontSize: '0.8rem', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>folder</span></span> {row.name}
+                       </div>
+                       <div style={{display: 'flex', gap: '10px'}}>
+                          {needsToOrigin && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_origin', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>}
+                          {needsToDest && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_dest', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>}
+                       </div>
+                    </div>
+                  );
                }
+               
+               let fileColor = 'var(--text-secondary)';
+               let hasDiff = false;
+               let isMissingInOrigin = false;
+               let isMissingInAllDests = true;
 
-              const handleFileClick = () => {
-                const targetSlotIdx = row.statuses.findIndex(s => s.handle);
-                const slotIdx = targetSlotIdx !== -1 ? targetSlotIdx : 0;
-                const s = row.statuses[slotIdx];
-                openDiffTab(row.oFile, s ? s.file : null, slotIdx);
-              };
+               if (!row.oFile) {
+                   fileColor = '#eab308';
+                   isMissingInOrigin = true;
+               } else {
+                   hasDiff = row.statuses.some(s => s.status === 'different');
+                   isMissingInAllDests = row.statuses.every(s => s.status === 'missing');
+                   if (hasDiff) fileColor = '#ef4444';
+                   else if (isMissingInAllDests) fileColor = 'var(--accent-primary)';
+                   else fileColor = '#22c55e';
+                }
 
-              return (
-                <div key={'file-'+row.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `4px 1rem 4px ${row.depth * 1.5 + 2.5}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', height: '36px', boxSizing: 'border-box' }}>
-                  
-                  <div 
-                    onClick={handleFileClick}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      fontSize: '0.75rem', 
-                      color: fileColor, 
-                      fontWeight: '500',
-                      cursor: 'pointer',
-                      textDecoration: 'underline decoration-transparent hover:decoration-current transition-colors'
-                    }}
-                    data-tooltip="Ver comparación/diferencias de este archivo"
-                  >
-                    <span className="file-icon" style={{fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#9ca3af'}}>insert_drive_file</span></span> {row.name}
+               const handleFileClick = () => {
+                 const targetSlotIdx = row.statuses.findIndex(s => s.handle);
+                 const slotIdx = targetSlotIdx !== -1 ? targetSlotIdx : 0;
+                 const s = row.statuses[slotIdx];
+                 openDiffTab(row.oFile, s ? s.file : null, slotIdx);
+               };
+
+               return (
+                 <div key={'file-'+row.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `4px 1rem 4px ${row.depth * 1.5 + 2.5}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', height: '36px', boxSizing: 'border-box' }}>
+                   
+                   <div 
+                     onClick={handleFileClick}
+                     style={{ 
+                       display: 'flex', 
+                       alignItems: 'center', 
+                       fontSize: '0.75rem', 
+                       color: fileColor, 
+                       fontWeight: '500',
+                       cursor: 'pointer',
+                       textDecoration: 'underline decoration-transparent hover:decoration-current transition-colors'
+                     }}
+                     data-tooltip={t('matrix_tooltip_view_diff')}
+                   >
+                     <span className="file-icon" style={{fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#9ca3af'}}>insert_drive_file</span></span> {row.name}
+                   </div>
+
+                   <div style={{display: 'flex', gap: '15px'}}>
+                     {row.statuses.map((s, i) => {
+                       const isMissingDest = s.status === 'missing' && !isMissingInOrigin;
+                       // buildMatrix sometimes assigns 'different' to files missing in origin, so we isolate the logic:
+                       const isMissingOrig = isMissingInOrigin && s.file;
+                       const isDiff = s.status === 'different' && !isMissingInOrigin;
+                       const isIdentical = s.status === 'identical';
+
+                       return (
+                         <div key={i} style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                             {isDiff && s.diffStats && (
+                                <span 
+                                    style={{ 
+                                        fontSize: '10px', 
+                                        fontWeight: 'bold', 
+                                        color: '#10b981', 
+                                        backgroundColor: 'rgba(16, 185, 129, 0.1)', 
+                                        padding: '2px 6px', 
+                                        borderRadius: '4px',
+                                        marginRight: '6px'
+                                    }}
+                                    data-tooltip={t('matrix_tooltip_diff_stats')}
+                                >
+                                    +{s.diffStats.added} -{s.diffStats.deleted}
+                                </span>
+                             )}
+                             {isMissingOrig && <span style={{fontSize: '0.75rem', color: '#eab308', fontWeight: 'bold'}}>{t('matrix_missing_in_origin')}</span>}
+                             {isMissingDest && <span style={{fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 'bold'}}>{t('matrix_missing_in_dest')}</span>}
+                            
+                             <div style={{display: 'flex', gap: '4px'}}>
+                               {isMissingDest && (
+                                   <>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip={t('matrix_tooltip_delete_from_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, null, i)} data-tooltip={t('matrix_tooltip_view_comparison')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip={t('matrix_tooltip_copy_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
+                                   </>
+                               )}
+                               {isDiff && (
+                                   <>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip={t('matrix_tooltip_delete_from_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip={t('matrix_tooltip_delete_from_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip={t('matrix_tooltip_copy_from_dest_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip={t('matrix_tooltip_view_differences')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip={t('matrix_tooltip_copy_from_origin_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
+                                   </>
+                               )}
+                               {isMissingOrig && (
+                                   <>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip={t('matrix_tooltip_delete_from_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip={t('matrix_tooltip_copy_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(null, s.file, i)} data-tooltip={t('matrix_tooltip_view_comparison')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                   </>
+                               )}
+                               {isIdentical && (
+                                   <>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip={t('matrix_tooltip_delete_from_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip={t('matrix_tooltip_delete_from_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                     <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip={t('matrix_tooltip_view_file')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
+                                   </>
+                               )}
+                             </div>
+                         </div>
+                       );
+                     })}
+                   </div>
                   </div>
-
-                  <div style={{display: 'flex', gap: '15px'}}>
-                    {row.statuses.map((s, i) => {
-                      const isMissingDest = s.status === 'missing' && !isMissingInOrigin;
-                      // buildMatrix sometimes assigns 'different' to files missing in origin, so we isolate the logic:
-                      const isMissingOrig = isMissingInOrigin && s.file;
-                      const isDiff = s.status === 'different' && !isMissingInOrigin;
-                      const isIdentical = s.status === 'identical';
-
-                      return (
-                        <div key={i} style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
-                            {isDiff && s.diffStats && (
-                               <span 
-                                   style={{ 
-                                       fontSize: '10px', 
-                                       fontWeight: 'bold', 
-                                       color: '#10b981', 
-                                       backgroundColor: 'rgba(16, 185, 129, 0.1)', 
-                                       padding: '2px 6px', 
-                                       borderRadius: '4px',
-                                       marginRight: '6px'
-                                   }}
-                                   data-tooltip="Líneas modificadas (Añadidas / Eliminadas)"
-                               >
-                                   +{s.diffStats.added} -{s.diffStats.deleted}
-                               </span>
-                            )}
-                            {isMissingOrig && <span style={{fontSize: '0.75rem', color: '#eab308', fontWeight: 'bold'}}>Falta en Origen</span>}
-                            {isMissingDest && <span style={{fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 'bold'}}>Falta en Destino</span>}
-                           
-                            <div style={{display: 'flex', gap: '4px'}}>
-                              {isMissingDest && (
-                                  <>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, null, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
-                                  </>
-                              )}
-                              {isDiff && (
-                                  <>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar de destino a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Diferencias"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip="Copiar de origen a destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
-                                  </>
-                              )}
-                              {isMissingOrig && (
-                                  <>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip="Copiar a origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(null, s.file, i)} data-tooltip="Ver Comparación"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
-                                  </>
-                              )}
-                              {isIdentical && (
-                                  <>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(originHandle, row.path, true)} data-tooltip="Eliminar del origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip="Eliminar del destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                                    <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip="Ver Archivo"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
-                                  </>
-                              )}
-                            </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                </div>
-              );
+                );
                 })}
               </div>
             </div>
+            <NgacAdBanner position="Matrix" />
           </div>
         </div>
       </div>

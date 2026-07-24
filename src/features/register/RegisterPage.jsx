@@ -31,11 +31,8 @@ export const RegisterPage = () => {
         addToast('Error al registrar la licencia', 'error');
       }
     } catch (err) {
-      console.warn('Sentinel-NGAC no disponible para registro, usando local:', err.message);
-      // Fallback local
-      const mockKey = "PRO-ANTIGRAVITY-2026";
-      await verifyLicense(mockKey);
-      addToast('Registro simulado completo (Modo Local Offline)', 'success');
+      console.error('Error de registro en Sentinel-NGAC:', err.message);
+      addToast(err.message || 'Error al registrar en Sentinel-NGAC', 'error');
     } finally {
       setLoading(false);
     }

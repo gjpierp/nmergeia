@@ -258,7 +258,7 @@ export const useMatrixProcessor = () => {
           actualTab = [...tabs].reverse().find(t => t.type === 'matrix');
       }
       const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
-      const currentDestSlots = actualTab ? actualTab.destSlots : destSlots;
+      const currentDestSlots = actualTab ? (actualTab.processedDestSlots || actualTab.destSlots) : destSlots;
       
       let originalTxt = '';
       let modifiedTxt = '';
@@ -423,11 +423,17 @@ export const useMatrixProcessor = () => {
       const isToDest = direction === 'to_dest';
       if (!window.confirm(`¿Seguro que quieres copiar TODA la carpeta "${folderPath}" hacia ${isToDest ? 'el destino' : 'el origen'}?`)) return;
 
+      const actualTab = tabs.find(t => t.id === activeTab && t.type === 'matrix');
+      const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
+      const currentProcessedOrigin = actualTab ? (actualTab.processedOrigin || []) : (processedOrigin || []);
+      const currentProcessedDestSlots = actualTab ? (actualTab.processedDestSlots || []) : (processedDestSlots || []);
+
       if (isToDest) {
-         const filesToTransfer = processedOrigin.filter(f => getRelativePath(f.webkitRelativePath, originHandle.name).startsWith(folderPath + '/'));
+         if (!currentOriginHandle) return;
+         const filesToTransfer = currentProcessedOrigin.filter(f => getRelativePath(f.webkitRelativePath, currentOriginHandle.name).startsWith(folderPath + '/'));
          for (const f of filesToTransfer) {
-             const relPath = getRelativePath(f.webkitRelativePath, originHandle.name);
-             for (const slot of processedDestSlots) {
+             const relPath = getRelativePath(f.webkitRelativePath, currentOriginHandle.name);
+             for (const slot of currentProcessedDestSlots) {
                  if (slot.handle && slot.handle.type !== 'files') {
                      await handleTransfer(f, slot.handle, relPath, true);
                  }
@@ -435,8 +441,8 @@ export const useMatrixProcessor = () => {
          }
       } else {
          const filesToTransfer = [];
-         processedDestSlots.forEach(slot => {
-             if (slot.files) {
+         currentProcessedDestSlots.forEach(slot => {
+             if (slot.files && slot.handle) {
                  slot.files.forEach(f => {
                      const relPath = getRelativePath(f.webkitRelativePath, slot.handle.name);
                      if (relPath.startsWith(folderPath + '/')) {
@@ -446,8 +452,8 @@ export const useMatrixProcessor = () => {
              }
          });
          for (const item of filesToTransfer) {
-             if (originHandle) {
-                 await handleTransfer(item.file, originHandle, item.relPath, true);
+             if (currentOriginHandle) {
+                 await handleTransfer(item.file, currentOriginHandle, item.relPath, true);
              }
          }
       }

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { NgacService } from '../../shared/lib/NgacService.js';
 
 export const LoginPage = () => {
-  const { setActiveTab, addToast } = useAppStore();
+  const { t } = useTranslation();
+  const { setActiveTab, addToast, setUserSession } = useAppStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -11,26 +13,20 @@ export const LoginPage = () => {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      addToast('Por favor introduce correo y contraseña', 'error');
+      addToast(t('login_error_missing_credentials'), 'error');
       return;
     }
     setLoading(true);
     try {
       // Intentar login con Sentinel-NGAC
       const session = await NgacService.loginUser(email, password);
-      localStorage.setItem('nmerge_user_session', JSON.stringify(session));
-      addToast('Sesión iniciada con Sentinel-NGAC con éxito', 'success');
+      setUserSession(session);
+      addToast(t('login_success_ngac'), 'success');
       setActiveTab('main');
     } catch (err) {
-      // Fallback para desarrollo offline local
-      console.warn('Sentinel-NGAC no disponible, usando login simulado local:', err.message);
-      localStorage.setItem('nmerge_user_session', JSON.stringify({ 
-        email, 
-        method: 'local-fallback', 
-        roles: email.includes('admin') ? ['ROLE_ADMINISTRADOR'] : ['ROLE_INVITADO'] 
-      }));
-      addToast('Sesión iniciada (Modo Local Offline)', 'success');
-      setActiveTab('main');
+      // Remover mock y mostrar el error devuelto por Sentinel-NGAC
+      console.error('Error al iniciar sesión en Sentinel-NGAC:', err);
+      addToast(err.message || t('login_error_missing_credentials'), 'error');
     } finally {
       setLoading(false);
     }
@@ -38,11 +34,11 @@ export const LoginPage = () => {
 
   const handleSocialLogin = (provider) => {
     setLoading(true);
-    addToast(`Conectando con ${provider}...`, 'info');
+    addToast(t('login_connecting_provider').replace('{provider}', provider), 'info');
     setTimeout(() => {
       setLoading(false);
       localStorage.setItem('nmerge_user_session', JSON.stringify({ email: `user@${provider.toLowerCase()}.com`, method: provider }));
-      addToast(`Sesión iniciada con ${provider}`, 'success');
+      addToast(t('login_success_provider').replace('{provider}', provider), 'success');
       setActiveTab('main');
     }, 1200);
   };
@@ -71,16 +67,16 @@ export const LoginPage = () => {
         <div style={{ textAlign: 'center', marginBottom: '25px' }}>
           <h2 style={{ fontSize: '1.8rem', fontWeight: '800', margin: '0 0 8px 0', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             <span className="material-symbols-rounded" style={{ color: 'var(--accent-primary)', fontSize: '2rem' }}>account_circle</span>
-            Iniciar Sesión
+            {t('login_title')}
           </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>Accede a tu cuenta de NMergeIA</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>{t('login_subtitle')}</p>
         </div>
 
         {/* Email Form */}
         <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
           <input 
             type="email" 
-            placeholder="Correo Electrónico" 
+            placeholder={t('login_placeholder_email')} 
             value={email} 
             onChange={(e) => setEmail(e.target.value)}
             className="input-field"
@@ -90,7 +86,7 @@ export const LoginPage = () => {
           />
           <input 
             type="password" 
-            placeholder="Contraseña" 
+            placeholder={t('login_placeholder_password')} 
             value={password} 
             onChange={(e) => setPassword(e.target.value)}
             className="input-field"
@@ -105,13 +101,13 @@ export const LoginPage = () => {
             disabled={loading}
             style={{ height: '38px', fontSize: '0.85rem', fontWeight: '600', marginTop: '5px' }}
           >
-            {loading ? 'Cargando...' : 'Entrar con correo'}
+            {loading ? t('login_btn_loading') : t('login_btn_email')}
           </button>
         </form>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '20px' }}>
           <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-          <span>O INICIAR SESIÓN CON</span>
+          <span>{t('login_divider_text')}</span>
           <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
         </div>
 
@@ -124,7 +120,7 @@ export const LoginPage = () => {
             style={socialBtnStyle}
           >
             <span style={{ fontWeight: 'bold', color: '#ea4335', marginRight: '8px', fontSize: '1.1rem' }}>G</span>
-            Continuar con Google
+            {t('login_btn_google')}
           </button>
           
           <button 
@@ -134,7 +130,7 @@ export const LoginPage = () => {
             style={socialBtnStyle}
           >
             <span style={{ fontWeight: 'bold', color: '#1877f2', marginRight: '8px', fontSize: '1.1rem' }}>f</span>
-            Continuar con Facebook
+            {t('login_btn_facebook')}
           </button>
 
           <button 
@@ -144,18 +140,18 @@ export const LoginPage = () => {
             style={socialBtnStyle}
           >
             <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '8px', color: 'var(--text-primary)' }}>code</span>
-            Continuar con GitHub
+            {t('login_btn_github')}
           </button>
         </div>
 
         {/* Bottom Switch Links */}
         <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          ¿No tienes una cuenta?{' '}
+          {t('login_no_account')}{' '}
           <span 
             onClick={() => setActiveTab('register')}
             style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: '600' }}
           >
-            Regístrate aquí
+            {t('login_register_link')}
           </span>
         </div>
       </div>

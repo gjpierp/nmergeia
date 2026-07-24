@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../../../shared/lib/apiClient.js';
 import { useAppStore } from '../../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 
 export const FiltersPanel = ({ openDiffTab, processFiles }) => {
+  const { t } = useTranslation();
   const sessionFilterConfig = useAppStore(s => s.sessionFilterConfig);
   const setSessionFilterConfig = useAppStore(s => s.setSessionFilterConfig);
   const addToast = useAppStore(s => s.addToast);
@@ -83,14 +85,14 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
         localStorage.setItem(`nmergeia_filters_${userSession.email}`, serialized);
       }
 
-      addToast("Filtros actualizados con éxito", "success");
+      addToast(t('toast_filters_updated'), "success");
       
       // Actualizar la comparación de directorios en caliente automáticamente
       if (processFiles) {
         await processFiles(true);
       }
     } catch (e) {
-      addToast("Error al guardar los filtros", "error");
+      addToast(t('toast_save_filters_error'), "error");
     }
   };
 
@@ -178,26 +180,26 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
         localStorage.setItem(`nmergeia_filters_${userSession.email}`, rawText);
       }
 
-      addToast("Filtros de texto plano guardados", "success");
+      addToast(t('toast_raw_filters_saved'), "success");
       if (processFiles) {
         await processFiles(true);
       }
     } catch (e) {
-      addToast("Error al guardar texto plano", "error");
+      addToast(t('toast_raw_filters_error'), "error");
     }
   };
 
   return (
     <div className="main-screen" style={{ padding: '20px', fontFamily: '"Outfit", sans-serif' }}>
       <h2 className="main-screen-title" style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-primary)' }}>
-        Filtros de Archivos
+        {t('filters_title')}
       </h2>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
         
         {/* Panel Izquierdo: Gestión de Reglas Activas */}
         <div className="section-card config-card" style={{ padding: '25px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)' }}>
-          <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: '700' }}>Gestión de Reglas Activas</h3>
+          <h3 style={{ marginBottom: '15px', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: '700' }}>{t('active_rules_management')}</h3>
           
           {/* Formulario para añadir nueva regla */}
           <form onSubmit={handleAddRule} style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -209,8 +211,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
               className="input-field"
               style={{ width: '120px', padding: '8px 12px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '8px', height: '40px', fontSize: '0.85rem' }}
             >
-              <option value="exclude">Excluir (-)</option>
-              <option value="include">Incluir (+)</option>
+              <option value="exclude">{t('exclude_minus')}</option>
+              <option value="include">{t('include_plus')}</option>
             </select>
 
             {/* Destino */}
@@ -220,14 +222,14 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
               className="input-field"
               style={{ width: '150px', padding: '8px 12px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '8px', height: '40px', fontSize: '0.85rem' }}
             >
-              <option value="file">Aplica a: Archivo</option>
-              <option value="directory">Aplica a: Carpeta</option>
+              <option value="file">{t('apply_to_file')}</option>
+              <option value="directory">{t('apply_to_directory')}</option>
             </select>
 
             {/* Expresión */}
             <input
               type="text"
-              placeholder={patternTarget === 'directory' ? "Ejemplo: node_modules, temp, vendor" : "Ejemplo: *.log, .env, config.json"}
+              placeholder={patternTarget === 'directory' ? t('placeholder_dir_example') : t('placeholder_file_example')}
               value={newPattern}
               onChange={(e) => setNewPattern(e.target.value)}
               className="input-field"
@@ -235,7 +237,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
             />
             
             <button type="submit" className="btn primary-btn" style={{ padding: '0 16px', height: '40px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 'bold' }}>
-              Añadir Regla
+              {t('btn_add_rule')}
             </button>
           </form>
 
@@ -244,7 +246,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
             {activeRules.length === 0 ? (
               <div style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', textAlign: 'center', padding: '40px 0', background: 'var(--bg-primary)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
                 <span className="material-symbols-rounded" style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px', color: 'var(--text-tertiary)' }}>filter_list_off</span>
-                No hay reglas de filtrado activas.
+                {t('no_active_rules')}
               </div>
             ) : (
               activeRules.map((rule) => {
@@ -273,8 +275,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                         className="input-field"
                         style={{ width: '90px', padding: '4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '6px', height: '30px', fontSize: '0.75rem' }}
                       >
-                        <option value="exclude">Excluir</option>
-                        <option value="include">Incluir</option>
+                        <option value="exclude">{t('exclude_label')}</option>
+                        <option value="include">{t('include_label')}</option>
                       </select>
 
                       <select
@@ -283,8 +285,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                         className="input-field"
                         style={{ width: '100px', padding: '4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '6px', height: '30px', fontSize: '0.75rem' }}
                       >
-                        <option value="file">Archivo</option>
-                        <option value="directory">Carpeta</option>
+                        <option value="file">{t('file_label')}</option>
+                        <option value="directory">{t('directory_label')}</option>
                       </select>
 
                       <input
@@ -301,7 +303,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                           className="btn clear-btn small-btn"
                           onClick={() => handleSaveEditRule(rule.id)}
                           style={{ color: '#10b981', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
-                          data-tooltip="Guardar cambios"
+                          data-tooltip={t('tooltip_save_changes')}
                         >
                           <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>check</span>
                         </button>
@@ -310,7 +312,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                           className="btn clear-btn small-btn"
                           onClick={() => setEditingRuleId(null)}
                           style={{ color: 'var(--text-secondary)', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
-                          data-tooltip="Cancelar edición"
+                          data-tooltip={t('tooltip_cancel_edit')}
                         >
                           <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>close</span>
                         </button>
@@ -345,21 +347,21 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                           color: 'white',
                           backgroundColor: rule.type === 'include' ? '#10b981' : '#ef4444'
                         }}
-                      >
-                        {rule.type === 'include' ? 'INCLUIR' : 'EXCLUIR'}
-                      </span>
-                      <span
-                        style={{
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontSize: '9px',
-                          fontWeight: 'bold',
-                          color: 'var(--text-secondary)',
-                          backgroundColor: 'var(--bg-primary)'
-                        }}
-                      >
-                        {isDir ? '📁 CARPETA' : '📄 ARCHIVO'}
-                      </span>
+                       >
+                         {rule.type === 'include' ? t('include_label') : t('exclude_label')}
+                       </span>
+                       <span
+                         style={{
+                           padding: '2px 6px',
+                           borderRadius: '4px',
+                           fontSize: '9px',
+                           fontWeight: 'bold',
+                           color: 'var(--text-secondary)',
+                           backgroundColor: 'var(--bg-primary)'
+                         }}
+                       >
+                         {isDir ? `📁 ${t('directory_label')}` : `📄 ${t('file_label')}`}
+                       </span>
                       <code style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{rule.pattern}</code>
                     </div>
                     <div style={{ display: 'flex', gap: '6px' }}>
@@ -368,7 +370,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                         className="btn clear-btn small-btn"
                         onClick={() => startEditRule(rule)}
                         style={{ color: '#3b82f6', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
-                        data-tooltip="Editar regla"
+                        data-tooltip={t('tooltip_edit_rule')}
                       >
                         <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>edit</span>
                       </button>
@@ -377,7 +379,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                         className="btn clear-btn small-btn"
                         onClick={() => handleDeleteRule(rule.id)}
                         style={{ color: '#ef4444', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
-                        data-tooltip="Eliminar regla"
+                        data-tooltip={t('tooltip_delete_rule')}
                       >
                         <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>delete</span>
                       </button>
@@ -391,9 +393,9 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
 
         {/* Panel Derecho: Edición Avanzada (Text Editor) */}
         <div className="section-card config-card" style={{ padding: '25px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)', display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <h3 style={{ marginBottom: '10px', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: '700' }}>Edición Avanzada (filtro.txt)</h3>
+          <h3 style={{ marginBottom: '10px', color: 'var(--text-primary)', fontSize: '1.2rem', fontWeight: '700' }}>{t('advanced_edition_title')}</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '15px', lineHeight: '1.4' }}>
-            Escribe directamente tus patrones de exclusión o inclusión. Las líneas que empiezan por <code>+</code> indican archivos incluidos, y <code>-</code> indican archivos excluidos. Las líneas con <code>//</code> o vacías se consideran comentarios.
+            {t('advanced_desc_write')} <code>+</code> {t('advanced_desc_include')} <code>-</code> {t('advanced_desc_exclude')} <code>//</code> {t('advanced_desc_comment')}
           </p>
           
           <textarea
@@ -416,7 +418,7 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
               lineHeight: '1.5',
               boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3)'
             }}
-            placeholder="// Escribe tus reglas aquí, una por línea. Ejemplo:&#10;- *.log&#10;- temp/&#10;+ .env"
+            placeholder={t('placeholder_raw_text')}
           />
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '15px', justifyContent: 'flex-end' }}>
@@ -426,20 +428,20 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                 apiClient.readFilter('filtro.txt')
                   .then(txt => {
                     setRawText(txt);
-                    addToast("Filtros recargados desde el archivo", "info");
+                    addToast(t('toast_filters_reloaded'), "info");
                   })
                   .catch(e => console.error("Error reading filter:", e));
               }}
               style={{ height: '40px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 'bold' }}
             >
-              Recargar
+              {t('btn_reload')}
             </button>
             <button
               className="btn primary-btn"
               onClick={handleSaveRawText}
               style={{ height: '40px', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 'bold', padding: '0 20px' }}
             >
-              Guardar Cambios
+              {t('btn_save_changes')}
             </button>
           </div>
         </div>

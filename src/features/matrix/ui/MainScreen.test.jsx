@@ -37,8 +37,8 @@ describe('MainScreen Component - Drag & Drop and UI tests', () => {
 
   it('renders the initial layout with placeholders', () => {
     render(<MainScreen {...defaultProps} />);
-    expect(screen.getByText('Configuración de Comparación')).toBeInTheDocument();
-    expect(screen.getAllByDisplayValue('Ninguna selección o arrastra carpeta aquí...')).toHaveLength(2);
+    expect(screen.getByText(/comparison configuration|configuración de comparación/i)).toBeInTheDocument();
+    expect(screen.getAllByDisplayValue(/no selection|ninguna selección/i)).toHaveLength(2);
   });
 
   it('calls pickers on button clicks', () => {
@@ -66,7 +66,7 @@ describe('MainScreen Component - Drag & Drop and UI tests', () => {
     const { container } = render(<MainScreen {...defaultProps} />);
     
     // Find the drag area for Origin
-    const originRow = screen.getByText('Origen:').closest('.config-row');
+    const originRow = screen.getByText(/origin|origen/i).closest('.config-row');
     expect(originRow).not.toHaveClass('drag-over');
 
     // Simulate dragOver
@@ -104,7 +104,7 @@ describe('MainScreen Component - Drag & Drop and UI tests', () => {
   it('handles Drag & Drop over Dest slots', async () => {
     render(<MainScreen {...defaultProps} />);
     
-    const destRow = screen.getByText('Destino:').closest('.config-row');
+    const destRow = screen.getByText(/destination|destino/i).closest('.config-row');
     expect(destRow).not.toHaveClass('drag-over');
 
     // Simulate dragOver

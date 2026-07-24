@@ -38,23 +38,24 @@ describe('FiltersPanel Component', () => {
     useAppStore.setState({ sessionFilterConfig: '- node_modules/\n- config.json' });
     render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
 
-    expect(screen.getByText('📁 CARPETA')).toBeInTheDocument();
-    expect(screen.getByText('📄 ARCHIVO')).toBeInTheDocument();
+    // Buscar con selectores de tag span para evitar colisiones con las opciones del select
+    expect(screen.getByText(/carpeta|folder/i, { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByText(/archivo|file/i, { selector: 'span' })).toBeInTheDocument();
   });
 
   it('adds rule and appends trailing slash if target is directory', async () => {
-    render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
+    const { container } = render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
 
     // Seleccionar Tipo: Carpeta
-    const targetSelect = screen.getByDisplayValue('Aplica a: Archivo');
+    const targetSelect = screen.getByDisplayValue(/aplica a: archivo|applies to: file/i);
     fireEvent.change(targetSelect, { target: { value: 'directory' } });
 
     // Ingresar patrón sin barra
-    const input = screen.getByPlaceholderText(/Ejemplo: node_modules/i);
+    const input = container.querySelector('input.input-field[type="text"]');
     fireEvent.change(input, { target: { value: 'dist' } });
 
     // Enviar formulario
-    fireEvent.click(screen.getByText('Añadir Regla'));
+    fireEvent.click(screen.getByRole('button', { name: /añadir regla|add rule/i }));
 
     // Esperar guardado y re-comparación en caliente
     await waitFor(() => {

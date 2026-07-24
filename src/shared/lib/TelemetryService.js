@@ -35,10 +35,19 @@ class TelemetryService {
   measureExecutionTime(operationName, asyncFunc) {
     return async (...args) => {
       const start = performance.now();
+      const startMemory = performance.memory ? performance.memory.usedJSHeapSize : null;
       try {
         const result = await asyncFunc(...args);
         const duration = performance.now() - start;
-        this.logEvent('performance_metric', { operation: operationName, durationMs: duration });
+        const endMemory = performance.memory ? performance.memory.usedJSHeapSize : null;
+        const memoryDelta = (startMemory !== null && endMemory !== null) ? endMemory - startMemory : null;
+        
+        this.logEvent('performance_metric', { 
+            operation: operationName, 
+            durationMs: duration,
+            memoryDeltaBytes: memoryDelta,
+            endMemoryBytes: endMemory
+        });
         return result;
       } catch (error) {
         const duration = performance.now() - start;
@@ -63,7 +72,7 @@ class TelemetryService {
         // En un entorno de producción, enviaríamos un POST real (ej. Datadog / Grafana Loki)
         // Simulando el envío en entorno local para cumplir con Phase 5 (SRE) sin requerir backend real
         if (process.env.NODE_ENV !== 'test') {
-           console.log(`[Telemetry Flush] Sending ${eventsToSend.length} events...`);
+           console.info(`[Telemetry Flush] Sending ${eventsToSend.length} events...`);
         }
     } catch (e) {
         // En caso de fallo, intentamos recuperar los eventos

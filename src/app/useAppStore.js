@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import i18n from '../i18n.js';
 
 /**
  * Helper to support React's functional state updates e.g. setTabs(prev => [...prev, newTab])
@@ -79,4 +80,51 @@ export const useAppStore = create((set) => ({
 
   matrixScrollTop: 0,
   setMatrixScrollTop: (val) => setVal(set, 'matrixScrollTop', val),
+
+  userSession: typeof window !== 'undefined'
+    ? (() => {
+        try {
+          const s = localStorage.getItem('nmerge_user_session');
+          return s && s !== 'undefined' ? JSON.parse(s) : null;
+        } catch (_) {
+          return null;
+        }
+      })()
+    : null,
+  setUserSession: (session) => set(() => {
+    if (typeof window !== 'undefined') {
+      if (session) {
+        localStorage.setItem('nmerge_user_session', JSON.stringify(session));
+        const userFilters = localStorage.getItem(`nmergeia_filters_${session.email}`);
+        return { 
+          userSession: session, 
+          sessionFilterConfig: userFilters 
+        };
+      } else {
+        localStorage.removeItem('nmerge_user_session');
+        return { 
+          userSession: null, 
+          sessionFilterConfig: null 
+        };
+      }
+    }
+    return { userSession: session };
+  }),
+
+  appLanguage: typeof window !== 'undefined' 
+    ? (localStorage.getItem('nmergeia_language') || (() => {
+        const browserLang = navigator.language.split('-')[0];
+        const supported = ['es', 'en', 'pt', 'fr', 'de', 'zh', 'ja'];
+        return supported.includes(browserLang) ? browserLang : 'es';
+      })())
+    : 'es',
+  setAppLanguage: (lang) => set((state) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nmergeia_language', lang);
+      i18n.changeLanguage(lang);
+    }
+    return { appLanguage: lang };
+  }),
 }));
+
+

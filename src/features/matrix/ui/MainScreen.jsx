@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const MainScreen = ({
   originPath,
@@ -15,6 +16,7 @@ export const MainScreen = ({
   setOriginDirect,
   setDestDirect
 }) => {
+  const { t } = useTranslation();
   const [isDraggingOrigin, setIsDraggingOrigin] = useState(false);
   const [draggingDestSlot, setDraggingDestSlot] = useState(null);
 
@@ -41,6 +43,8 @@ export const MainScreen = ({
         } catch (err) {
           console.error("Error al obtener handle de origen:", err);
         }
+      } else {
+        alert("La selección de carpetas no está soportada en este navegador (ej. Firefox o conexión HTTP insegura). Se requiere Chrome/Edge/Chromium sobre HTTPS o Localhost para usar el sistema de archivos local.");
       }
     }
   };
@@ -68,16 +72,18 @@ export const MainScreen = ({
         } catch (err) {
           console.error("Error al obtener handle de destino:", err);
         }
+      } else {
+        alert("La selección de carpetas no está soportada en este navegador (ej. Firefox o conexión HTTP insegura). Se requiere Chrome/Edge/Chromium sobre HTTPS o Localhost para usar el sistema de archivos local.");
       }
     }
   };
 
   return (
     <div className="main-screen">
-      <h2 className="main-screen-title">Configuración de Comparación</h2>
+      <h2 className="main-screen-title">{t('compare_config_title')}</h2>
 
       <div className="section-card config-card">
-        <h3 className="config-card-title">Seleccionar Carpetas</h3>
+        <h3 className="config-card-title">{t('select_folders_title')}</h3>
 
         <div 
           className={`config-row ${isDraggingOrigin ? 'drag-over' : ''}`}
@@ -85,19 +91,19 @@ export const MainScreen = ({
           onDragLeave={handleDragLeaveOrigin}
           onDrop={handleDropOrigin}
           style={{ cursor: 'pointer' }}
-          title="Arrastra una carpeta o archivo aquí"
+          title={t('drag_drop_title')}
         >
-          <label className="config-label">Origen:</label>
+          <label className="config-label">{t('label_origin')}</label>
           <input
             type="text"
             readOnly
-            value={originPath || 'Ninguna selección o arrastra carpeta aquí...'}
+            value={originPath || t('drag_drop_placeholder')}
             className="config-input-readonly"
           />
-          <button className="btn secondary-btn config-action-btn" onClick={() => openOrigin('folder')} data-tooltip="Seleccionar Carpeta">
+          <button className="btn secondary-btn config-action-btn" onClick={() => openOrigin('folder')} data-tooltip={t('tooltip_select_folder')}>
             <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>folder</span>
           </button>
-          <button className="btn secondary-btn config-action-btn" onClick={() => openOrigin('files')} data-tooltip="Seleccionar Archivo(s)">
+          <button className="btn secondary-btn config-action-btn" onClick={() => openOrigin('files')} data-tooltip={t('tooltip_select_files')}>
             <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>insert_drive_file</span>
           </button>
           {destSlots.length > 1 && (
@@ -117,25 +123,25 @@ export const MainScreen = ({
             onDragLeave={handleDragLeaveDest}
             onDrop={(e) => handleDropDest(e, slot.id)}
             style={{ cursor: 'pointer' }}
-            title="Arrastra una carpeta o archivo aquí"
+            title={t('drag_drop_title')}
           >
             <label className="config-label">
-              Destino{i === 0 ? '' : ` ${i + 1}`}:
+              {t('label_destination')}{i === 0 ? '' : ` ${i + 1}`}:
             </label>
             <input
               type="text"
               readOnly
-              value={slot.path || 'Ninguna selección o arrastra carpeta aquí...'}
+              value={slot.path || t('drag_drop_placeholder')}
               className="config-input-readonly"
             />
-            <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'folder')} data-tooltip="Seleccionar Carpeta">
+            <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'folder')} data-tooltip={t('tooltip_select_folder')}>
               <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>folder</span>
             </button>
-            <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'files')} data-tooltip="Seleccionar Archivo(s)">
+            <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'files')} data-tooltip={t('tooltip_select_files')}>
               <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>insert_drive_file</span>
             </button>
             {destSlots.length > 1 && (
-              <button className="btn clear-btn config-action-btn" onClick={() => removeDestSlot(slot.id)} style={{ border: '1px solid #ef4444', color: '#ef4444' }} data-tooltip="Quitar destino">
+              <button className="btn clear-btn config-action-btn" onClick={() => removeDestSlot(slot.id)} style={{ border: '1px solid #ef4444', color: '#ef4444' }} data-tooltip={t('tooltip_remove_destination')}>
                 <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>close</span>
               </button>
             )}
@@ -144,21 +150,20 @@ export const MainScreen = ({
       </div>
 
       <div className="config-action-bar">
-        <button className="btn clear-btn" data-tooltip="Limpiar todo" onClick={handleClear} style={{ fontSize: '1.2rem', padding: '0.5rem 1rem', border: '1px solid #ef4444', color: '#ef4444' }}>
+        <button className="btn clear-btn" data-tooltip={t('tooltip_clear_all')} onClick={handleClear} style={{ border: '1px solid #ef4444', color: '#ef4444' }}>
           <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>cleaning_services</span>
         </button>
-        <button className="btn secondary-btn" data-tooltip="Añadir otro destino" onClick={addDestSlot} style={{ fontSize: '1.2rem', padding: '0.5rem 1rem' }}>
+        <button className="btn secondary-btn" data-tooltip={t('tooltip_add_destination')} onClick={addDestSlot}>
           <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>add</span>
         </button>
-        <button className="btn secondary-btn" data-tooltip="Guardar en Historial" onClick={saveCurrentProfile} style={{ fontSize: '1.2rem', padding: '0.5rem 1rem' }}>
+        <button className="btn secondary-btn" data-tooltip={t('tooltip_save_profile')} onClick={saveCurrentProfile}>
           <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>save</span>
         </button>
         <button
           className="btn primary-btn"
-          data-tooltip="Iniciar Comparación"
+          data-tooltip={t('tooltip_start_compare')}
           onClick={() => processFiles()}
           disabled={isProcessing || (!originHandle && destSlots.every(s => !s.handle))}
-          style={{ fontSize: '1.2rem', padding: '0.5rem 1rem' }}
         >
           {isProcessing
             ? <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>hourglass_empty</span>

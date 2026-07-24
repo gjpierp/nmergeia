@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const HistoryScreen = ({
   savedProfiles,
@@ -7,15 +8,16 @@ export const HistoryScreen = ({
   renameProfile,
   deleteProfile
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="main-screen">
-      <h2 style={{ color: 'var(--text-primary)', marginBottom: '20px' }}>Historial de Comparaciónes Guardadas</h2>
+      <h2 style={{ color: 'var(--text-primary)', marginBottom: '20px' }}>{t('history_title')}</h2>
       <div className="section-card">
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '15px' }}>
-          Haz clic en un historial para cargar sus carpetas y filtros.
+          {t('history_subtitle')}
         </p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          {savedProfiles.length === 0 && <p style={{ color: 'var(--text-tertiary)' }}>No hay historiales guardados.</p>}
+          {savedProfiles.length === 0 && <p style={{ color: 'var(--text-tertiary)' }}>{t('no_history')}</p>}
           {savedProfiles.map(p => (
             <div
               key={p.id}
@@ -30,7 +32,7 @@ export const HistoryScreen = ({
               <button
                 className="btn secondary-btn small-btn"
                 style={{ padding: '2px 6px', fontSize: '0.75rem', marginRight: '5px' }}
-                data-tooltip="Renombrar Historial"
+                data-tooltip={t('tooltip_rename_history')}
                 onClick={async (e) => { e.stopPropagation(); await renameProfile(p); }}
               >
                 <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>edit</span>
@@ -38,7 +40,7 @@ export const HistoryScreen = ({
               <button
                 className="btn clear-btn small-btn"
                 style={{ padding: '2px 6px', fontSize: '0.75rem' }}
-                data-tooltip="Eliminar Historial"
+                data-tooltip={t('tooltip_delete_history')}
                 onClick={async (e) => { e.stopPropagation(); await deleteProfile(p); }}
               >
                 <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>delete</span>

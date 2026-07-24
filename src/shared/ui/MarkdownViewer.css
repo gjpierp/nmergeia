@@ -1,0 +1,55 @@
+.markdown-body {
+  text-align: left;
+  color: var(--text-primary, #e5e7eb);
+}
+
+.markdown-body h1, 
+.markdown-body h2, 
+.markdown-body h3, 
+.markdown-body h4, 
+.markdown-body h5 {
+  color: var(--text-h, #ffffff);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-body p, 
+.markdown-body li {
+  color: var(--text, #d1d5db);
+  margin-bottom: 1em;
+}
+
+.markdown-body a {
+  color: var(--accent-primary, #646cff);
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body pre {
+  background: var(--code-bg, #1a1b26);
+  border: 1px solid var(--border-color, #2e303a);
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.markdown-body code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: var(--mono, monospace);
+  font-size: 0.9em;
+}
+
+/* Fix for nested lists and blocks */
+.markdown-body blockquote {
+  border-left: 4px solid var(--accent-primary, #646cff);
+  margin: 1.5em 0;
+  padding-left: 1em;
+  background: var(--accent-bg, rgba(100, 108, 255, 0.1));
+  padding: 1em;
+  border-radius: 0 8px 8px 0;
+}

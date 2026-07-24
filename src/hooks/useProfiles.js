@@ -19,6 +19,9 @@ export const useProfiles = () => {
 
     const originHandle = useAppStore(s => s.originHandle);
     const destSlots = useAppStore(s => s.destSlots);
+    const userSession = useAppStore(s => s.userSession);
+
+    const getProfilesKey = () => userSession ? `savedProfiles_${userSession.email}` : 'savedProfiles';
 
     const loadProfile = async (profile) => {
         setLoadedProfileName(profile.name);
@@ -79,9 +82,10 @@ export const useProfiles = () => {
             filterContent: currentFilter
         };
 
+        const profilesKey = getProfilesKey();
         setSavedProfiles(prev => {
             const updated = [newProfile, ...prev].slice(0, 20);
-            saveHandle('savedProfiles', updated);
+            saveHandle(profilesKey, updated);
             return updated;
         });
         setLoadedProfileId(newProfile.id);
@@ -92,24 +96,34 @@ export const useProfiles = () => {
     const renameProfile = async (profile) => {
         const newName = await showModal('prompt', 'Renombrar', "Nuevo nombre para el historial:", profile.name);
         if (newName && newName !== profile.name) {
+            const profilesKey = getProfilesKey();
             setSavedProfiles(prev => {
                 const updated = prev.map(p => p.id === profile.id ? { ...p, name: newName } : p);
-                saveHandle('savedProfiles', updated);
+                saveHandle(profilesKey, updated);
                 return updated;
             });
         }
     };
 
     const deleteProfile = async (profile) => {
-        const conf = await showModal('confirm', 'Eliminar', `Seguro que quieres eliminar "${profile.name}"?`);
-        if (conf) {
+        const confirm = await showModal('confirm', 'Eliminar', `¿Estás seguro de que deseas eliminar el historial "${profile.name}"?`);
+        if (confirm) {
+            const profilesKey = getProfilesKey();
             setSavedProfiles(prev => {
                 const updated = prev.filter(p => p.id !== profile.id);
-                saveHandle('savedProfiles', updated);
+                saveHandle(profilesKey, updated);
                 return updated;
             });
+            setLoadedProfileId(null);
+            setLoadedProfileName(null);
+            addToast("Historial eliminado.", "info");
         }
     };
 
-    return { loadProfile, saveCurrentProfile, renameProfile, deleteProfile };
+    return {
+        loadProfile,
+        saveCurrentProfile,
+        renameProfile,
+        deleteProfile
+    };
 };

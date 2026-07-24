@@ -19,7 +19,7 @@ describe('MatrixView Component', () => {
     it('renders the empty state correctly when there are no files', () => {
         const tab = { processedOrigin: [], processedDestSlots: [] };
         render(<MatrixView tab={tab} />);
-        expect(screen.getByText(/No hay archivos para comparar/i)).toBeInTheDocument();
+        expect(screen.getByText(/no files to compare|no hay archivos/i)).toBeInTheDocument();
     });
 
     it('renders files from the matrix and handles search filtering', () => {

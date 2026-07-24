@@ -1,10 +1,10 @@
 /**
  * @file NgacService.js
- * @description Cliente de servicio para interactuar con Sentinel-NGAC puro.
- * Permite registrar usuarios, autenticar, gestionar roles y consultar políticas usando nodos y enlaces.
+ * @description Cliente de servicio para interactuar con Sentinel-NGAC.
+ * Permite autenticar, gestionar roles y consultar políticas usando nodos y enlaces.
  */
 
-const DEFAULT_NGAC_URL = 'https://sentinel-ngac.herokuapp.com/api/v1/admin';
+const DEFAULT_NGAC_URL = 'https://sentinel-ngac.local/api';
 
 // Obtiene la URL base configurada o por defecto
 const getNgacUrl = () => {
@@ -14,108 +14,149 @@ const getNgacUrl = () => {
   return DEFAULT_NGAC_URL;
 };
 
+// Decodifica carga útil de JWT de forma simple en frontend
+const parseJwt = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+};
+
+// Asegura obtener un token JWT activo (del usuario actual o invitado mediante login silencioso)
+const ensureToken = async (isLoggedIn) => {
+  let token = typeof window !== 'undefined' ? localStorage.getItem('nmerge_jwt_token') : null;
+  
+  // Si no está isLoggedIn o no hay token en storage, forzamos login silencioso del invitado
+  if (!isLoggedIn || !token) {
+    try {
+      const baseUrl = getNgacUrl();
+      const loginRes = await fetch(`${baseUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-app-code': 'nmergeia'
+        },
+        body: JSON.stringify({ usuario: 'invitado@nmergeia.com', contrasena: 'G3rC4t_01_##' })
+      });
+      if (loginRes.ok) {
+        const data = await loginRes.json();
+        const jwt = data.token || (data.data && data.data.token);
+        if (jwt) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('nmerge_jwt_token', jwt);
+          }
+          token = jwt;
+        }
+      }
+    } catch (e) {
+      console.warn("Error en login silencioso de invitado en Sentinel-NGAC:", e);
+    }
+  }
+  return token;
+};
+
 export const NgacService = {
   /**
-   * Registra un nuevo usuario como un nodo de tipo 'u' en Sentinel-NGAC
+   * Registra un nuevo usuario en el sistema
    */
   registerUser: async (email, password) => {
     const baseUrl = getNgacUrl();
-    
-    // 1. Crear el nodo de usuario en Sentinel
-    const userRes = await fetch(`${baseUrl}/nodos`, {
+    const res = await fetch(`${baseUrl}/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        codigo: email,
-        nombre: email.split('@')[0],
-        tipo: 'u' // tipo de nodo User
-      })
+      headers: {
+        'Content-Type': 'application/json',
+        'x-app-code': 'nmergeia'
+      },
+      body: JSON.stringify({ email: email, password: password })
     });
     
-    if (!userRes.ok) {
-      const err = await userRes.text();
-      throw new Error(err || 'Error al crear nodo de usuario en Sentinel-NGAC');
-    }
-
-    // 2. Asignar rol por defecto (ROLE_ADMINISTRADOR si contiene admin, si no ROLE_INVITADO)
-    const defaultRole = email.includes('admin') ? 'ROLE_ADMINISTRADOR' : 'ROLE_INVITADO';
-    const linkRes = await fetch(`${baseUrl}/enlaces`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        padre: defaultRole,
-        hijo: email
-      })
-    });
-
-    if (!linkRes.ok) {
-      const err = await linkRes.text();
-      throw new Error(err || 'Error al enlazar rol de usuario en Sentinel-NGAC');
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || 'Error al registrar usuario en Sentinel-NGAC');
     }
     
-    return { success: true, email, role: defaultRole };
+    return { success: true, email };
   },
 
   /**
-   * Inicia sesión del usuario buscando su nodo y roles vinculados en Sentinel-NGAC
+   * Inicia sesión del usuario conectándose al endpoint real del backend de Sentinel-NGAC
    */
   loginUser: async (email, password) => {
     const baseUrl = getNgacUrl();
-    
-    // 1. Obtener todos los nodos para validar la existencia del usuario
-    const nodesRes = await fetch(`${baseUrl}/nodos`);
-    if (!nodesRes.ok) throw new Error('Error al conectar con Sentinel-NGAC');
-    
-    const nodes = await nodesRes.json();
-    const userNode = nodes.find(n => n.CODIGO === email || n.codigo === email);
-    
-    if (!userNode) {
-      throw new Error('El usuario no existe en Sentinel-NGAC');
+    const response = await fetch(`${baseUrl}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-app-code': 'nmergeia'
+      },
+      body: JSON.stringify({ email: email, password: password })
+    });
+
+    if (!response.ok) {
+      const errMsg = await response.text();
+      throw new Error(errMsg || 'Error en las credenciales de inicio de sesión');
     }
-    
-    // 2. Obtener enlaces para extraer los roles (padres del nodo de usuario)
-    const linksRes = await fetch(`${baseUrl}/enlaces`);
-    if (!linksRes.ok) throw new Error('Error al obtener privilegios en Sentinel-NGAC');
-    
-    const links = await linksRes.json();
-    const userRoles = links
-      .filter(link => (link.HIJO === email || link.hijo === email))
-      .map(link => link.PADRE || link.padre);
-    
+
+    const data = await response.json();
+    const token = data.token || data.access_token || (data.data && data.data.token);
+
+    if (!token) {
+      throw new Error('No se recibió un token JWT válido del servidor');
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nmerge_jwt_token', token);
+    }
+
+    // Decodificar roles del JWT
+    const decoded = parseJwt(token);
+    const userRoles = decoded?.roles || decoded?.atributos || decoded?.rol || ['ROLE_REGISTRADO'];
+
     return {
       id: email,
       email: email,
-      roles: userRoles.length > 0 ? userRoles : ['ROLE_INVITADO'],
+      roles: Array.isArray(userRoles) ? userRoles : [userRoles],
+      token: token,
       method: 'sentinel-ngac'
     };
   },
 
   /**
-   * Obtiene el menú dinámico filtrado por roles de Sentinel-NGAC
+   * Obtiene el menú dinámico filtrado por roles consultando el endpoint /access-control/ngac/menu
    */
   getDynamicMenu: async (userRoles = [], isLoggedIn = false) => {
     const baseUrl = getNgacUrl();
+    const isPremium = typeof window !== 'undefined' ? !!localStorage.getItem('nmerge_license_key') : false;
+    
     try {
-      if (!isLoggedIn) {
-        // Si no está logueado, forzar estrictamente solo el menú free de usuario libre
-        return ['Comparar', 'Historial', 'Filtros'];
+      const token = await ensureToken(isLoggedIn);
+      if (!token) {
+        throw new Error("No hay token de sesión (JWT) disponible");
       }
 
-      const isNgacLocked = typeof window !== 'undefined' ? localStorage.getItem('nmergeia_ngac_locked') === 'true' : true;
-      if (!isNgacLocked) {
-        // Si no está bloqueado y está logueado, devolvemos acceso a todas las opciones de manera libre
-        return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
-      }
+      const lang = typeof window !== 'undefined' ? (localStorage.getItem('nmergeia_language') || 'es') : 'es';
 
-      const response = await fetch(`${baseUrl}/menu/context`, {
+      const response = await fetch(menuUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ atributos: userRoles })
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-app-code': 'nmergeia',
+          'Accept-Language': lang,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ contexto: 'nmergeia' })
       });
 
-      if (!response.ok) throw new Error('Error de menú dinámico');
-      const menuData = await response.json();
-      
+      if (!response.ok) throw new Error('Error al obtener menú dinámico real');
+      const resJson = await response.json();
+      const menuData = resJson.data?.tree || resJson.tree || resJson.data || resJson;
+
       // Mapear los códigos técnicos de los nodos autorizados
       const collectCodes = (items) => {
         let codes = [];
@@ -130,31 +171,46 @@ export const NgacService = {
         return codes;
       };
 
-      return collectCodes(menuData);
+      const allowed = collectCodes(menuData);
+      
+      // Aseguramos que las vistas esenciales estén disponibles siempre
+      if (!allowed.includes('Landing')) allowed.push('Landing');
+      if (!allowed.includes('Login')) allowed.push('Login');
+      if (!allowed.includes('Register')) allowed.push('Register');
+      if (!allowed.includes('Privacy')) allowed.push('Privacy');
+      if (!allowed.includes('Terms')) allowed.push('Terms');
+      if (!allowed.includes('Docs')) allowed.push('Docs');
+      if (!allowed.includes('FAQ')) allowed.push('FAQ');
+      if (!allowed.includes('PostgresInicial')) allowed.push('PostgresInicial');
+      if (!allowed.includes('PostgresBasico')) allowed.push('PostgresBasico');
+      if (!allowed.includes('PostgresMedio')) allowed.push('PostgresMedio');
+      if (!allowed.includes('PostgresAvanzado')) allowed.push('PostgresAvanzado');
+      if (!allowed.includes('PostgresExperto')) allowed.push('PostgresExperto');
+      if (!allowed.includes('Terminal')) allowed.push('Terminal');
+      
+      return allowed;
     } catch (e) {
-      console.warn("Sentinel-NGAC /menu/context falló, usando fallback local:", e.message);
-      // Fallback local basado en roles
-      if (isLoggedIn && (userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN'))) {
-        return ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
+      console.warn("Sentinel-NGAC real /menu falló, usando fallback local basado en roles:", e.message);
+      
+      // Fallback local basado en roles si falla la conexión al backend real
+      const hasPremiumAccess = userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN') || (userRoles.includes('ROLE_REGISTRADO') && isPremium);
+      if (isLoggedIn && hasPremiumAccess) {
+        return ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'Privacy', 'Terms', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       }
-      return ['Comparar', 'Historial', 'Filtros'];
+      return ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'Privacy', 'Terms', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
     }
   },
 
   /**
    * Consulta si una opción/recurso está disponible
-   * Si las opciones están liberadas (free mode), permite el acceso a todos.
    */
   checkPermission: (optionName, userRoles = []) => {
     if (typeof window !== 'undefined') {
       const isNgacLocked = localStorage.getItem('nmergeia_ngac_locked') === 'true';
       if (!isNgacLocked) {
-        // Modo liberado/abierto por defecto
         return true;
       }
     }
-    
-    // Si está bloqueado/premium, solo el rol ROLE_ADMINISTRADOR/ROLE_ADMIN tiene acceso a Ventas, Login y Licencia
     if (['Ventas', 'Login', 'Licencia'].includes(optionName)) {
       return userRoles.includes('ROLE_ADMIN') || userRoles.includes('ROLE_ADMINISTRADOR');
     }
@@ -162,79 +218,87 @@ export const NgacService = {
   },
 
   /**
-   * Configura políticas de Sentinel-NGAC directamente en la API remota
+   * Configura políticas de Sentinel-NGAC directamente en la API remota (para fines de inicialización si es requerido)
    */
   setupNgacBasePolicies: async () => {
     const baseUrl = getNgacUrl();
     try {
-      // 1. Crear Roles (como nodos User Attribute 'ua' con prefijo ROLE_)
+      // Mandar cabeceras unificadas
+      const headers = { 
+        'Content-Type': 'application/json',
+        'x-app-code': 'nmergeia'
+      };
+      
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codigo: 'ROLE_ADMINISTRADOR', nombre: 'Administrador', tipo: 'ua' })
-      });
+        headers,
+        body: JSON.stringify({ codigo: 'ROLE_ADMINISTRADOR', nombre: 'Administrador Premium', tipo: 'ua' })
+      }).catch(() => {});
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        body: JSON.stringify({ codigo: 'ROLE_REGISTRADO', nombre: 'Usuario Registrado No-Premium', tipo: 'ua' })
+      }).catch(() => {});
+      await fetch(`${baseUrl}/nodos`, {
+        method: 'POST',
+        headers,
         body: JSON.stringify({ codigo: 'ROLE_INVITADO', nombre: 'Invitado', tipo: 'ua' })
-      });
+      }).catch(() => {});
 
-      // 2. Crear Nodo Política y Nodo Raíz del dominio NMergeIA
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ codigo: 'POLITICA_NMERGEIA', nombre: 'Politica NMergeIA', tipo: 'p' })
-      });
+      }).catch(() => {});
       await fetch(`${baseUrl}/nodos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ codigo: 'NMERGEIA_ROOT', nombre: 'NMergeIA Root', tipo: 'o' })
-      });
+      }).catch(() => {});
 
-      // Enlazar Política a Nodo Raíz
       await fetch(`${baseUrl}/enlaces`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ padre: 'POLITICA_NMERGEIA', hijo: 'NMERGEIA_ROOT' })
-      });
+      }).catch(() => {});
 
-      // 3. Crear Nodos para todas las opciones de NMergeIA
-      const allOptions = ['Ventas', 'Comparar', 'Login', 'Licencia', 'Historial', 'Filtros'];
+      const allOptions = ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       for (const opt of allOptions) {
         await fetch(`${baseUrl}/nodos`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ codigo: opt, nombre: opt, tipo: 'o' })
-        });
+        }).catch(() => {});
       }
 
-      // Enlazar Nodo Raíz a todas las Opciones del Dominio
       for (const opt of allOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ padre: 'NMERGEIA_ROOT', hijo: opt })
-        });
+        }).catch(() => {});
       }
 
-      // 4. Otorgar permisos de acceso (Roles -> Opciones)
-      // El Administrador tiene acceso a todo
       for (const opt of allOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ padre: 'ROLE_ADMINISTRADOR', hijo: opt })
-        });
+        }).catch(() => {});
       }
 
-      // El Invitado solo tiene acceso a comparar, historial y filtros
-      const guestOptions = ['Comparar', 'Historial', 'Filtros'];
+      const guestOptions = ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       for (const opt of guestOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ padre: 'ROLE_INVITADO', hijo: opt })
-        });
+        }).catch(() => {});
+        await fetch(`${baseUrl}/enlaces`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ padre: 'ROLE_REGISTRADO', hijo: opt })
+        }).catch(() => {});
       }
       
       return true;

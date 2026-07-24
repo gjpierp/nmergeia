@@ -9,8 +9,17 @@ export const useFileHandles = () => {
     const setOriginPath = useAppStore(s => s.setOriginPath);
     const setDestSlots = useAppStore(s => s.setDestSlots);
     const setHasProcessed = useAppStore(s => s.setHasProcessed);
+    const addToast = useAppStore(s => s.addToast);
 
     const openOrigin = async (type) => {
+        if (type === 'folder' && !window.showDirectoryPicker) {
+            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            return;
+        }
+        if (type === 'files' && !window.showOpenFilePicker) {
+            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            return;
+        }
         try {
             let handleObj;
             if (type === 'folder') {
@@ -31,6 +40,14 @@ export const useFileHandles = () => {
     };
 
     const openDest = async (slotId, type) => {
+        if (type === 'folder' && !window.showDirectoryPicker) {
+            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            return;
+        }
+        if (type === 'files' && !window.showOpenFilePicker) {
+            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            return;
+        }
         try {
             let handleObj;
             if (type === 'folder') {

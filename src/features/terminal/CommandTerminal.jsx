@@ -6,9 +6,10 @@ import { NgacService } from '../../shared/lib/NgacService.js';
 
 export const CommandTerminal = ({
   processFiles,
-  handleClear
+  handleClear,
+  isStandalonePage = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isStandalonePage || false);
   const [inputVal, setInputVal] = useState('');
   const [history, setHistory] = useState([
     { type: 'system', text: 'Terminal de Comandos de NMergeIA. Escribe /help para ver la lista.' }
@@ -25,6 +26,7 @@ export const CommandTerminal = ({
 
   // Escuchar la tecla de escape o de consola para abrir/cerrar
   useEffect(() => {
+    if (isStandalonePage) return;
     const handleKeyDown = (e) => {
       if (e.key === '`') {
         e.preventDefault();
@@ -33,21 +35,21 @@ export const CommandTerminal = ({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isStandalonePage]);
 
   // Autofoco al abrir
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if ((isOpen || isStandalonePage) && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, isStandalonePage]);
 
   // Hacer scroll automático al final de la historia
   useEffect(() => {
     if (consoleEndRef.current) {
       consoleEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [history, isOpen]);
+  }, [history, isOpen, isStandalonePage]);
 
   const logText = (text, type = 'output') => {
     setHistory(prev => [...prev, { type, text }]);
@@ -144,7 +146,7 @@ export const CommandTerminal = ({
         logText('Configurando roles, nodos y enlaces de NMergeIA en Sentinel-NGAC...');
         const success = await NgacService.setupNgacBasePolicies();
         if (success) {
-          logText('Sentinel-NGAC inicializado con éxito. Nodos creados: Ventas, Login, Licencia vinculados al rol ADMINISTRADOR.');
+          logText('Sentinel-NGAC inicializado con éxito. Nodos de opciones y banners de anuncios configurados y vinculados.');
           addToast("Políticas Sentinel-NGAC inicializadas", "success");
         } else {
           logText('Error al configurar políticas. Asegúrate de tener conexión con sentinel-ngac o tu base de datos Oracle.', 'error');
@@ -168,43 +170,45 @@ export const CommandTerminal = ({
     <div 
       className="terminal-wrapper" 
       style={{
-        borderTop: '1px solid var(--border-color)',
+        borderTop: isStandalonePage ? 'none' : '1px solid var(--border-color)',
         background: 'var(--bg-secondary)',
         display: 'flex',
         flexDirection: 'column',
-        height: isOpen ? '250px' : '36px',
+        height: isStandalonePage ? '100%' : (isOpen ? '250px' : '36px'),
         transition: 'height 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         position: 'relative',
         zIndex: 50
       }}
     >
       {/* Header barra */}
-      <div 
-        onClick={() => setIsOpen(!isOpen)} 
-        style={{
-          height: '36px',
-          padding: '0 15px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          cursor: 'pointer',
-          background: 'var(--bg-tertiary)',
-          fontSize: '0.8rem',
-          fontWeight: 'bold',
-          color: 'var(--text-secondary)'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>terminal</span>
-          Terminal de comandos (Presiona ` para alternar)
+      {!isStandalonePage && (
+        <div 
+          onClick={() => setIsOpen(!isOpen)} 
+          style={{
+            height: '36px',
+            padding: '0 15px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            cursor: 'pointer',
+            background: 'var(--bg-tertiary)',
+            fontSize: '0.8rem',
+            fontWeight: 'bold',
+            color: 'var(--text-secondary)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>terminal</span>
+            Terminal de comandos (Presiona ` para alternar)
+          </div>
+          <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
+            {isOpen ? 'expand_more' : 'expand_less'}
+          </span>
         </div>
-        <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>
-          {isOpen ? 'expand_more' : 'expand_less'}
-        </span>
-      </div>
+      )}
 
       {/* Historial y prompt */}
-      {isOpen && (
+      {(isOpen || isStandalonePage) && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '10px' }}>
           {/* Historial */}
           <div 

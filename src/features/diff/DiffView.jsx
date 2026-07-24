@@ -1,6 +1,8 @@
 import React, { useRef, useState, Suspense } from 'react';
 import { DiffEditor, Editor } from '@monaco-editor/react';
 import { getRelativePath } from "../../utils/pathUtils.js";
+import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { PremiumLock } from '../monetization/PremiumLock.jsx';
 import { apiClient } from '../../shared/lib/apiClient.js';
 import * as yaml from 'js-yaml';
@@ -70,22 +72,8 @@ const normalizeWhitespace = (str) => {
         .trim();
 };
 
-export const DiffView = ({
-    tab,
-    tabs,
-    setTabs,
-    originHandle,
-    destSlots,
-    originPath,
-    fileEqualityMap,
-    closeTab,
-    addToast,
-    appTheme,
-    showModal,
-    openDiffTab,
-    saveFile,
-    handleDelete
-}) => {
+export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPath, fileEqualityMap, closeTab, addToast, appTheme, showModal, openDiffTab, saveFile, handleDelete, appLanguage }) {
+    const { t } = useTranslation();
     const diffEditorRef = useRef(null);
     const monacoRef = useRef(null);
     const pendingNavigationRef = useRef(null);
@@ -127,7 +115,7 @@ export const DiffView = ({
     const handleCallAI = async () => {
         if (!diffContent) return;
         setAiLoading(true);
-        setAiStatusMessage('Analizando diferencias y fusionando con IA...');
+        setAiStatusMessage(t('diff_ai_status_analyzing'));
         setAiResult('');
         try {
             const res = await apiClient.callAIResolver({
@@ -139,12 +127,12 @@ export const DiffView = ({
             });
             if (res.success) {
                 setAiResult(res.text);
-                setAiStatusMessage('Sugerencia generada con éxito.');
+                setAiStatusMessage(t('diff_ai_status_success'));
             } else {
                 setAiStatusMessage(res.message);
             }
         } catch (e) {
-            setAiStatusMessage('Error al conectar con la API: ' + e.message);
+            setAiStatusMessage(t('diff_ai_status_error') + e.message);
         } finally {
             setAiLoading(false);
         }
@@ -170,7 +158,7 @@ export const DiffView = ({
             forceMoveMarkers: true
         };
         modEditor.executeEdits("ai-merge", [op]);
-        addToast("Fusión de IA aplicada correctamente", "success");
+        addToast(t('diff_toast_ai_applied'), "success");
     };
 
     const handleSaveAiConfig = (key, provider, model) => {
@@ -182,7 +170,7 @@ export const DiffView = ({
         localStorage.setItem('nmerge_ai_model', model);
         setIsAiConfigured(true);
         setShowAiConfig(false);
-        addToast("Configuración de IA guardada con éxito", "success");
+        addToast(t('diff_toast_ai_config_saved'), "success");
     };
 
     const navigateDiff = (direction) => {
@@ -354,11 +342,11 @@ export const DiffView = ({
             }
             if (nextFile) {
                 closeTab(tab.id);
-                addToast("Guardado exitoso. Abriendo siguiente archivo con diferencias...", "success");
+                addToast(t('diff_toast_save_next'), "success");
                 openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
             } else {
                 closeTab(tab.id);
-                addToast("Guardado exitosamente. No hay más diferencias.", "success");
+                addToast(t('diff_toast_save_finished'), "success");
             }
         }
     };
@@ -371,13 +359,13 @@ export const DiffView = ({
                <div style={{display: 'flex', gap: '10px'}}>
                    {tab.originHandle && tab.destHandle && (
                        <>
-                         <button className="btn secondary-btn small-btn" onClick={() => saveFile(tab.originHandle, tab.filePath, false, tab.modified, false, tab.id)} data-tooltip="Copiar código actual al archivo de Origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
-                         <button className="btn secondary-btn small-btn" onClick={() => saveFile(tab.destHandle, tab.filePath, false, tab.original, false, tab.id, false)} data-tooltip="Copiar código actual al archivo de Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
+                         <button className="btn secondary-btn small-btn" onClick={() => saveFile(tab.originHandle, tab.filePath, false, tab.modified, false, tab.id)} data-tooltip={t('diff_tooltip_copy_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                         <button className="btn secondary-btn small-btn" onClick={() => saveFile(tab.destHandle, tab.filePath, false, tab.original, false, tab.id, false)} data-tooltip={t('diff_tooltip_copy_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
                        </>
                    )}
                    <button 
                       className="btn primary-btn small-btn" 
-                      data-tooltip="Guardar archivo actual"
+                      data-tooltip={t('diff_tooltip_save_current')}
                       disabled={tab.modified === tab.initialModified}
                       onClick={() => { const liveValue = diffEditorRef.current ? diffEditorRef.current.getModifiedEditor().getValue() : tab.modified; saveFile(tab.destHandle || null, tab.filePath, tab.isBackendFile, liveValue, false, tab.id); }}
                    >
@@ -445,30 +433,30 @@ export const DiffView = ({
            <div style={{ display: 'flex', width: '100%', marginBottom: '10px' }}>
                <div style={{ flex: 1, paddingRight: '10px', overflow: 'hidden' }}>
                    <strong style={{color: 'var(--accent-secondary)', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={`${originPath}/${tab.filePath}`}>
-                      Origen: {originPath}/{tab.filePath}
+                      {t('diff_origin')}: {originPath}/{tab.filePath}
                   </strong>
                </div>
                <div style={{ flex: 1, paddingLeft: '20px', borderLeft: '1px solid var(--border-color)', overflow: 'hidden' }}>
-                   <strong style={{color: '#a78bfa', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={destSlot ? `${destSlot.path}/${tab.filePath}` : 'Desconocido'}>
-                      Destino: {destSlot ? `${destSlot.path}/${tab.filePath}` : 'Desconocido'}
+                   <strong style={{color: '#a78bfa', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={destSlot ? `${destSlot.path}/${tab.filePath}` : t('diff_unknown')}>
+                      {t('diff_dest')}: {destSlot ? `${destSlot.path}/${tab.filePath}` : t('diff_unknown')}
                   </strong>
                </div>
            </div>
            
            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                <div style={{display: 'flex', alignItems: 'center', gap: '0px'}}>
-                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Origen" disabled={isDocBinary} onClick={() => {
+                  <button className="btn clear-btn small-btn" data-tooltip={t('diff_tooltip_delete_origin')} disabled={isDocBinary} onClick={() => {
                       handleDelete(originHandle, tab.filePath, true);
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
-                  <button className="btn clear-btn small-btn" data-tooltip="Descartar Cambios" 
+                  <button className="btn clear-btn small-btn" data-tooltip={t('diff_tooltip_discard_changes')} 
                       disabled={isDocBinary || tab.original === tab.initialOriginal}
                       onClick={() => {
                           setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: t.initialOriginal } : t));
                       }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>close</span></button>
-                  <button className="btn primary-btn small-btn" data-tooltip="Guardar Origen y Continuar" 
+                  <button className="btn primary-btn small-btn" data-tooltip={t('diff_tooltip_save_origin_continue')} 
                       disabled={isDocBinary || tab.original === tab.initialOriginal}
                       onClick={() => handleSaveAndNext(true)}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>save</span></button>
-                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Destino a Origen" disabled={isDocBinary} onClick={() => {
+                  <button className="btn secondary-btn small-btn" data-tooltip={t('diff_tooltip_clone_dest_to_origin')} disabled={isDocBinary} onClick={() => {
                       saveFile(originHandle, tab.filePath, false, tab.modified, false, tab.id, true);
                       setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: tab.modified, initialOriginal: tab.modified } : t));
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
@@ -478,11 +466,11 @@ export const DiffView = ({
 
                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => {
                         setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: t.initialModified, original: t.initialOriginal } : t));
-                    }} data-tooltip="Revertir a estado inicial (Descartar cambios no guardados)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>restore</span></button>
+                    }} data-tooltip={t('diff_tooltip_revert_initial')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>restore</span></button>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
 
-                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleUndo} data-tooltip="Deshacer (Undo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>undo</span></button>
-                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleRedo} data-tooltip="Rehacer (Redo)"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>redo</span></button>
+                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleUndo} data-tooltip={t('diff_tooltip_undo')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>undo</span></button>
+                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={handleRedo} data-tooltip={t('diff_tooltip_redo')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>redo</span></button>
                      <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
                                       {isNormalizable && (
                          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer', marginRight: '10px', userSelect: 'none' }}>
@@ -493,46 +481,46 @@ export const DiffView = ({
                                  style={{ cursor: 'pointer' }}
                              />
                              <span>
-                                 {isJson ? 'Normalizar JSON' : isYaml ? 'Normalizar YAML' : isXml ? 'Normalizar XML' : 'Limpiar Espacios'}
+                                 {isJson ? t('diff_normalize_json') : isYaml ? t('diff_normalize_yaml') : isXml ? t('diff_normalize_xml') : t('diff_clean_spaces')}
                              </span>
                          </label>
                      )}
                     <div className="diff-headers">
                     <PremiumLock>
-                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_origin')} data-tooltip="Autocombinar TODO hacia Origen"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_left</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_origin')} data-tooltip={t('diff_tooltip_automerge_all_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_left</span></button>
                     </PremiumLock>
-                    <span>{originPath || "Origen"}</span>
-                    <span>vs</span>
-                    <span>{destSlots[0]?.path || "Destino"}</span>
+                    <span>{originPath || t('diff_origin')}</span>
+                    <span>{t('diff_vs')}</span>
+                    <span>{destSlots[0]?.path || t('diff_dest')}</span>
                     <PremiumLock>
-                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_dest')} data-tooltip="Autocombinar TODO hacia Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_right</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_dest')} data-tooltip={t('diff_tooltip_automerge_all_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_right</span></button>
                     </PremiumLock>
                     </div>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
-                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('first')} data-tooltip="Primera Diferencia"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>first_page</span></button>
-                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('prev')} data-tooltip="Diferencia Anterior"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>keyboard_arrow_up</span></button>
-                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('current')} data-tooltip="Diferencia Actual"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>place</span></button>
-                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('next')} data-tooltip="Siguiente Diferencia"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>keyboard_arrow_down</span></button>
-                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('last')} data-tooltip="Última Diferencia"><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>last_page</span></button>
+                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('first')} data-tooltip={t('diff_tooltip_first_diff')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>first_page</span></button>
+                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('prev')} data-tooltip={t('diff_tooltip_prev_diff')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>keyboard_arrow_up</span></button>
+                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('current')} data-tooltip={t('diff_tooltip_curr_diff')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>place</span></button>
+                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('next')} data-tooltip={t('diff_tooltip_next_diff')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>keyboard_arrow_down</span></button>
+                    <button className="btn secondary-btn small-btn" onClick={() => navigateDiff('last')} data-tooltip={t('diff_tooltip_last_diff')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>last_page</span></button>
                     <div style={{width: '1px', background: 'var(--border-color)', margin: '0 5px'}}></div>
-                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_origin')} data-tooltip="Copiar bloque seleccinado a Origen y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>subdirectory_arrow_left</span></button>
-                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_dest')} data-tooltip="Copiar bloque seleccinado a Destino y continuar"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>subdirectory_arrow_right</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_origin')} data-tooltip={t('diff_tooltip_copy_block_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>subdirectory_arrow_left</span></button>
+                    <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferCurrentDiff('to_dest')} data-tooltip={t('diff_tooltip_copy_block_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>subdirectory_arrow_right</span></button>
                 </div>
                
                <div style={{display: 'flex', alignItems: 'center', gap: '0px'}}>
-                  <button className="btn secondary-btn small-btn" data-tooltip="Clonar de Origen a Destino" disabled={isDocBinary} onClick={() => {
+                  <button className="btn secondary-btn small-btn" data-tooltip={t('diff_tooltip_clone_origin_to_dest')} disabled={isDocBinary} onClick={() => {
                       saveFile(destDirHandle, tab.filePath, false, tab.original, false, tab.id, false);
                       setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: tab.original, initialModified: tab.original } : t));
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
-                  <button className="btn primary-btn small-btn" data-tooltip="Guardar Destino y Continuar" 
+                  <button className="btn primary-btn small-btn" data-tooltip={t('diff_tooltip_save_dest_continue')} 
                       disabled={isDocBinary || tab.modified === tab.initialModified}
                       onClick={() => handleSaveAndNext(false)}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>save</span></button>
-                  <button className="btn clear-btn small-btn" data-tooltip="Descartar Cambios" 
+                  <button className="btn clear-btn small-btn" data-tooltip={t('diff_tooltip_discard_changes')} 
                       disabled={isDocBinary || tab.modified === tab.initialModified}
                       onClick={() => {
                           setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: t.initialModified } : t));
                       }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>close</span></button>
-                  <button className="btn clear-btn small-btn" data-tooltip="Eliminar del Destino" disabled={isDocBinary} onClick={() => {
+                  <button className="btn clear-btn small-btn" data-tooltip={t('diff_tooltip_delete_dest')} disabled={isDocBinary} onClick={() => {
                       handleDelete(destDirHandle, tab.filePath, false);
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
                </div>
@@ -542,7 +530,7 @@ export const DiffView = ({
         {isDocBinary && (
             <div style={{ flexShrink: 0, background: 'rgba(245, 158, 11, 0.1)', borderBottom: '1px solid rgba(245, 158, 11, 0.2)', padding: '8px 15px', color: '#f59e0b', fontSize: '0.8rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>warning</span>
-              <span>Comparación de documento binario activa (Modo Lectura). Los cambios o transferencias de bloques no están disponibles en este formato.</span>
+              <span>{t('diff_binary_warning')}</span>
             </div>
          )}
          <div style={{ flex: 1, display: 'flex', minHeight: 0, width: '100%', overflow: 'auto' }}>
@@ -555,19 +543,19 @@ export const DiffView = ({
                 flexDirection: 'column',
                 flex: 1
             }}>
-                <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>Cargando editor...</div>}>
+                <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>{t('diff_loading_editor')}</div>}>
                     {tab.destValues && tab.destValues.length > 1 ? (
                         <div style={{ display: 'flex', height: '100%', width: '100%', gap: '15px' }}>
                             <div style={{ flex: '1 0 460px', display: 'flex', flexDirection: 'column', height: '100%', minWidth: '460px' }}>
                                 <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Origen: {originPath}</span>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>{t('diff_origin')}: {originPath}</span>
                                     <div style={{ display: 'flex', gap: '4px' }}>
                                         <button className="btn clear-btn small-btn" disabled={isDocBinary || tab.original === tab.initialOriginal} onClick={() => {
                                             setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: t.initialOriginal } : t));
-                                        }} data-tooltip="Revertir Origen"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
+                                        }} data-tooltip={t('diff_tooltip_revert_origin')}><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
                                         <button className="btn clear-btn small-btn" disabled={isDocBinary} onClick={() => {
                                             handleDelete(originHandle, tab.filePath, true);
-                                        }} data-tooltip="Eliminar de Origen"><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
+                                        }} data-tooltip={t('diff_tooltip_delete_origin')}><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
                                     </div>
                                 </div>
                                 <Editor
@@ -583,7 +571,7 @@ export const DiffView = ({
                             </div>
                             {tab.destValues.map((val, idx) => {
                                 const slot = destSlots[idx];
-                                const slotPath = slot ? slot.path : `Destino ${idx + 1}`;
+                                const slotPath = slot ? slot.path : `${t('diff_dest')} ${idx + 1}`;
                                 const isDirty = val !== (tab.initialDestValues ? tab.initialDestValues[idx] : '');
                                 return (
                                     <div key={idx} style={{ flex: '1 0 460px', display: 'flex', flexDirection: 'column', height: '100%', minWidth: '460px', borderLeft: '1px solid var(--border-color)' }}>
@@ -599,13 +587,13 @@ export const DiffView = ({
                                                         }
                                                         return t;
                                                     }));
-                                                }} data-tooltip="Revertir"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
+                                                }} data-tooltip={t('diff_tooltip_revert')}><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>restore</span></button>
                                                 <button className="btn primary-btn small-btn" disabled={isDocBinary || !isDirty} onClick={() => {
                                                     saveFile(slot.handle, tab.filePath, false, val, false, tab.id, false);
-                                                }} data-tooltip="Guardar"><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>save</span></button>
+                                                }} data-tooltip={t('diff_tooltip_save')}><span className="material-symbols-rounded" style={{fontSize: '1rem'}}>save</span></button>
                                                 <button className="btn clear-btn small-btn" disabled={isDocBinary} onClick={() => {
                                                     handleDelete(slot.handle, tab.filePath, false);
-                                                }} data-tooltip="Eliminar de Destino"><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
+                                                }} data-tooltip={t('diff_tooltip_delete_dest')}><span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#ef4444'}}>delete</span></button>
                                             </div>
                                         </div>
                                         <Editor
@@ -732,14 +720,14 @@ export const DiffView = ({
                         onClick={() => setAssistantTab('traditional')}
                         style={{ height: '32px', borderRadius: '4px' }}
                     >
-                        ⚡ Fusión Tradicional (Myers LCS)
+                        {t('diff_traditional_merge')}
                     </button>
                     <button 
                         className={`btn ${assistantTab === 'ai' ? 'primary-btn' : 'secondary-btn'} small-btn`}
                         onClick={() => setAssistantTab('ai')}
                         style={{ height: '32px', borderRadius: '4px' }}
                     >
-                        🤖 Asistente de IA (Híbrido)
+                        {t('diff_ai_assistant')}
                     </button>
                 </div>
 
@@ -748,11 +736,11 @@ export const DiffView = ({
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         <div style={{ display: 'flex', gap: '15px' }}>
                             <div style={{ flex: 1 }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>Líneas de Origen seleccionadas:</span>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>{t('diff_selected_origin_lines')}</span>
                                 <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: 'var(--accent-secondary)', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid var(--accent-secondary)'}}>{diffContent.origin}</pre>
                             </div>
                             <div style={{ flex: 1 }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>Líneas de Destino seleccionadas:</span>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>{t('diff_selected_dest_lines')}</span>
                                 <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: '#a78bfa', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid #a78bfa'}}>{diffContent.dest}</pre>
                             </div>
                         </div>
@@ -763,7 +751,7 @@ export const DiffView = ({
                                 style={{ height: '34px', color: '#10b981', border: '1px solid #10b981' }}
                             >
                                 <span className="material-symbols-rounded" style={{ marginRight: '5px', fontSize: '1.1rem' }}>arrow_forward</span>
-                                Reemplazar con bloque de Origen
+                                {t('diff_replace_with_origin')}
                             </button>
                             <button 
                                 className="btn secondary-btn small-btn"
@@ -771,133 +759,124 @@ export const DiffView = ({
                                 style={{ height: '34px', color: '#3b82f6', border: '1px solid #3b82f6' }}
                             >
                                 <span className="material-symbols-rounded" style={{ marginRight: '5px', fontSize: '1.1rem' }}>arrow_back</span>
-                                Reemplazar con bloque de Destino
+                                {t('diff_replace_with_dest')}
                             </button>
                         </div>
                     </div>
                 )}
-
-                {/* Contenido Asistente de IA */}
                 {assistantTab === 'ai' && (
                     <div style={{ display: 'flex', gap: '15px', textAlign: 'left' }}>
-                        {/* Pill de configuración activa o bloque editor de ajustes */}
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', borderRight: '1px solid var(--border-color)', paddingRight: '15px' }}>
                              {isAiConfigured && !showAiConfig ? (
-                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '10px 12px', borderRadius: '4px', fontSize: '0.8rem', border: '1px solid var(--border-color)' }}>
-                                     <span>Activo: <strong>{aiProvider === 'ollama' ? `Ollama (${aiModel})` : 'Gemini Cloud'}</strong></span>
-                                     <button 
-                                         className="btn secondary-btn" 
-                                         onClick={() => setShowAiConfig(true)}
-                                         style={{ height: '24px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
-                                     >
-                                         🔧 Actualizar
-                                     </button>
-                                 </div>
-                             ) : (
-                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                         <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>Proveedor:</span>
-                                         <select 
-                                             value={aiProvider} 
-                                             onChange={(e) => setAiProvider(e.target.value)} 
-                                             className="input-field"
-                                             style={{ height: '28px', fontSize: '0.75rem', padding: '2px 5px', width: '130px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
-                                         >
-                                             <option value="ollama">Ollama (Local)</option>
-                                             <option value="gemini">Gemini API (Nube)</option>
-                                         </select>
-                                         {isAiConfigured && (
-                                             <button 
-                                                 className="btn secondary-btn" 
-                                                 onClick={() => setShowAiConfig(false)}
-                                                 style={{ height: '28px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
-                                             >
-                                                 Cancelar
-                                             </button>
-                                         )}
-                                     </div>
-
-                                     {/* Tutorial & API Key Input */}
-                                     <div style={{ background: 'var(--bg-tertiary)', padding: '10px', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                         {aiProvider === 'ollama' ? (
-                                             <div>
-                                                 <strong style={{ color: 'var(--text-primary)' }}>Guía de Configuración de Ollama:</strong>
-                                                 <ol style={{ margin: '5px 0 0 15px', padding: 0 }}>
-                                                     <li>Descarga e instala Ollama desde <a href="https://ollama.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>ollama.com</a>.</li>
-                                                     <li>Ejecuta el modelo en tu terminal: <code>ollama run qwen2.5:1.5b</code>.</li>
-                                                     <li>Haz clic en "Guardar Ajustes" para continuar.</li>
-                                                 </ol>
-                                                 <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                     <span>Modelo:</span>
-                                                     <input 
-                                                         type="text" 
-                                                         value={aiModel} 
-                                                         onChange={(e) => setAiModel(e.target.value)}
-                                                         className="input-field" 
-                                                         style={{ height: '24px', fontSize: '0.75rem', padding: '2px 5px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px', width: '120px' }}
-                                                     />
-                                                 </div>
-                                                 <button 
-                                                     className="btn primary-btn" 
-                                                     onClick={() => handleSaveAiConfig('', 'ollama', aiModel)}
-                                                     style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px', marginTop: '10px', display: 'block' }}
-                                                 >
-                                                     Guardar Ajustes
-                                                 </button>
-                                             </div>
-                                         ) : (
-                                             <div>
-                                                 <strong style={{ color: 'var(--text-primary)' }}>Guía de Configuración de Gemini Cloud:</strong>
-                                                 <ol style={{ margin: '5px 0 8px 15px', padding: 0 }}>
-                                                     <li>Ve a <a href="https://aistudio.google.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>Google AI Studio</a>.</li>
-                                                     <li>Crea una API Key gratuita en segundos y pégala abajo:</li>
-                                                 </ol>
-                                                 <div style={{ display: 'flex', gap: '6px' }}>
-                                                     <input 
-                                                         type="password" 
-                                                         placeholder="Gemini API Key" 
-                                                         value={aiApiKey} 
-                                                         onChange={(e) => setAiApiKey(e.target.value)}
-                                                         className="input-field" 
-                                                         style={{ flex: 1, height: '26px', fontSize: '0.75rem', padding: '2px 8px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
-                                                     />
-                                                     <button 
-                                                         className="btn primary-btn" 
-                                                         onClick={() => handleSaveAiConfig(aiApiKey, 'gemini', 'gemini-1.5-flash')}
-                                                         style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px' }}
-                                                     >
-                                                         Guardar
-                                                     </button>
-                                                 </div>
-                                             </div>
-                                         )}
-                                     </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '10px 12px', borderRadius: '4px', fontSize: '0.8rem', border: '1px solid var(--border-color)' }}>
+                                      <span>{t('diff_active')} <strong>{aiProvider === 'ollama' ? `Ollama (${aiModel})` : t('diff_gemini_cloud')}</strong></span>
+                                      <button 
+                                          className="btn secondary-btn" 
+                                          onClick={() => setShowAiConfig(true)}
+                                          style={{ height: '24px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
+                                      >
+                                          {t('diff_update')}
+                                      </button>
+                                  </div>
+                              ) : (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                          <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>{t('diff_provider')}</span>
+                                          <select 
+                                              value={aiProvider} 
+                                              onChange={(e) => setAiProvider(e.target.value)} 
+                                              className="input-field"
+                                              style={{ height: '28px', fontSize: '0.75rem', padding: '2px 5px', width: '130px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
+                                          >
+                                              <option value="ollama">{t('diff_ollama_local')}</option>
+                                              <option value="gemini">{t('diff_gemini_api_cloud')}</option>
+                                          </select>
+                                          {isAiConfigured && (
+                                              <button 
+                                                  className="btn secondary-btn" 
+                                                  onClick={() => setShowAiConfig(false)}
+                                                  style={{ height: '28px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
+                                              >
+                                                  {t('diff_cancel')}
+                                              </button>
+                                          )}
+                                      </div>
+                                      <div style={{ background: 'var(--bg-tertiary)', padding: '10px', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                                          {aiProvider === 'ollama' ? (
+                                              <div>
+                                                  <strong style={{ color: 'var(--text-primary)' }}>{t('diff_ollama_guide_title')}</strong>
+                                                  <ol style={{ margin: '5px 0 0 15px', padding: 0 }}>
+                                                      <li>{t('diff_ollama_step_1')} <a href="https://ollama.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>ollama.com</a>.</li>
+                                                      <li>{t('diff_ollama_step_2')} <code>ollama run qwen2.5:1.5b</code>.</li>
+                                                      <li>{t('diff_ollama_step_3')}</li>
+                                                  </ol>
+                                                  <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                      <span>{t('diff_model')}</span>
+                                                      <input 
+                                                          type="text" 
+                                                          value={aiModel} 
+                                                          onChange={(e) => setAiModel(e.target.value)}
+                                                          className="input-field" 
+                                                          style={{ height: '24px', fontSize: '0.75rem', padding: '2px 5px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px', width: '120px' }}
+                                                      />
+                                                  </div>
+                                                  <button 
+                                                      className="btn primary-btn" 
+                                                      onClick={() => handleSaveAiConfig('', 'ollama', aiModel)}
+                                                      style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px', marginTop: '10px', display: 'block' }}
+                                                  >
+                                                      {t('diff_save_settings')}
+                                                  </button>
+                                              </div>
+                                          ) : (
+                                              <div>
+                                                  <strong style={{ color: 'var(--text-primary)' }}>{t('diff_gemini_guide_title')}</strong>
+                                                  <ol style={{ margin: '5px 0 8px 15px', padding: 0 }}>
+                                                      <li>{t('diff_gemini_step_1')} <a href="https://aistudio.google.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>Google AI Studio</a>.</li>
+                                                      <li>{t('diff_gemini_step_2')}</li>
+                                                  </ol>
+                                                  <div style={{ display: 'flex', gap: '6px' }}>
+                                                      <input 
+                                                          type="password" 
+                                                          placeholder={t('diff_gemini_placeholder')} 
+                                                          value={aiApiKey} 
+                                                          onChange={(e) => setAiApiKey(e.target.value)}
+                                                          className="input-field" 
+                                                          style={{ flex: 1, height: '26px', fontSize: '0.75rem', padding: '2px 8px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
+                                                      />
+                                                      <button 
+                                                          className="btn primary-btn" 
+                                                          onClick={() => handleSaveAiConfig(aiApiKey, 'gemini', 'gemini-1.5-flash')}
+                                                          style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px' }}
+                                                      >
+                                                          {t('diff_tooltip_save')}
+                                                      </button>
+                                                  </div>
+                                              </div>
+                                          )}
+                                      </div>
+                                  </div>
+                              )}
+                             <button 
+                                 className="btn primary-btn"
+                                 onClick={handleCallAI}
+                                 disabled={aiLoading || (aiProvider === 'gemini' && !aiApiKey)}
+                                 style={{ height: '36px', borderRadius: '4px', fontSize: '0.8rem' }}
+                             >
+                                 {aiLoading ? t('diff_ai_analyzing') : t('diff_ai_resolve_conflict')}
+                             </button>
+                             {aiStatusMessage && (
+                                 <div style={{ fontSize: '0.75rem', color: aiStatusMessage.includes('Error') ? '#ef4444' : '#ef4444', fontStyle: 'italic' }}>
+                                     {aiStatusMessage}
                                  </div>
                              )}
-
-                            <button 
-                                className="btn primary-btn"
-                                onClick={handleCallAI}
-                                disabled={aiLoading || (aiProvider === 'gemini' && !aiApiKey)}
-                                style={{ height: '36px', borderRadius: '4px', fontSize: '0.8rem' }}
-                            >
-                                {aiLoading ? '🤖 Analizando con IA...' : '🤖 Resolver Conflicto con IA'}
-                            </button>
-
-                            {aiStatusMessage && (
-                                <div style={{ fontSize: '0.75rem', color: aiStatusMessage.includes('Error') ? '#ef4444' : '#ef4444', fontStyle: 'italic' }}>
-                                    {aiStatusMessage}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Resultado de la Fusión (Derecha) */}
+                         </div>
                         <div style={{ flex: 1.5, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Propuesta de Código Unificado:</span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('diff_unified_proposal')}</span>
                             <textarea 
                                 readOnly
                                 value={aiResult}
-                                placeholder="La propuesta de fusión mediante IA aparecerá aquí tras pulsar el botón..."
+                                placeholder={t('diff_ai_placeholder')}
                                 style={{
                                     flex: 1,
                                     minHeight: '120px',
@@ -917,7 +896,7 @@ export const DiffView = ({
                                     onClick={applyAiResolution}
                                     style={{ height: '34px', borderRadius: '4px', fontSize: '0.8rem', background: '#10b981', alignSelf: 'flex-end' }}
                                 >
-                                    ✔ Aplicar Fusión en Editor
+                                    {t('diff_apply_merge')}
                                 </button>
                             )}
                         </div>
