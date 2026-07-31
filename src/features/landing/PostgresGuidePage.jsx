@@ -31,7 +31,7 @@ export const PostgresGuidePage = () => {
           padding: '4px 12px',
           borderRadius: '12px'
         }}>
-          {t('postgresGuide.tag', { defaultValue: 'nmergeia.com Tech Series' })}
+          {t('postgresGuide.tag', { defaultValue: 'StackUpIA.com Tech Series' })}
         </span>
         <h2 style={{ 
           fontSize: '2.2rem', 

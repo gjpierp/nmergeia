@@ -1,0 +1,98 @@
+.guide-page-container {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: var(--text-primary, #e2e8f0);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+}
+
+.guide-header {
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1.5rem;
+}
+
+.guide-header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent-primary, #38bdf8);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.guide-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #94a3b8);
+  margin: 0;
+}
+
+.guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.guide-section {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.75rem;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+}
+
+.guide-section:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.guide-section h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent-secondary, #818cf8);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.guide-section p {
+  margin: 0 0 1rem 0;
+  color: #cbd5e1;
+}
+
+.guide-section p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-section ul, .guide-section ol {
+  margin: 0 0 1rem 1.5rem;
+  padding: 0;
+  color: #cbd5e1;
+}
+
+.guide-section li {
+  margin-bottom: 0.5rem;
+}
+
+.guide-code-block {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  color: #38bdf8;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 1rem 0;
+}
+
+.guide-tip-box {
+  background: rgba(56, 189, 248, 0.1);
+  border-left: 4px solid #38bdf8;
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1rem 0;
+  color: #e2e8f0;
+}

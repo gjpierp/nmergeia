@@ -54,3 +54,10 @@
   padding: 1em;
   border-radius: 0 8px 8px 0;
 }
+
+.markdown-body h1 { font-size: 1.6rem !important; border-bottom: none !important; }
+.markdown-body h2 { font-size: 1.4rem !important; border-bottom: 1px solid var(--border-light); padding-bottom: 0.3em; }
+.markdown-body h3 { font-size: 1.2rem !important; }
+.markdown-body h4 { font-size: 1.1rem !important; }
+.markdown-body h5 { font-size: 1rem !important; }
+

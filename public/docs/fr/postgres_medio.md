@@ -1,4 +1,4 @@
-# Guía Intermedia de PostgreSQL: Optimización y Estructuras
+# Optimización y Estructuras
 
 ## 1. Índices (B-Tree, Hash)
 - Creación de índices para mejorar el rendimiento de lectura.

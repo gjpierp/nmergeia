@@ -199,5 +199,16 @@
   "diff_ai_status_error": "Error connecting to the API: ",
   "nav_privacy": "Privacy",
   "nav_terms": "Terms",
-  "nav_docs": "Documentation"
+  "nav_docs": "Documentation",
+  "MNU_NMERGEIA_LANDING": "Home",
+  "MNU_NMERGEIA_FEATURES": "Features",
+  "MNU_NMERGEIA_PRICING": "Pricing",
+  "MNU_NMERGEIA_DOCS": "Documentation",
+  "MNU_NMERGEIA_FAQ": "FAQ",
+  "CAT_NMERGEIA_N2_AUTH": "Authentication",
+  "CAT_NMERGEIA_N3_WORKSPACE": "Main Platform",
+  "CAT_NMERGEIA_N4_COURSES": "Technical Library",
+  "CAT_NMERGEIA_N5_ASSETS": "Resources & APIs",
+  "MNU_TEMA_POSTGRES": "PostgreSQL",
+  "MNU_TEMA_02": "Docker Multi-stage"
 }

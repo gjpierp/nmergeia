@@ -7,7 +7,39 @@ import { telemetry } from '../../../shared/lib/TelemetryService.js';
  * Permite leer directorios, filtrar archivos y verificar permisos de escritura.
  */
 
-const IGNORED_PATHS = ['node_modules', '.git', '.DS_Store', 'dist', 'build', '.next', '.vscode'];
+const IGNORED_PATHS = [
+  'node_modules', 
+  '.git', 
+  '.svn',
+  '.hg',
+  '.DS_Store', 
+  'Thumbs.db',
+  'dist', 
+  'dist_electron',
+  'build', 
+  'out',
+  'bin',
+  'obj',
+  'target',
+  'vendor',
+  'coverage',
+  '.next', 
+  '.nuxt',
+  '.svelte-kit',
+  '.cache',
+  '.parcel-cache',
+  '.turbo',
+  '.vscode', 
+  '.idea',
+  '.docs', 
+  '.docs/', 
+  '.agents', 
+  '.gemini', 
+  '.history',
+  'tmp',
+  'temp',
+  'logs'
+];
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
@@ -23,9 +55,17 @@ export const verifyPermission = async (fileHandle) => {
 
 const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes = [], rootName = dirHandle.name, state = null) => {
   if (!state) {
+      const expandedExcludes = new Set(IGNORED_PATHS.map(p => p.toLowerCase()));
+      excludes.forEach(pat => {
+          if (!pat) return;
+          const cleanPat = pat.endsWith('/') ? pat.slice(0, -1) : pat;
+          expandedExcludes.add(cleanPat.toLowerCase());
+      });
+
       state = { 
-          count: 0, 
-          igExclude: ignore().add(IGNORED_PATHS).add(excludes), 
+          lastYield: performance.now(),
+          excludeSet: expandedExcludes,
+          igExclude: ignore().add(Array.from(expandedExcludes)), 
           igInclude: ignore().add(includes) 
       };
   }
@@ -44,28 +84,47 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
     }
     
     for await (const entry of dirHandle.values()) {
-      state.count++;
-      if (state.count % 50 === 0) {
+      const now = performance.now();
+      if (now - state.lastYield > 16) {
+         state.lastYield = now;
          await yieldToMain();
       }
 
+      const entryNameLower = entry.name.toLowerCase();
       const relativePath = `${path}${entry.name}`;
+      const relLower = relativePath.toLowerCase();
 
       if (entry.kind === 'directory') {
-         if (state.igExclude.ignores(relativePath + '/')) continue;
+         // PODA INMEDIATA (Pruning): Si el nombre de la carpeta está en exclusiones, no entrar en ella
+         if (state.excludeSet.has(entryNameLower) || state.excludeSet.has(entry.name)) {
+            continue;
+         }
+         const isIgnored = state.igExclude.ignores(relativePath + '/') ||
+                           (relativePath !== relLower && state.igExclude.ignores(relLower + '/'));
+         if (isIgnored) continue;
          
          const subFiles = await _getFilesFromHandle(entry, `${relativePath}/`, excludes, includes, rootName, state);
          files.push(...subFiles);
       } else if (entry.kind === 'file') {
-         if (state.igExclude.ignores(relativePath)) continue;
-         if (includes.length > 0 && !state.igInclude.ignores(relativePath)) continue;
+         if (state.excludeSet.has(entryNameLower) || state.excludeSet.has(entry.name)) {
+            continue;
+         }
+         const isIgnored = state.igExclude.ignores(relativePath) ||
+                           (relativePath !== relLower && state.igExclude.ignores(relLower));
+         if (isIgnored) continue;
+         if (includes.length > 0) {
+            const isIncluded = state.igInclude.ignores(relativePath) ||
+                               (relativePath !== relLower && state.igInclude.ignores(relLower));
+            if (!isIncluded) continue;
+         }
          
-         const file = await entry.getFile();
-         Object.defineProperty(file, 'webkitRelativePath', {
-           value: `${rootName}/${relativePath}`
-         });
-         file.fileHandle = entry; 
-         files.push(file);
+         const fileProxy = {
+           name: entry.name,
+           webkitRelativePath: `${rootName}/${relativePath}`,
+           fileHandle: entry,
+           getFile: () => entry.getFile()
+         };
+         files.push(fileProxy);
       }
     }
   } catch (e) {

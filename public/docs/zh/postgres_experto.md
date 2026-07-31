@@ -1,83 +1,73 @@
-# PostgreSQL: Alta Disponibilidad y Arquitectura Interna
+# PostgreSQL 专家：复制与大规模分区
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresExperto`  
-> **Tiempo Estimado:** 15 minutos  
-> **Perfil:** Staff / Principal Engineer  
+当单个 PostgreSQL 实例无法处理读取负载或存储量（我们说的是 TB 级数据）时，我们就进入了专家领域。现在是分配负载的时候了。
 
-Esta guía define los estándares arquitectónicos para escalar PostgreSQL en clústeres distribuidos. Analizaremos la integración con **Patroni**, **PgBouncer** y **HAProxy** para garantizar un *Recovery Time Objective* (RTO) menor a 30 segundos.
+## 1. 声明式分区（本地分片 Sharding Local）
 
----
+如果你有一个包含 5 亿条记录的 `logs` 表，尝试使用 `DELETE` 删除旧数据将会锁定表并导致性能崩溃。解决方案是在物理上分割表，同时保持单个逻辑表。
 
-## 1. Arquitectura Topológica (Digital Twin)
+### 示例：按时间（范围）分区
 
-La siguiente arquitectura de Alta Disponibilidad asegura replicación física sincrónica o asincrónica y failover automático.
+```sql
+-- 1. 创建“父”表
+CREATE TABLE telemetry.sensor_logs (
+    id UUID,
+    sensor_id INT,
+    reading NUMERIC,
+    created_at TIMESTAMP NOT NULL
+) PARTITION BY RANGE (created_at);
+
+-- 2. 创建“子”表（物理表）
+CREATE TABLE sensor_logs_y2023m10 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-10-01') TO ('2023-11-01');
+
+CREATE TABLE sensor_logs_y2023m11 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-11-01') TO ('2023-12-01');
+```
+
+**关键优势：** 当 10 月份不再有用时，你不要执行 `DELETE`。只需执行 `DROP TABLE sensor_logs_y2023m10;`。此操作可立即释放 GB 级的空间，而不会影响服务器性能。
+
+## 2. 复制拓扑结构：流式复制 vs 逻辑复制
+
+要扩展读取或保证高可用性（HA），你需要副本（replicas）。
 
 ```mermaid
 graph TD
-    Client[Cliente/API] --> HAProxy[HAProxy Load Balancer]
-    HAProxy --> PgBouncer1[PgBouncer Master]
-    HAProxy --> PgBouncer2[PgBouncer Replica]
+    subgraph primary_node [Master Node Primary]
+        P[PostgreSQL 主节点 Primary]
+        WAL[WAL 日志]
+    end
     
-    PgBouncer1 --> Node1[(PG Node 1 - Master)]
-    PgBouncer2 --> Node2[(PG Node 2 - Replica)]
+    subgraph standby_node [Read Replicas Standby]
+        S1[物理副本 1]
+        S2[物理副本 2]
+    end
     
-    Node1 -. Replicación Streaming .-> Node2
-    
-    Patroni1[Patroni Agent 1] --- Node1
-    Patroni2[Patroni Agent 2] --- Node2
-    
-    Patroni1 <--> etcd[(etcd DCS)]
-    Patroni2 <--> etcd
+    subgraph analytics_node [Logical Replica Analytics]
+        L1[数据仓库 Data Warehouse / Redshift]
+    end
+
+    P -->|"WAL Streaming (二进制)"| WAL
+    WAL -->|异步物理复制| S1
+    WAL -->|异步物理复制| S2
+    P -->|"逻辑解码 (Pub/Sub)"| L1
 ```
 
-> [!NOTE]  
-> **Consenso Distribuido:** Patroni utiliza `etcd` (o Consul/ZooKeeper) para mantener el estado del clúster y elegir a un nuevo líder mediante el algoritmo de consenso Raft en caso de partición de red (Split-Brain).
+### 物理复制（Streaming Replication）
+通过读取预写式日志（WAL）逐块复制整个数据库。物理副本是**只读**的。它是故障转移（failover）的理想选择（如果主节点宕机，副本接管）。
 
----
+### 逻辑复制（Pub/Sub）
+Postgres 不是复制原始的二进制块，而是将 WAL 解码为应用层事件（`INSERT`、`UPDATE`、`DELETE`），并将它们发送给订阅者。
+- 允许**仅复制特定的表**（非常适合将销售表发送到数据湖）。
+- 允许目标节点向其自己独立的表写入数据。
 
-## 2. Ajuste Crítico: Pool de Conexiones
+```sql
+-- 在 Master 服务器上：
+CREATE PUBLICATION sales_pub FOR TABLE sales.orders, sales.invoices;
 
-> [!WARNING]
-> **FinOps & Performance Warning:**  
-> Cada conexión nativa en PostgreSQL consume aproximadamente 10MB de memoria debido a su arquitectura multiproceso (fork por conexión). 5000 conexiones concurrentes sin pooler causarían OOM (Out Of Memory) en instancias con menos de 64GB RAM.  
-> Costo estimado de un clúster RDS Multi-AZ r6g.4xlarge: ~$1,600 USD/mes.
-
-Para mitigar el consumo masivo de memoria, es obligatorio el uso de un Pooler transaccional (`PgBouncer`).
-
-### Archivo de Configuración Quirúrgico (`pgbouncer.ini`)
-
-```ini
-[databases]
-nmerge_db = host=127.0.0.1 port=5432 dbname=[NOMBRE_DE_TU_BD]
-
-[pgbouncer]
-listen_port = 6432
-listen_addr = *
-auth_type = md5
-auth_file = /etc/pgbouncer/userlist.txt
-pool_mode = transaction
-max_client_conn = 10000
-default_pool_size = 100
-reserve_pool_size = 20
+-- 在分析服务器上：
+CREATE SUBSCRIPTION sales_sub CONNECTION 'host=master_ip port=5432 user=rep_user password=secret' PUBLICATION sales_pub;
 ```
 
----
+掌握分区和复制功能可让你将 Postgres 扩展至近乎无限。在**大师级别（优化）**，我们将探索内核调优和连接池，以将硬件性能发挥到极致。
 
-## 3. Optimización del Kernel (Sysctl)
-
-Para bases de datos masivas (Terabytes de RAM), el *tuning* de memoria compartida de Linux es imperativo.
-
-```bash
-# Habilitar Huge Pages para reducir la sobrecarga de la tabla de paginación
-echo "vm.nr_hugepages = 10240" >> /etc/sysctl.conf
-
-# Prevenir que Linux haga Swap agresivo de la BD
-echo "vm.swappiness = 1" >> /etc/sysctl.conf
-
-# Aplicar los cambios en caliente
-sysctl -p
-```
-
----
-*Fin de la Guía Experta. Procede a aplicar estos perfiles directamente a través de Terraform en tu infraestructura Cloud Native.*

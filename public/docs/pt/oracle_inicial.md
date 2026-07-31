@@ -1,4 +1,4 @@
-# Oracle DB: Nivel Inicial - Introducción y Entorno
+# Nivel Inicial - Introducción y Entorno
 
 Bienvenido a la guía definitiva de Oracle Database. Oracle es uno de los motores de bases de datos relacionales más robustos y utilizados en entornos Enterprise por su fiabilidad, transaccionalidad y características de alta disponibilidad.
 

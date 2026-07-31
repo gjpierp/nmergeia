@@ -1,271 +1,503 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
-import { NgacService } from '../lib/NgacService.js';
-import { NgacAdBanner } from '../../features/monetization/NgacAdBanner.jsx';
 
-export const Sidebar = () => {
+// Limpiador helper para remover números de orden (ej: "1. ") y emojis incrustados duplicados del texto
+const cleanNodeLabel = (label = '') => {
+  if (!label) return '';
+  let str = String(label);
+
+  // 1. Remueve caracteres Emojis Unicode
+  try {
+    str = str.replace(/\p{Extended_Pictographic}/gu, '');
+  } catch (_) {}
+  str = str.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{2000}-\u{3300}]/gu, '');
+
+  // 2. Remueve prefijos de numeración como "1. ", "1.- ", "01. ", "1) ", "N1. ", "1.0 " etc.
+  str = str.replace(/^([A-Za-z0-9\_]*\d+[\.\-\_\)\:\s]*)+/gi, '');
+
+  // 3. Remueve cualquier emoji residual
+  try {
+    str = str.replace(/\p{Extended_Pictographic}/gu, '');
+  } catch (_) {}
+  str = str.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{2000}-\u{3300}]/gu, '');
+
+  return str.replace(/\s+/g, ' ').trim();
+};
+
+// Estructura por defecto del Menú Sentinel-NGAC
+const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
+  {
+    id: 112, code: 'CAT_NMERGEIA_N3_WORKSPACE', label: 'Plataforma Principal', icon: 'desktop_windows', node_type: 'CONTAINER',
+    children: [
+      { id: 113, code: 'MNU_NMERGEIA_MAIN', label: 'Comparador Principal', path: '/main', icon: 'grid_view', node_type: 'OBJECT' },
+      { id: 115, code: 'MNU_NMERGEIA_FILTERS', label: 'Gestor de Filtros', path: '/filters', icon: 'filter_alt', node_type: 'OBJECT' },
+      { id: 116, code: 'MNU_NMERGEIA_HISTORY', label: 'Historial', path: '/history', icon: 'history', node_type: 'OBJECT' },
+      { id: 117, code: 'MNU_NMERGEIA_TERMINAL', label: 'Consola Integrada', path: '/terminal', icon: 'terminal', node_type: 'OBJECT' }
+    ]
+  }
+] : [
+  { id: 105, code: 'MNU_NMERGEIA_LANDING', label: 'Inicio', path: '/', icon: 'home', node_type: 'OBJECT' },
+  { id: 106, code: 'MNU_NMERGEIA_FEATURES', label: 'Características', path: '/features', icon: 'star', node_type: 'OBJECT' },
+  { id: 107, code: 'MNU_NMERGEIA_PRICING', label: 'Planes y Precios', path: '/pricing', icon: 'payments', disabled: true, is_enabled: false, node_type: 'OBJECT' },
+  { id: 108, code: 'MNU_NMERGEIA_DOCS', label: 'Documentación', path: '/docs', icon: 'menu_book', node_type: 'OBJECT' },
+  { id: 105, code: 'MNU_NMERGEIA_FAQ', label: 'Preguntas Frecuentes', path: '/faq', icon: 'help_outline', node_type: 'OBJECT' },
+  {
+    id: 109, code: 'CAT_NMERGEIA_N2_AUTH', label: 'Autenticación', icon: 'lock', node_type: 'CONTAINER', disabled: true, is_enabled: false,
+    children: [
+      { id: 110, code: 'MNU_NMERGEIA_LOGIN', label: 'Iniciar Sesión', path: '/login', icon: 'login', disabled: true, is_enabled: false, node_type: 'OBJECT' },
+      { id: 111, code: 'MNU_NMERGEIA_REGISTER', label: 'Registro & Licencia', path: '/register', icon: 'person_add', disabled: true, is_enabled: false, node_type: 'OBJECT' },
+      { id: 168, code: 'MNU_NMERGEIA_LICENSES', label: 'Gestión Licencias', path: '/licenses', icon: 'card_membership', disabled: true, is_enabled: false, node_type: 'OBJECT' }
+    ]
+  },
+  {
+    id: 112, code: 'CAT_NMERGEIA_N3_WORKSPACE', label: 'Plataforma Principal', icon: 'desktop_windows', node_type: 'CONTAINER',
+    children: [
+      { id: 113, code: 'MNU_NMERGEIA_MAIN', label: 'Comparador Principal', path: '/main', icon: 'grid_view', node_type: 'OBJECT' },
+      { id: 114, code: 'MNU_NMERGEIA_DIFF', label: 'Visor Monaco Diff', path: '/diff', icon: 'difference', disabled: true, is_enabled: false, node_type: 'OBJECT' },
+      { id: 115, code: 'MNU_NMERGEIA_FILTERS', label: 'Gestor de Filtros', path: '/filters', icon: 'filter_alt', node_type: 'OBJECT' },
+      { id: 116, code: 'MNU_NMERGEIA_HISTORY', label: 'Historial', path: '/history', icon: 'history', node_type: 'OBJECT' },
+      { id: 117, code: 'MNU_NMERGEIA_TERMINAL', label: 'Consola Integrada', path: '/terminal', icon: 'terminal', node_type: 'OBJECT' },
+      { id: 169, code: 'MNU_NMERGEIA_SALES', label: 'Ventas & Cotizaciones', path: '/sales', icon: 'point_of_sale', disabled: true, is_enabled: false, node_type: 'OBJECT' }
+    ]
+  },
+  {
+    id: 118, code: 'CAT_NMERGEIA_N4_TEMAS', label: 'Biblioteca Técnica', icon: 'school', node_type: 'CONTAINER',
+    children: [
+      {
+        id: 119, code: 'SUB_TEMAS_BD', label: 'Base de Datos & Optimización', icon: 'storage', node_type: 'CONTAINER',
+        children: [
+          { id: 120, code: 'MNU_TEMA_01', label: 'PostgreSQL', path: '/temas/tema-postgres', icon: 'speed', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 122, code: 'SUB_TEMAS_INFRA', label: 'Contenedores e Infraestructura', icon: 'cloud', node_type: 'CONTAINER',
+        children: [
+          { id: 123, code: 'MNU_TEMA_02', label: 'Docker Multi-stage', path: '/temas/tema-02-docker-multistage', icon: 'layers', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 400, code: 'SUB_EXT_FRONT', label: 'Frontend Moderno', icon: 'web', node_type: 'CONTAINER',
+        children: [
+          { id: 401, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 402, code: 'SUB_EXT_BACK', label: 'Backend & APIs', icon: 'api', node_type: 'CONTAINER',
+        children: [
+          { id: 403, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 404, code: 'SUB_EXT_CLOUD', label: 'DevOps & Cloud', icon: 'cloud', node_type: 'CONTAINER',
+        children: [
+          { id: 405, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 406, code: 'SUB_EXT_SEC', label: 'Ciberseguridad', icon: 'security', node_type: 'CONTAINER',
+        children: [
+          { id: 407, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', node_type: 'OBJECT' }
+        ]
+      }
+    ]
+  }
+];
+
+const pathToTabMap = {
+  '/': 'landing',
+  '/settings': 'settings',
+  '/configuracion': 'settings',
+  '/features': 'features',
+  '/pricing': 'pricing',
+  '/faq': 'faq',
+  '/docs': 'docs',
+  '/privacy': 'privacy',
+  '/terms': 'terms',
+  '/login': 'login',
+  '/register': 'register',
+  '/main': 'main',
+  '/diff': 'diff',
+  '/filters': 'filters',
+  '/history': 'history',
+  '/terminal': 'terminal',
+  '/temas/tema-postgres': 'tema-postgres',
+  '/temas/tema-oracle': 'tema-oracle',
+  '/temas/tema-sqlserver': 'tema-sqlserver',
+  '/temas/tema-mysql': 'tema-mysql',
+  '/temas/tema-mariadb': 'tema-mariadb',
+  '/temas/tema-mongodb': 'tema-mongodb',
+  '/temas/tema-02-docker-multistage': 'tema-02-docker-multistage',
+  '/temas/tema-04-iac-terraform': 'tema-04-iac-terraform',
+  '/temas/tema-17-kubernetes': 'kubernetes-avanzado',
+  '/temas/tema-18-cloud-native': 'cloud-avanzado',
+  '/temas/tema-03-git-avanzado': 'git-avanzado',
+  '/temas/tema-08-devsecops-vault': 'devsecops-avanzado',
+  '/temas/tema-05-rbac-abac-ngac': 'auth-avanzado',
+  '/temas/tema-06-ngac-menus': 'auth-experto',
+  '/temas/tema-07-rls-gobernanza': 'cripto-avanzado',
+  '/temas/tema-10-etl-saga': 'dwh-avanzado',
+  '/temas/tema-11-saas-multitenant': 'arq-avanzado',
+  '/temas/tema-12-resiliencia-backend': 'arq-experto',
+  '/temas/tema-15-arquitecturas-limpias': 'cleancode-avanzado',
+  '/temas/tema-16-ingenieria-requerimientos': 'req-avanzado',
+  '/temas/tema-13-llm-rag': 'ia-avanzado',
+  '/temas/tema-14-ai-agents': 'ia-experto',
+  '/guias/postgres/inicial': 'postgres-inicial',
+  '/guias/postgres/basico': 'postgres-basico',
+  '/guias/postgres/medio': 'postgres-medio',
+  '/guias/postgres/avanzado': 'postgres-avanzado',
+  '/guias/postgres/experto': 'postgres-experto',
+  '/guias/oracle/inicial': 'oracle-inicial',
+  '/guias/oracle/basico': 'oracle-basico',
+  '/guias/oracle/medio': 'oracle-medio',
+  '/guias/oracle/avanzado': 'oracle-avanzado',
+  '/guias/oracle/experto': 'oracle-experto',
+  '/guias/docker/inicial': 'docker-inicial',
+  '/guias/docker/basico': 'docker-basico',
+  '/guias/docker/medio': 'docker-medio',
+  '/guias/docker/avanzado': 'docker-avanzado',
+  '/guias/docker/experto': 'docker-experto',
+  '/guias/ngac/inicial': 'ngac-inicial',
+  '/guias/ngac/basico': 'ngac-basico',
+  '/guias/ngac/medio': 'ngac-medio',
+  '/guias/ngac/avanzado': 'ngac-avanzado',
+  '/guias/ngac/experto': 'ngac-experto',
+  '/temas/ext-react': 'ext-react',
+  '/temas/ext-vue': 'ext-vue',
+  '/temas/ext-angular': 'ext-angular',
+  '/temas/ext-svelte': 'ext-svelte',
+  '/temas/ext-wasm': 'ext-wasm',
+  '/temas/ext-node': 'ext-node',
+  '/temas/ext-spring': 'ext-spring',
+  '/temas/ext-django': 'ext-django',
+  '/temas/ext-fastapi': 'ext-fastapi',
+  '/temas/ext-graphql': 'ext-graphql',
+  '/temas/ext-aws': 'ext-aws',
+  '/temas/ext-azure': 'ext-azure',
+  '/temas/ext-gcp': 'ext-gcp',
+  '/temas/ext-cicd': 'ext-cicd',
+  '/temas/ext-obs': 'ext-obs',
+  '/temas/ext-pentest': 'ext-pentest',
+  '/temas/ext-malware': 'ext-malware',
+  '/temas/ext-cripto': 'ext-cripto',
+  '/temas/ext-harden': 'ext-harden',
+  '/temas/ext-zerot': 'ext-zerot',
+  '/temas/ext-prompt': 'ext-prompt',
+  '/temas/ext-finetune': 'ext-finetune',
+  '/temas/ext-datalake': 'ext-datalake',
+  '/temas/ext-kafka': 'ext-kafka',
+  '/temas/ext-spark': 'ext-spark'
+};
+
+const codeToTabMap = {
+  'mnu_nmergeia_landing': 'landing',
+  'mnu_nmergeia_main': 'main',
+  'mnu_nmergeia_features': 'features',
+  'mnu_nmergeia_pricing': 'pricing',
+  'mnu_nmergeia_docs': 'docs',
+  'mnu_nmergeia_login': 'login',
+  'mnu_nmergeia_register': 'register',
+  'mnu_nmergeia_diff': 'diff',
+  'mnu_nmergeia_filters': 'filters',
+  'mnu_nmergeia_history': 'history',
+  'mnu_nmergeia_terminal': 'terminal',
+  'mnu_nmergeia_settings': 'settings',
+  'mnu_nmergeia_configuracion': 'settings',
+  'mnu_tema_01': 'tema-01-opt-postgres',
+  'mnu_tema_02': 'tema-02-docker-multistage',
+  'mnu_tema_03': 'git-avanzado',
+  'mnu_tema_04': 'tema-04-iac-terraform',
+  'mnu_tema_05': 'auth-avanzado',
+  'mnu_tema_06': 'auth-experto',
+  'mnu_tema_07': 'cripto-avanzado',
+  'mnu_tema_08': 'devsecops-avanzado',
+  'mnu_tema_09': 'tema-09-migracion-db',
+  'mnu_tema_10': 'dwh-avanzado',
+  'mnu_tema_11': 'arq-avanzado',
+  'mnu_tema_12': 'arq-experto',
+  'mnu_tema_13': 'ia-avanzado',
+  'mnu_tema_14': 'ia-experto',
+  'mnu_tema_15': 'cleancode-avanzado',
+  'mnu_tema_16': 'req-avanzado',
+  'mnu_tema_17': 'kubernetes-avanzado',
+  'mnu_tema_18': 'cloud-avanzado',
+  'mnu_ext_react': 'ext-react',
+  'mnu_ext_vue': 'ext-vue',
+  'mnu_ext_angular': 'ext-angular',
+  'mnu_ext_svelte': 'ext-svelte',
+  'mnu_ext_wasm': 'ext-wasm',
+  'mnu_ext_node': 'ext-node',
+  'mnu_ext_spring': 'ext-spring',
+  'mnu_ext_django': 'ext-django',
+  'mnu_ext_fastapi': 'ext-fastapi',
+  'mnu_ext_graphql': 'ext-graphql',
+  'mnu_ext_aws': 'ext-aws',
+  'mnu_ext_azure': 'ext-azure',
+  'mnu_ext_gcp': 'ext-gcp',
+  'mnu_ext_cicd': 'ext-cicd',
+  'mnu_ext_obs': 'ext-obs',
+  'mnu_ext_pentest': 'ext-pentest',
+  'mnu_ext_malware': 'ext-malware',
+  'mnu_ext_cripto': 'ext-cripto',
+  'mnu_ext_harden': 'ext-harden',
+  'mnu_ext_zerot': 'ext-zerot',
+  'mnu_ext_prompt': 'ext-prompt',
+  'mnu_ext_finetune': 'ext-finetune',
+  'mnu_ext_datalake': 'ext-datalake',
+  'mnu_ext_kafka': 'ext-kafka',
+  'mnu_ext_spark': 'ext-spark'
+};
+
+export const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed }) => {
+  const { activeTab, setActiveTab, selectedDiffContent, sentinelMenuTree } = useAppStore();
   const { t } = useTranslation();
-  const { activeTab, setActiveTab, userSession } = useAppStore();
-  const [allowedOptions, setAllowedOptions] = useState([
-    'Comparar', 'Historial', 'Filtros', 'FAQ', 
-    'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'
-  ]); 
-  
-  const [isHelpFolderOpen, setIsHelpFolderOpen] = useState(false);
-  const [isDbFolderOpen, setIsDbFolderOpen] = useState(false);
-  const [isPostgresFolderOpen, setIsPostgresFolderOpen] = useState(false);
-  const [isOracleFolderOpen, setIsOracleFolderOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
 
-  useEffect(() => {
-    const userRoles = userSession ? userSession.roles || [] : ['ROLE_INVITADO'];
-    NgacService.getDynamicMenu(userRoles, !!userSession)
-      .then(options => {
-        if (options && options.length > 0) {
-          setAllowedOptions(options);
-        }
-      })
-      .catch(e => console.error("Error cargando menú dinámico de Sentinel:", e));
-  }, [userSession]);
+  const [expandedCategories, setExpandedCategories] = useState({});
 
-  // Lógica: Si el sidebar se colapsa, cerramos las carpetas A MENOS que un hijo esté activo.
-  // Si un hijo está activo, abrimos automáticamente toda la rama de sus padres.
-  useEffect(() => {
-    const isHelpChildActive = activeTab === 'faq' || activeTab.startsWith('postgres-') || activeTab.startsWith('oracle-');
-    const isDbChildActive = activeTab.startsWith('postgres-') || activeTab.startsWith('oracle-');
-    const isPostgresChildActive = activeTab.startsWith('postgres-');
-    const isOracleChildActive = activeTab.startsWith('oracle-');
-
-    if (isCollapsed) {
-      setIsHelpFolderOpen(isHelpChildActive);
-      setIsDbFolderOpen(isDbChildActive);
-      setIsPostgresFolderOpen(isPostgresChildActive);
-      setIsOracleFolderOpen(isOracleChildActive);
-    } else {
-      // Al expandir, podríamos querer abrir la rama activa también.
-      if (isHelpChildActive) setIsHelpFolderOpen(true);
-      if (isDbChildActive) setIsDbFolderOpen(true);
-      if (isPostgresChildActive) setIsPostgresFolderOpen(true);
-      if (isOracleChildActive) setIsOracleFolderOpen(true);
+  const findPath = (nodes, targetCode, currentPath = []) => {
+    for (const node of nodes) {
+      const code = node.code || node.id;
+      if (code === targetCode) return [...currentPath, code];
+      if (node.children) {
+        const path = findPath(node.children, targetCode, [...currentPath, code]);
+        if (path) return path;
+      }
     }
-  }, [isCollapsed, activeTab]);
+    return null;
+  };
 
-  const showComparar = allowedOptions.includes('Comparar');
-  const showLicencia = allowedOptions.includes('Licencia');
-  const showHistorial = allowedOptions.includes('Historial');
-  const showFiltros = allowedOptions.includes('Filtros');
-  const showFaq = allowedOptions.includes('FAQ');
-  const showPostgresInicial = allowedOptions.includes('PostgresInicial');
-  const showPostgresBasico = allowedOptions.includes('PostgresBasico');
-  const showPostgresMedio = allowedOptions.includes('PostgresMedio');
-  const showPostgresAvanzado = allowedOptions.includes('PostgresAvanzado');
-  const showPostgresExperto = allowedOptions.includes('PostgresExperto');
+  const toggleCategory = (catCode) => {
+    setExpandedCategories(prev => {
+      // Si ya estaba expandido manualmente, lo quitamos
+      if (prev[catCode]) {
+        const next = { ...prev };
+        delete next[catCode];
+        return next;
+      }
+      
+      // Si se está abriendo, calculamos su ruta (para no cerrar a sus padres)
+      // y limpiamos el resto de carpetas abiertas manualmente.
+      const path = findPath(menuItems, catCode) || [catCode];
+      const next = {};
+      path.forEach(code => { next[code] = true; });
+      return next;
+    });
+  };
 
-  const hasHelpContent = showFaq || showPostgresInicial || showPostgresBasico || showPostgresMedio || showPostgresAvanzado || showPostgresExperto;
+  const handleNavClick = (tab) => {
+    setActiveTab(tab);
+    if (onMobileClose) onMobileClose();
+  };
 
-  return (
-    <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <button 
-        className="sidebar-btn toggle-collapse-btn" 
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        style={{ 
-          justifyContent: isCollapsed ? 'center' : 'flex-end', 
-          padding: isCollapsed ? '12px 0' : '10px 20px', 
-          borderBottom: '1px solid var(--border-color)', 
-          marginBottom: '10px',
-          width: '100%',
-          boxSizing: 'border-box'
-        }}
-        data-tooltip={isCollapsed ? "Expandir menú" : "Colapsar menú"}
-      >
-        <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>menu</span>
-        {!isCollapsed && <span>{t('collapse_menu', { defaultValue: 'Colapsar' })}</span>}
-      </button>
+  const menuItems = sentinelMenuTree || DEFAULT_SENTINEL_MENU;
 
-      {/* PÁGINA PRINCIPAL / INICIO (Siempre Visible) */}
-      <button className={`sidebar-btn ${activeTab === 'landing' ? 'active' : ''}`} data-tooltip="Inicio" onClick={() => setActiveTab('landing')}>
-        <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>home</span> 
-        {!isCollapsed && <span>Inicio</span>}
-      </button>
+  const getNodeTargetTab = (node) => {
+    const route = (node.visible_route_url || node.path || '').toLowerCase();
+    if (pathToTabMap[route]) return pathToTabMap[route];
 
-      {showComparar && (
-        <button className={`sidebar-btn ${activeTab === 'main' ? 'active' : ''}`} data-tooltip={t('nav_compare')} onClick={() => setActiveTab('main')}>
-          <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>compare</span> 
-          {!isCollapsed && <span>{t('nav_compare', { defaultValue: 'Comparar' })}</span>}
+    const rawCode = (node.code || '').toLowerCase();
+    if (codeToTabMap[rawCode]) return codeToTabMap[rawCode];
+
+    const slug = (node.visible_slug || node.code || '').toLowerCase().replace('nmerge_', '').replace('nmergeia_', '');
+    if (codeToTabMap[slug]) return codeToTabMap[slug];
+
+    if (slug === 'home' || slug === 'start' || slug === 'inicio') return 'landing';
+    if (slug === 'configuracion' || slug === 'settings' || slug === 'config') return 'settings';
+    if (slug === 'main' || slug === 'comparar' || slug === 'principal') return 'main';
+
+    if (route) {
+      const cleanRoute = route.replace('/temas/', '').replace('/guias/', '').replace('/', '');
+      if (cleanRoute) return cleanRoute;
+    }
+    return node.code?.toLowerCase() || '';
+  };
+
+  const isNodeActive = (node) => {
+    if (!activeTab) return false;
+    const currentTab = activeTab.toLowerCase();
+    const targetTab = getNodeTargetTab(node).toLowerCase();
+    
+    if (currentTab === targetTab) return true;
+    
+    const route = (node.visible_route_url || node.path || '').toLowerCase();
+    if (route === `/${currentTab}` || route.endsWith(`/${currentTab}`)) return true;
+
+    const slug = (node.visible_slug || node.code || '').toLowerCase().replace('nmerge_', '');
+    if (slug === currentTab) return true;
+
+    return false;
+  };
+
+  const isTreeOrNodeActive = (node) => {
+    if (isNodeActive(node)) return true;
+    if (node.children && node.children.length > 0) {
+      return node.children.some(child => isTreeOrNodeActive(child));
+    }
+    return false;
+  };
+
+  const renderNode = (node) => {
+    let isDisabled = node.is_enabled === false || node.disabled === true || node.available === false || node.access_type === 'DISABLED';
+    
+    // AdSense Gate removed: Migrated to Sentinel-NGAC policies.
+    // The node.is_enabled and node.available properties from the backend NGAC payload dictate access.
+
+    if (isDisabled) return null;
+
+    const isLeaf = node.node_type === 'OBJECT' || (!node.children || node.children.length === 0);
+    const targetTab = getNodeTargetTab(node);
+    const isActive = isNodeActive(node);
+    const hasActive = isTreeOrNodeActive(node);
+    const rawLabel = node.visible_label || node.label || node.nombre || node.title || node.code || '';
+    let cleanLabel = cleanNodeLabel(rawLabel);
+    
+    // Aplicar traducción si existe para el código del nodo
+    if (node.code && t(node.code) !== node.code) {
+      cleanLabel = t(node.code);
+    }
+
+    // Cuando el sidebar está colapsado, queremos ver los iconos de los menús
+    // Eliminamos el return null; que ocultaba los elementos inactivos
+
+    if (isLeaf) {
+      return (
+        <button
+          key={node.id || node.code}
+          className={`sidebar-btn ${isActive ? 'active' : ''}`}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: isCollapsed ? '10px 0' : '8px 12px',
+            justifyContent: isCollapsed ? 'center' : 'flex-start',
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            borderRadius: '8px',
+            background: isActive ? 'var(--bg-tertiary)' : 'transparent',
+            color: isActive ? 'var(--accent-secondary)' : 'var(--text-primary)',
+            border: 'none',
+            fontWeight: isActive ? 700 : 500,
+            boxSizing: 'border-box'
+          }}
+          data-tooltip={cleanLabel}
+          onClick={() => handleNavClick(targetTab)}
+        >
+          <span className="material-symbols-rounded" style={{ fontSize: '1.15rem', color: isActive ? 'var(--accent-secondary)' : 'var(--accent-primary)', flexShrink: 0 }}>
+            {node.icon || 'article'}
+          </span>
+          {!isCollapsed && (
+            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1, textAlign: 'left' }}>
+              {cleanLabel}
+            </span>
+          )}
         </button>
-      )}
+      );
+    }
 
-      {showLicencia && (
-        <button className={`sidebar-btn ${activeTab === 'register' ? 'active' : ''}`} data-tooltip={t('nav_license')} onClick={() => setActiveTab('register')}>
-          <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>card_membership</span> 
-          {!isCollapsed && <span>{t('nav_license', { defaultValue: 'Licencia' })}</span>}
-        </button>
-      )}
+    // Nodos tipo CONTAINER (Secciones / Categorías)
+    const validChildren = node.children ? node.children.map(child => renderNode(child)).filter(Boolean) : [];
+    if (validChildren.length === 0) return null;
 
-      {showHistorial && (
-        <button className={`sidebar-btn ${activeTab === 'history' ? 'active' : ''}`} data-tooltip={t('nav_history')} onClick={() => setActiveTab('history')}>
-          <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>history</span> 
-          {!isCollapsed && <span>{t('nav_history', { defaultValue: 'Historial' })}</span>}
-        </button>
-      )}
+    const nodeCode = node.code || node.id;
+    const isExpanded = expandedCategories[nodeCode] === true || hasActive;
 
-      {showFiltros && (
-        <button className={`sidebar-btn ${activeTab === 'filters' ? 'active' : ''}`} data-tooltip={t('nav_filters')} onClick={() => setActiveTab('filters')}>
-          <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>filter_alt</span> 
-          {!isCollapsed && <span>{t('nav_filters', { defaultValue: 'Filtros' })}</span>}
-        </button>
-      )}
-
-      {/* ACORDEÓN UNIFICADO: AYUDA Y GUÍAS */}
-      {hasHelpContent && (
-        <>
-          <button 
-            className={`sidebar-btn ${isHelpFolderOpen ? 'active-folder' : ''}`} 
-            onClick={() => setIsHelpFolderOpen(!isHelpFolderOpen)}
-            data-tooltip="Ayuda y Guías"
-            style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', width: '100%' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: isCollapsed ? 'center' : 'flex-start', width: isCollapsed ? '100%' : 'auto' }}>
-              <span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: 'var(--accent-secondary)'}}>folder</span>
-              {!isCollapsed && <span>Ayuda y Guías</span>}
-            </div>
+    return (
+      <div key={nodeCode} style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: '2px' }}>
+        <button
+          onClick={() => toggleCategory(nodeCode)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: isCollapsed ? 'center' : 'space-between',
+            width: '100%',
+            padding: '8px 12px',
+            background: hasActive ? 'rgba(6, 182, 212, 0.12)' : 'rgba(255, 255, 255, 0.03)',
+            border: 'none',
+            borderRadius: '8px',
+            color: 'var(--text-primary)',
+            fontWeight: '700',
+            fontSize: '0.82rem',
+            cursor: 'pointer',
+            boxSizing: 'border-box'
+          }}
+          data-tooltip={cleanLabel}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+            <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', color: 'var(--accent-secondary)', flexShrink: 0 }}>
+              {node.icon || 'folder'}
+            </span>
             {!isCollapsed && (
-              <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
-                {isHelpFolderOpen ? 'expand_less' : 'expand_more'}
+              <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                {cleanLabel}
               </span>
             )}
-          </button>
-
-          {isHelpFolderOpen && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: isCollapsed ? '0' : '1rem', width: '100%', boxSizing: 'border-box' }}>
-              {showFaq && (
-                <button className={`sidebar-btn ${activeTab === 'faq' ? 'active' : ''}`} data-tooltip="FAQ" onClick={() => setActiveTab('faq')} style={{ fontSize: '0.82rem', padding: isCollapsed ? '10px 0' : '8px 12px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                  <span className="material-symbols-rounded" style={{fontSize: '1.05rem', marginRight: isCollapsed ? '0' : '6px', color: 'var(--accent-primary)'}}>help</span>
-                  {!isCollapsed && 'FAQ'}
-                </button>
-              )}
-
-              <button 
-                className={`sidebar-btn ${isDbFolderOpen ? 'active-folder' : ''}`} 
-                onClick={() => setIsDbFolderOpen(!isDbFolderOpen)}
-                data-tooltip="Bases de Datos"
-                style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', width: '100%', fontSize: '0.82rem', padding: isCollapsed ? '10px 0' : '8px 12px' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isCollapsed ? 'center' : 'flex-start', width: isCollapsed ? '100%' : 'auto' }}>
-                  <span className="material-symbols-rounded" style={{fontSize: '1.05rem', color: 'var(--accent-secondary)'}}>database</span>
-                  {!isCollapsed && <span>Bases de Datos</span>}
-                </div>
-                {!isCollapsed && (
-                  <span className="material-symbols-rounded" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                    {isDbFolderOpen ? 'expand_less' : 'expand_more'}
-                  </span>
-                )}
-              </button>
-
-              {isDbFolderOpen && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: isCollapsed ? '0' : '1rem', width: '100%', boxSizing: 'border-box' }}>
-                  
-                  {/* POSTGRESQL */}
-                  <button 
-                    className={`sidebar-btn ${isPostgresFolderOpen ? 'active-folder' : ''}`} 
-                    onClick={() => setIsPostgresFolderOpen(!isPostgresFolderOpen)}
-                    data-tooltip="PostgreSQL"
-                    style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', width: '100%', fontSize: '0.82rem', padding: isCollapsed ? '10px 0' : '6px 12px' }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isCollapsed ? 'center' : 'flex-start', width: isCollapsed ? '100%' : 'auto' }}>
-                      <span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#336791'}}>storage</span>
-                      {!isCollapsed && <span>PostgreSQL</span>}
-                    </div>
-                    {!isCollapsed && (
-                      <span className="material-symbols-rounded" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                        {isPostgresFolderOpen ? 'expand_less' : 'expand_more'}
-                      </span>
-                    )}
-                  </button>
-
-                  {isPostgresFolderOpen && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: isCollapsed ? '0' : '0.8rem', width: '100%', boxSizing: 'border-box' }}>
-                      {showPostgresInicial && (
-                        <button className={`sidebar-btn ${activeTab === 'postgres-inicial' ? 'active' : ''}`} data-tooltip="Postgres Inicial" onClick={() => setActiveTab('postgres-inicial')} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: 'var(--text-secondary)'}}>play_circle</span>
-                          {!isCollapsed && 'Inicial'}
-                        </button>
-                      )}
-                      {showPostgresBasico && (
-                        <button className={`sidebar-btn ${activeTab === 'postgres-basico' ? 'active' : ''}`} data-tooltip="Postgres Básica" onClick={() => setActiveTab('postgres-basico')} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: 'var(--accent-primary)'}}>school</span>
-                          {!isCollapsed && 'Básica'}
-                        </button>
-                      )}
-                      {showPostgresMedio && (
-                        <button className={`sidebar-btn ${activeTab === 'postgres-medio' ? 'active' : ''}`} data-tooltip="Postgres Media" onClick={() => setActiveTab('postgres-medio')} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: 'var(--accent-secondary)'}}>model_training</span>
-                          {!isCollapsed && 'Media'}
-                        </button>
-                      )}
-                      {showPostgresAvanzado && (
-                        <button className={`sidebar-btn ${activeTab === 'postgres-avanzado' ? 'active' : ''}`} data-tooltip="Postgres Avanzada" onClick={() => setActiveTab('postgres-avanzado')} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: 'var(--error-color)'}}>rocket_launch</span>
-                          {!isCollapsed && 'Avanzada'}
-                        </button>
-                      )}
-                      {showPostgresExperto && (
-                        <button className={`sidebar-btn ${activeTab === 'postgres-experto' ? 'active' : ''}`} data-tooltip="Postgres Experto" onClick={() => setActiveTab('postgres-experto')} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: '#8E24AA'}}>workspace_premium</span>
-                          {!isCollapsed && 'Experto'}
-                        </button>
-                      )}
-                    </div>
-                  )}
-
-                  {/* ORACLE */}
-                  <button 
-                    className={`sidebar-btn ${isOracleFolderOpen ? 'active-folder' : ''}`} 
-                    onClick={() => setIsOracleFolderOpen(!isOracleFolderOpen)}
-                    data-tooltip="Oracle"
-                    style={{ display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', width: '100%', fontSize: '0.82rem', padding: isCollapsed ? '10px 0' : '6px 12px' }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isCollapsed ? 'center' : 'flex-start', width: isCollapsed ? '100%' : 'auto' }}>
-                      <span className="material-symbols-rounded" style={{fontSize: '1rem', color: '#F80000'}}>storage</span>
-                      {!isCollapsed && <span>Oracle</span>}
-                    </div>
-                    {!isCollapsed && (
-                      <span className="material-symbols-rounded" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                        {isOracleFolderOpen ? 'expand_less' : 'expand_more'}
-                      </span>
-                    )}
-                  </button>
-
-                  {isOracleFolderOpen && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: isCollapsed ? '0' : '0.8rem', width: '100%', boxSizing: 'border-box' }}>
-                       <button className={`sidebar-btn ${activeTab === 'oracle-basico' ? 'active' : ''}`} data-tooltip="Oracle Básica (Próximamente)" onClick={() => {}} style={{ fontSize: '0.78rem', padding: isCollapsed ? '10px 0' : '6px 10px', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-                          <span className="material-symbols-rounded" style={{fontSize: '0.9rem', marginRight: isCollapsed ? '0' : '4px', color: 'var(--text-secondary)'}}>school</span>
-                          {!isCollapsed && 'Básica'}
-                        </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+          </div>
+          {!isCollapsed && (
+            <span className="material-symbols-rounded" style={{ fontSize: '1rem', color: 'var(--text-tertiary)' }}>
+              {isExpanded ? 'expand_less' : 'expand_more'}
+            </span>
           )}
-        </>
-      )}
-
-      {allowedOptions.includes('Terminal') && (
-        <button className={`sidebar-btn ${activeTab === 'terminal' ? 'active' : ''}`} data-tooltip="Terminal de comandos" onClick={() => setActiveTab('terminal')}>
-          <span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>terminal</span> 
-          {!isCollapsed && <span>Terminal</span>}
         </button>
-      )}
 
-      {!isCollapsed && <NgacAdBanner position="Sidebar" />}
- 
-      {!isCollapsed && (
-        <div style={{ marginTop: 'auto', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center', width: '100%' }}>
-          <NgacAdBanner position="Sidebar" />
-        </div>
+        {isExpanded && (
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', paddingLeft: isCollapsed ? '0' : '10px', gap: '2px', marginTop: '2px' }}>
+            {validChildren}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {mobileOpen && (
+        <div 
+          className="sidebar-backdrop" 
+          onClick={onMobileClose} 
+        />
       )}
-    </aside>
+      <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+
+
+        {/* RENDERIZADO VERTICAL DE OPCIONES (HACIA ABAJO) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', flex: 1, overflowY: 'auto' }}>
+          {menuItems.map(category => renderNode(category))}
+        </div>
+
+        {/* BOTÓN DE CONFIGURACIÓN */}
+        {(!isCollapsed || activeTab === 'settings') && (
+          <button 
+            className={`sidebar-btn ${activeTab === 'settings' ? 'active' : ''}`} 
+            data-tooltip="Configuración del Sistema" 
+            onClick={() => handleNavClick('settings')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '8px 12px',
+              justifyContent: isCollapsed ? 'center' : 'flex-start',
+              color: activeTab === 'settings' ? 'var(--accent-secondary)' : 'var(--text-primary)',
+              fontWeight: activeTab === 'settings' ? 700 : 500,
+              background: activeTab === 'settings' ? 'var(--bg-tertiary)' : 'transparent',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '0.84rem',
+              width: '100%',
+              marginTop: 'auto',
+              boxSizing: 'border-box'
+            }}
+          >
+            <span className="material-symbols-rounded" style={{ fontSize: '1.15rem', color: 'var(--accent-secondary)', flexShrink: 0 }}>settings</span> 
+            {!isCollapsed && <span>Configuración</span>}
+          </button>
+        )}
+
+      </aside>
+    </>
   );
 };
+
+

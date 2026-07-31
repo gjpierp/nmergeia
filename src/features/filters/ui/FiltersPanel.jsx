@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient } from '../../../shared/lib/apiClient.js';
+import { apiClient, FILTER_LOCAL_KEY } from '../../../shared/lib/apiClient.js';
 import { useAppStore } from '../../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
+import { PageHeader } from '../../../shared/ui/PageHeader.jsx';
 
 export const FiltersPanel = ({ openDiffTab, processFiles }) => {
   const { t } = useTranslation();
@@ -14,29 +15,24 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
   const [newType, setNewType] = useState('exclude'); // 'exclude' (-) or 'include' (+)
   const [patternTarget, setPatternTarget] = useState('file'); // 'file' or 'directory'
 
-  // Cargar filtros al montar
+  // Cargar filtros al montar — usa key unificado, siempre disponible
   useEffect(() => {
-    if (sessionFilterConfig !== null) {
+    if (sessionFilterConfig !== null && sessionFilterConfig !== undefined) {
       parseRules(sessionFilterConfig);
     } else {
-      const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('nmerge_user_session') : null;
-      const userSession = userSessionStr ? JSON.parse(userSessionStr) : null;
-      const userEmail = userSession ? userSession.email : null;
-      const savedUserFilters = userEmail ? localStorage.getItem(`nmergeia_filters_${userEmail}`) : null;
-
-      if (savedUserFilters !== null) {
-        setSessionFilterConfig(savedUserFilters);
-        parseRules(savedUserFilters);
+      // Leer del localStorage unificado primero (instantáneo, sin red)
+      const local = typeof window !== 'undefined' ? localStorage.getItem(FILTER_LOCAL_KEY) : null;
+      if (local !== null && local.trim() !== '') {
+        setSessionFilterConfig(local);
+        parseRules(local);
       } else {
+        // Fallback: intentar servidor (readFilter ya tiene timeout de 3s y persiste en local)
         apiClient.readFilter('filtro.txt')
           .then(txt => {
             setSessionFilterConfig(txt);
             parseRules(txt);
-            if (userEmail) {
-              localStorage.setItem(`nmergeia_filters_${userEmail}`, txt);
-            }
           })
-          .catch(e => console.error("Error reading filter:", e));
+          .catch(e => console.error('Error reading filter:', e));
       }
     }
   }, [sessionFilterConfig, setSessionFilterConfig]);
@@ -48,20 +44,61 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     }
     const lines = txt.split('\n');
     const parsed = [];
+    const activePatternMap = new Map(); // pattern -> index in parsed
+    
     lines.forEach((line, idx) => {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('//')) {
-        // Guardar comentarios o líneas vacías para no perder comentarios del usuario
+      if (!trimmed) {
         parsed.push({ id: idx, type: 'comment', raw: line });
         return;
       }
-      if (trimmed.startsWith('+')) {
-        parsed.push({ id: idx, type: 'include', pattern: trimmed.substring(1).trim(), raw: line });
-      } else if (trimmed.startsWith('-') || trimmed.startsWith('!')) {
-        parsed.push({ id: idx, type: 'exclude', pattern: trimmed.substring(1).trim(), raw: line });
+      
+      let isComment = trimmed.startsWith('//');
+      let content = isComment ? trimmed.substring(2).trim() : trimmed;
+      
+      let isRuleFormat = content.startsWith('+') || content.startsWith('-') || content.startsWith('!');
+      if (isRuleFormat && /^[+\-!]+$/.test(content)) {
+         isRuleFormat = false;
+      }
+      
+      if (isComment && !isRuleFormat) {
+         parsed.push({ id: idx, type: 'comment', raw: line });
+         return;
+      }
+      
+      const active = !isComment;
+      let type = 'exclude';
+      let pattern = content;
+      
+      if (content.startsWith('+')) {
+        type = 'include';
+        pattern = content.substring(1).trim();
+      } else if (content.startsWith('-') || content.startsWith('!')) {
+        type = 'exclude';
+        pattern = content.substring(1).trim();
       } else {
-        // Por defecto excluir si no tiene signo
-        parsed.push({ id: idx, type: 'exclude', pattern: trimmed, raw: line });
+        if (!isComment) {
+          type = 'exclude';
+        } else {
+          parsed.push({ id: idx, type: 'comment', raw: line });
+          return;
+        }
+      }
+      
+      // Deduplication logic
+      if (activePatternMap.has(pattern)) {
+        // Pattern already exists
+        const existingIdx = activePatternMap.get(pattern);
+        const existingRule = parsed[existingIdx];
+        
+        // If the existing rule is inactive and the new one is active, we upgrade it
+        if (active && !existingRule.active) {
+          parsed[existingIdx] = { id: existingRule.id, type, pattern, active, raw: line };
+        }
+        // Otherwise, we just drop this duplicate line (it's redundant)
+      } else {
+        activePatternMap.set(pattern, parsed.length);
+        parsed.push({ id: idx, type, pattern, active, raw: line });
       }
     });
     setRules(parsed);
@@ -71,28 +108,21 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     const serialized = newRules.map(r => {
       if (r.type === 'comment') return r.raw;
       const prefix = r.type === 'include' ? '+' : '-';
-      return `${prefix} ${r.pattern}`;
+      const ruleStr = `${prefix} ${r.pattern}`;
+      return r.active ? ruleStr : `// ${ruleStr}`;
     }).join('\n');
 
     try {
+      // writeFilter persiste en localStorage (FILTER_LOCAL_KEY) antes del servidor
       await apiClient.writeFilter('filtro.txt', serialized);
       setSessionFilterConfig(serialized);
+      addToast(t('toast_filters_updated'), 'success');
 
-      // Persistir filtros para la sesión activa del usuario
-      const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('nmerge_user_session') : null;
-      const userSession = userSessionStr ? JSON.parse(userSessionStr) : null;
-      if (userSession && userSession.email) {
-        localStorage.setItem(`nmergeia_filters_${userSession.email}`, serialized);
-      }
-
-      addToast(t('toast_filters_updated'), "success");
-      
-      // Actualizar la comparación de directorios en caliente automáticamente
       if (processFiles) {
         await processFiles(true);
       }
     } catch (e) {
-      addToast(t('toast_save_filters_error'), "error");
+      addToast(t('toast_save_filters_error'), 'error');
     }
   };
 
@@ -110,7 +140,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     const newRule = {
       id: Date.now(),
       type: newType,
-      pattern: pattern
+      pattern: pattern,
+      active: true
     };
 
     const updated = [...rules, newRule];
@@ -121,6 +152,17 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
 
   const handleDeleteRule = (id) => {
     const updated = rules.filter(r => r.id !== id);
+    setRules(updated);
+    serializeAndSave(updated);
+  };
+
+  const handleToggleRule = (id) => {
+    const updated = rules.map(r => {
+      if (r.id === id) {
+        return { ...r, active: !r.active };
+      }
+      return r;
+    });
     setRules(updated);
     serializeAndSave(updated);
   };
@@ -157,7 +199,10 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
     serializeAndSave(updated);
   };
 
-  const activeRules = rules.filter(r => r.type !== 'comment');
+  const allActiveRules = rules.filter(r => r.type !== 'comment');
+  const includeRules = allActiveRules.filter(r => r.type === 'include');
+  const excludeRules = allActiveRules.filter(r => r.type === 'exclude');
+  const activeRules = [...includeRules, ...excludeRules];
 
   const [rawText, setRawText] = useState('');
 
@@ -170,30 +215,26 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
 
   const handleSaveRawText = async () => {
     try {
+      // writeFilter persiste en localStorage (FILTER_LOCAL_KEY) antes del servidor
       await apiClient.writeFilter('filtro.txt', rawText);
       setSessionFilterConfig(rawText);
       parseRules(rawText);
-      
-      const userSessionStr = typeof window !== 'undefined' ? localStorage.getItem('nmerge_user_session') : null;
-      const userSession = userSessionStr ? JSON.parse(userSessionStr) : null;
-      if (userSession && userSession.email) {
-        localStorage.setItem(`nmergeia_filters_${userSession.email}`, rawText);
-      }
-
-      addToast(t('toast_raw_filters_saved'), "success");
+      addToast(t('toast_raw_filters_saved'), 'success');
       if (processFiles) {
         await processFiles(true);
       }
     } catch (e) {
-      addToast(t('toast_raw_filters_error'), "error");
+      addToast(t('toast_raw_filters_error'), 'error');
     }
   };
 
   return (
     <div className="main-screen" style={{ padding: '20px', fontFamily: '"Outfit", sans-serif' }}>
-      <h2 className="main-screen-title" style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '20px', color: 'var(--text-primary)' }}>
-        {t('filters_title')}
-      </h2>
+      <PageHeader 
+        icon="filter_alt" 
+        title={t('filters_title')} 
+        subtitle="Gestor de reglas de inclusión y exclusión de archivos y directorios" 
+      />
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', alignItems: 'start' }}>
         
@@ -334,7 +375,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                       borderRadius: '10px',
                       height: '46px',
                       boxSizing: 'border-box',
-                      transition: 'border-color 0.2s'
+                      transition: 'border-color 0.2s',
+                      opacity: rule.active ? 1 : 0.5
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -365,6 +407,17 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
                       <code style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{rule.pattern}</code>
                     </div>
                     <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        type="button"
+                        className="btn clear-btn small-btn"
+                        onClick={() => handleToggleRule(rule.id)}
+                        style={{ color: rule.active ? '#10b981' : '#94a3b8', height: '28px', width: '28px', minWidth: '28px', padding: 0 }}
+                        data-tooltip={rule.active ? t('tooltip_deactivate') || "Desactivar" : t('tooltip_activate') || "Activar"}
+                      >
+                        <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>
+                          {rule.active ? 'visibility' : 'visibility_off'}
+                        </span>
+                      </button>
                       <button
                         type="button"
                         className="btn clear-btn small-btn"

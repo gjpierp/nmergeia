@@ -1,4 +1,4 @@
-# Oracle DB: Nivel Experto - Índices, Particionamiento y Tuning
+# Nivel Experto - Índices, Particionamiento y Tuning
 
 Cuando las tablas superan los millones de registros, un `SELECT` puede tardar horas. En el nivel experto abordamos la optimización de consultas y la administración física de los datos.
 

@@ -271,6 +271,10 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
             }
             origEditor.executeEdits("diff", [{ range, text }]);
         }
+
+        const newMod = modEditor.getValue();
+        const newOrig = origEditor.getValue();
+        setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
         
         pendingNavigationRef.current = 'next';
     };
@@ -292,6 +296,10 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
             const fullRange = origModel.getFullModelRange();
             origEditor.executeEdits("automerge", [{ range: fullRange, text }]);
         }
+
+        const newMod = modEditor.getValue();
+        const newOrig = origEditor.getValue();
+        setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
     };
   
     const handleUndo = () => {
@@ -307,9 +315,18 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     };
 
     const handleSaveAndNext = async (isOriginFile) => {
-        const handle = isOriginFile ? originHandle : destSlots[tab.destSlotIdx]?.handle;
-        const content = isOriginFile ? tab.original : tab.modified;
-        await saveFile(handle, tab.filePath, false, content, true, tab.id, isOriginFile);
+        const handle = isOriginFile 
+            ? (tab.originHandle || originHandle) 
+            : (tab.destHandle || (destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null));
+
+        let content = isOriginFile ? tab.original : tab.modified;
+        if (diffEditorRef.current) {
+            content = isOriginFile 
+                ? diffEditorRef.current.getOriginalEditor().getValue() 
+                : diffEditorRef.current.getModifiedEditor().getValue();
+        }
+
+        await saveFile(handle, tab.filePath, false, content, false, tab.id, isOriginFile);
         
         const matrixTab = tabs.find(t => t.type === 'matrix');
         if (matrixTab) {
@@ -457,9 +474,12 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                       disabled={isDocBinary || tab.original === tab.initialOriginal}
                       onClick={() => handleSaveAndNext(true)}><span className="material-symbols-rounded" style={{fontSize: '1.2rem'}}>save</span></button>
                   <button className="btn secondary-btn small-btn" data-tooltip={t('diff_tooltip_clone_dest_to_origin')} disabled={isDocBinary} onClick={() => {
-                      saveFile(originHandle, tab.filePath, false, tab.modified, false, tab.id, true);
-                      setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: tab.modified, initialOriginal: tab.modified } : t));
-                  }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
+                       const targetHandle = tab.originHandle || originHandle;
+                       const modVal = diffEditorRef.current ? diffEditorRef.current.getModifiedEditor().getValue() : tab.modified;
+                       if (diffEditorRef.current) diffEditorRef.current.getOriginalEditor().setValue(modVal);
+                       saveFile(targetHandle, tab.filePath, false, modVal, false, tab.id, true);
+                       setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: modVal, initialOriginal: modVal } : t));
+                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
                </div>
                
                <div style={{display: 'flex', gap: '0px', margin: '0 10px'}}>
@@ -509,8 +529,11 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                
                <div style={{display: 'flex', alignItems: 'center', gap: '0px'}}>
                   <button className="btn secondary-btn small-btn" data-tooltip={t('diff_tooltip_clone_origin_to_dest')} disabled={isDocBinary} onClick={() => {
-                      saveFile(destDirHandle, tab.filePath, false, tab.original, false, tab.id, false);
-                      setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: tab.original, initialModified: tab.original } : t));
+                      const targetHandle = tab.destHandle || (destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null);
+                      const origVal = diffEditorRef.current ? diffEditorRef.current.getOriginalEditor().getValue() : tab.original;
+                      if (diffEditorRef.current) diffEditorRef.current.getModifiedEditor().setValue(origVal);
+                      saveFile(targetHandle, tab.filePath, false, origVal, false, tab.id, false);
+                      setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: origVal, initialModified: origVal } : t));
                   }}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
                   <button className="btn primary-btn small-btn" data-tooltip={t('diff_tooltip_save_dest_continue')} 
                       disabled={isDocBinary || tab.modified === tab.initialModified}
@@ -635,12 +658,27 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                                 diffEditorRef.current = editor;
                                 monacoRef.current = monaco;
 
-                                editor.getModifiedEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                                    saveFile(destDirHandle, tab.filePath, false, editor.getModifiedEditor().getValue(), false, tab.id, false);
+                                const modEd = editor.getModifiedEditor();
+                                const origEd = editor.getOriginalEditor();
+
+                                modEd.onDidChangeModelContent(() => {
+                                    const val = modEd.getValue();
+                                    setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: val } : t));
                                 });
 
-                                editor.getOriginalEditor().addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-                                    saveFile(originHandle, tab.filePath, false, editor.getOriginalEditor().getValue(), false, tab.id, true);
+                                origEd.onDidChangeModelContent(() => {
+                                    const val = origEd.getValue();
+                                    setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: val } : t));
+                                });
+
+                                modEd.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                    const targetHandle = tab.destHandle || (destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null);
+                                    saveFile(targetHandle, tab.filePath, false, modEd.getValue(), false, tab.id, false);
+                                });
+
+                                origEd.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                                    const targetHandle = tab.originHandle || originHandle;
+                                    saveFile(targetHandle, tab.filePath, false, origEd.getValue(), false, tab.id, true);
                                 });
 
                                 const updateSelectedDiffFromEditor = (activeSubEditor, isModifiedSide) => {
@@ -712,7 +750,7 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
             </div>
         </div>
         {diffContent && (
-             <div style={{ flexShrink: 0, background: 'var(--bg-secondary)', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: '300px' }}>
+             <div style={{ flexShrink: 0, background: 'var(--bg-secondary)', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                 {/* Selector de Pestañas del Asistente */}
                 <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', gap: '10px', paddingBottom: '10px' }}>
                     <button 
@@ -734,13 +772,11 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                 {/* Contenido Tradicional */}
                 {assistantTab === 'traditional' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div style={{ display: 'flex', gap: '15px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div style={{ flex: 1 }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>{t('diff_selected_origin_lines')}</span>
                                 <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: 'var(--accent-secondary)', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid var(--accent-secondary)'}}>{diffContent.origin}</pre>
                             </div>
                             <div style={{ flex: 1 }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>{t('diff_selected_dest_lines')}</span>
                                 <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: '#a78bfa', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid #a78bfa'}}>{diffContent.dest}</pre>
                             </div>
                         </div>
@@ -748,18 +784,18 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                             <button 
                                 className="btn secondary-btn small-btn"
                                 onClick={() => transferCurrentDiff('to_dest')}
-                                style={{ height: '34px', color: '#10b981', border: '1px solid #10b981' }}
+                                style={{ height: '34px', width: '34px', padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#10b981', border: '1px solid #10b981' }}
+                                data-tooltip={t('diff_replace_with_origin')}
                             >
-                                <span className="material-symbols-rounded" style={{ marginRight: '5px', fontSize: '1.1rem' }}>arrow_forward</span>
-                                {t('diff_replace_with_origin')}
+                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>arrow_forward</span>
                             </button>
                             <button 
                                 className="btn secondary-btn small-btn"
                                 onClick={() => transferCurrentDiff('to_origin')}
-                                style={{ height: '34px', color: '#3b82f6', border: '1px solid #3b82f6' }}
+                                style={{ height: '34px', width: '34px', padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#3b82f6', border: '1px solid #3b82f6' }}
+                                data-tooltip={t('diff_replace_with_dest')}
                             >
-                                <span className="material-symbols-rounded" style={{ marginRight: '5px', fontSize: '1.1rem' }}>arrow_back</span>
-                                {t('diff_replace_with_dest')}
+                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>arrow_back</span>
                             </button>
                         </div>
                     </div>

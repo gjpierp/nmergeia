@@ -3,6 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import https from 'https';
 import Stripe from 'stripe';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -241,4 +242,18 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => console.info(`Server running on port ${PORT}`));
+const certPath = 'C:\\Local\\certs';
+const keyFile = path.join(certPath, 'server.key');
+const certFile = path.join(certPath, 'server.crt');
+
+if (fs.existsSync(keyFile) && fs.existsSync(certFile)) {
+    const options = {
+        key: fs.readFileSync(keyFile),
+        cert: fs.readFileSync(certFile)
+    };
+    https.createServer(options, app).listen(PORT, () => {
+        console.info(`Server (HTTPS) running securely on port ${PORT}`);
+    });
+} else {
+    app.listen(PORT, () => console.info(`Server (HTTP) running on port ${PORT}`));
+}

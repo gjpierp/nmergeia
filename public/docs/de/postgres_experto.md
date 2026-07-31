@@ -1,83 +1,73 @@
-# PostgreSQL: Alta Disponibilidad y Arquitectura Interna
+# Replikation und Massive Partitionierung
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresExperto`  
-> **Tiempo Estimado:** 15 minutos  
-> **Perfil:** Staff / Principal Engineer  
+Wenn eine einzelne PostgreSQL-Instanz die Leselast oder das Speichervolumen (wir sprechen von Terabytes an Daten) nicht mehr bewältigen kann, betreten wir den Expertenbereich. Es ist an der Zeit, die Last zu verteilen.
 
-Esta guía define los estándares arquitectónicos para escalar PostgreSQL en clústeres distribuidos. Analizaremos la integración con **Patroni**, **PgBouncer** y **HAProxy** para garantizar un *Recovery Time Objective* (RTO) menor a 30 segundos.
+## 1. Deklarative Partitionierung (Lokales Sharding)
 
----
+Wenn du eine `logs`-Tabelle mit 500 Millionen Datensätzen hast, wird der Versuch, alte Daten mit einem `DELETE` zu löschen, die Tabelle sperren und einen Leistungseinbruch verursachen. Die Lösung besteht darin, die Tabelle physisch zu unterteilen und dabei eine einzige logische Tabelle beizubehalten.
 
-## 1. Arquitectura Topológica (Digital Twin)
+### Beispiel: Partitionierung nach Zeit (Bereich)
 
-La siguiente arquitectura de Alta Disponibilidad asegura replicación física sincrónica o asincrónica y failover automático.
+```sql
+-- 1. Erstelle die "Eltern"-Tabelle
+CREATE TABLE telemetry.sensor_logs (
+    id UUID,
+    sensor_id INT,
+    reading NUMERIC,
+    created_at TIMESTAMP NOT NULL
+) PARTITION BY RANGE (created_at);
+
+-- 2. Erstelle die "Kinder"-Tabellen (Physisch)
+CREATE TABLE sensor_logs_y2023m10 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-10-01') TO ('2023-11-01');
+
+CREATE TABLE sensor_logs_y2023m11 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-11-01') TO ('2023-12-01');
+```
+
+**Entscheidender Vorteil:** Wenn der Monat Oktober nicht mehr nützlich ist, machst du kein `DELETE`. Du machst einfach ein `DROP TABLE sensor_logs_y2023m10;`. Dieser Vorgang gibt sofort Gigabytes an Speicherplatz frei, ohne die Serverleistung zu beeinträchtigen.
+
+## 2. Replikationstopologie: Streaming vs. Logisch
+
+Um Lesevorgänge zu skalieren oder Hochverfügbarkeit (HA) zu gewährleisten, benötigst du Replikate.
 
 ```mermaid
 graph TD
-    Client[Cliente/API] --> HAProxy[HAProxy Load Balancer]
-    HAProxy --> PgBouncer1[PgBouncer Master]
-    HAProxy --> PgBouncer2[PgBouncer Replica]
+    subgraph primary_node [Master Node Primary]
+    P[PostgreSQL Primary]
+    WAL[WAL Logs]
+    end
     
-    PgBouncer1 --> Node1[(PG Node 1 - Master)]
-    PgBouncer2 --> Node2[(PG Node 2 - Replica)]
+    subgraph standby_node [Read Replicas Standby]
+    S1[Physisches Replikat 1]
+    S2[Physisches Replikat 2]
+    end
     
-    Node1 -. Replicación Streaming .-> Node2
-    
-    Patroni1[Patroni Agent 1] --- Node1
-    Patroni2[Patroni Agent 2] --- Node2
-    
-    Patroni1 <--> etcd[(etcd DCS)]
-    Patroni2 <--> etcd
+    subgraph analytics_node [Logical Replica Analytics]
+    L1[Data Warehouse / Redshift]
+    end
+
+    P -->|"WAL Streaming (Binär)"| WAL
+    WAL -->|Asynchrone physische Replikation| S1
+    WAL -->|Asynchrone physische Replikation| S2
+    P -->|"Logische Dekodierung (Pub/Sub)"| L1
 ```
 
-> [!NOTE]  
-> **Consenso Distribuido:** Patroni utiliza `etcd` (o Consul/ZooKeeper) para mantener el estado del clúster y elegir a un nuevo líder mediante el algoritmo de consenso Raft en caso de partición de red (Split-Brain).
+### Physische Replikation (Streaming Replication)
+Kopiert die gesamte Datenbank, Block für Block, durch Lesen der Write-Ahead Logs (WAL). Physische Replikate sind **schreibgeschützt (Read-only)**. Ideal für Failover (wenn der Master ausfällt, übernimmt ein Replikat den Thron).
 
----
+### Logische Replikation (Pub/Sub)
+Anstatt rohe binäre Blöcke zu kopieren, dekodiert Postgres die WALs in Ereignisse der Anwendungsschicht (`INSERT`, `UPDATE`, `DELETE`) und sendet sie an Abonnenten.
+- Ermöglicht die Replikation **nur bestimmter Tabellen** (ideal, um Verkaufstabellen an einen Data Lake zu senden).
+- Ermöglicht dem Zielknoten das Schreiben in seine eigenen unabhängigen Tabellen.
 
-## 2. Ajuste Crítico: Pool de Conexiones
+```sql
+-- Auf dem Master-Server:
+CREATE PUBLICATION sales_pub FOR TABLE sales.orders, sales.invoices;
 
-> [!WARNING]
-> **FinOps & Performance Warning:**  
-> Cada conexión nativa en PostgreSQL consume aproximadamente 10MB de memoria debido a su arquitectura multiproceso (fork por conexión). 5000 conexiones concurrentes sin pooler causarían OOM (Out Of Memory) en instancias con menos de 64GB RAM.  
-> Costo estimado de un clúster RDS Multi-AZ r6g.4xlarge: ~$1,600 USD/mes.
-
-Para mitigar el consumo masivo de memoria, es obligatorio el uso de un Pooler transaccional (`PgBouncer`).
-
-### Archivo de Configuración Quirúrgico (`pgbouncer.ini`)
-
-```ini
-[databases]
-nmerge_db = host=127.0.0.1 port=5432 dbname=[NOMBRE_DE_TU_BD]
-
-[pgbouncer]
-listen_port = 6432
-listen_addr = *
-auth_type = md5
-auth_file = /etc/pgbouncer/userlist.txt
-pool_mode = transaction
-max_client_conn = 10000
-default_pool_size = 100
-reserve_pool_size = 20
+-- Auf dem Analytics-Server:
+CREATE SUBSCRIPTION sales_sub CONNECTION 'host=master_ip port=5432 user=rep_user password=secret' PUBLICATION sales_pub;
 ```
 
----
+Die Beherrschung von Partitionierung und Replikation ermöglicht es dir, Postgres virtuell ins Unendliche zu skalieren. In der **Meisterstufe (Optimizaciones)** werden wir das Kernel-Tuning und das Connection-Pooling erkunden, um die Hardware an ihr absolutes Limit zu bringen.
 
-## 3. Optimización del Kernel (Sysctl)
-
-Para bases de datos masivas (Terabytes de RAM), el *tuning* de memoria compartida de Linux es imperativo.
-
-```bash
-# Habilitar Huge Pages para reducir la sobrecarga de la tabla de paginación
-echo "vm.nr_hugepages = 10240" >> /etc/sysctl.conf
-
-# Prevenir que Linux haga Swap agresivo de la BD
-echo "vm.swappiness = 1" >> /etc/sysctl.conf
-
-# Aplicar los cambios en caliente
-sysctl -p
-```
-
----
-*Fin de la Guía Experta. Procede a aplicar estos perfiles directamente a través de Terraform en tu infraestructura Cloud Native.*

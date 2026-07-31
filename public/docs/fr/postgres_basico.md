@@ -1,4 +1,4 @@
-# Guía Básica de PostgreSQL: Fundamentos
+# Fundamentos
 
 ## 1. Introducción a Bases de Datos Relacionales
 PostgreSQL es un sistema de gestión de bases de datos relacionales objeto-relacional (ORDBMS) muy potente y de código abierto.

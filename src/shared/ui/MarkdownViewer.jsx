@@ -1,13 +1,106 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import mermaid from 'mermaid';
 import { useAppStore } from '../../app/useAppStore.js';
+import { PageHeader } from './PageHeader.jsx';
 import 'highlight.js/styles/github-dark.css';
 import './MarkdownViewer.css';
 
+const MermaidChart = ({ chart, theme }) => {
+  const ref = useRef(null);
+  const [hasError, setHasError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    setHasError(false);
+    setErrorMsg("");
+    
+    // Configuración dinámica basada en el tema global
+    const isLight = theme && theme.includes('light');
+    mermaid.initialize({ 
+      startOnLoad: false, 
+      theme: isLight ? 'default' : 'dark'
+    });
+    
+    const renderChart = async () => {
+      try {
+        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+        // Mermaid falla categóricamente si hay retornos de carro (\r) en Windows
+        // Además, la sintaxis <-->|"text"| es exclusiva de 'flowchart', por lo que promovemos 'graph' a 'flowchart' on-the-fly.
+        // También Mermaid 11 falla con paréntesis/espacios en títulos de subgraphs si no tienen comillas: subgraph id [Título (Algo)] -> subgraph id ["Título (Algo)"]
+        const safeChart = chart
+          .replace(/\r/g, '')
+          .replace(/^graph /m, 'flowchart ')
+          .replace(/subgraph\s+([a-zA-Z0-9_]+)\s+\[([^"\]]+)\]/g, 'subgraph $1 ["$2"]');
+          
+        const { svg } = await mermaid.render(id, safeChart);
+        if (isMounted && ref.current) {
+          ref.current.innerHTML = svg;
+        }
+      } catch (e) {
+        console.error("Mermaid error:", e);
+        const errorElement = document.querySelector(`[id^="dmermaid-"]`);
+        if (errorElement) {
+          errorElement.remove();
+        }
+        if (isMounted) {
+          setErrorMsg(e?.message || String(e));
+          setHasError(true);
+        }
+      }
+    };
+
+    if (chart) {
+      renderChart();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [chart]);
+  
+  if (hasError) {
+    return (
+      <div className="mermaid-error-fallback" style={{
+        background: '#1e1e1e',
+        color: '#f87171',
+        padding: '1rem',
+        borderRadius: '8px',
+        border: '1px solid #7f1d1d',
+        margin: '2rem 0',
+        fontFamily: 'monospace',
+        whiteSpace: 'pre-wrap',
+        overflowX: 'auto'
+      }}>
+        <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', fontWeight: 'bold' }}>⚠️ Diagrama no compatible (Mostrando código fuente):</p>
+        <p style={{ color: '#ffaaaa', marginBottom: '10px' }}>Error: {errorMsg}</p>
+        {chart}
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className="mermaid-diagram" 
+      style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        margin: '2rem 0',
+        background: 'var(--bg-glass)',
+        padding: '20px',
+        borderRadius: '12px',
+        border: '1px solid var(--border-light)'
+      }} 
+      ref={ref} 
+    />
+  );
+};
+
 export const MarkdownViewer = ({ filename, title, requiredRole }) => {
-  const { appLanguage } = useAppStore();
+  const { appLanguage, appTheme } = useAppStore();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,37 +137,12 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
       minHeight: '600px',
       position: 'relative'
     }}>
-      {/* Header Interactivo */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid var(--border-color)',
-        paddingBottom: '1rem',
-        marginBottom: '2rem'
-      }}>
-        <h2 style={{ fontSize: '1.8rem', margin: 0, color: 'var(--accent-primary)' }}>{title}</h2>
-        {requiredRole && (
-          <span style={{
-            background: 'var(--bg-secondary)',
-            padding: '0.4rem 0.8rem',
-            borderRadius: '4px',
-            fontSize: '0.85rem',
-            fontWeight: '600',
-            border: '1px solid var(--accent-secondary)',
-            color: 'var(--text-secondary)'
-          }}>
-            🔐 NGAC Policy: {requiredRole}
-          </span>
-        )}
-      </div>
-
       {loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', animation: 'pulse 1.5s infinite' }}>
-          <div style={{ height: '30px', background: 'var(--bg-secondary)', borderRadius: '4px', width: '60%' }}></div>
-          <div style={{ height: '15px', background: 'var(--bg-secondary)', borderRadius: '4px', width: '100%' }}></div>
-          <div style={{ height: '15px', background: 'var(--bg-secondary)', borderRadius: '4px', width: '90%' }}></div>
-          <div style={{ height: '200px', background: 'var(--bg-secondary)', borderRadius: '8px', width: '100%', marginTop: '1rem' }}></div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className="premium-skeleton skeleton-title"></div>
+          <div className="premium-skeleton skeleton-text"></div>
+          <div className="premium-skeleton skeleton-text" style={{ width: '90%' }}></div>
+          <div className="premium-skeleton skeleton-block"></div>
         </div>
       )}
 
@@ -92,10 +160,22 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
       )}
 
       {!loading && !error && (
-        <div className="markdown-body" style={{ lineHeight: '1.6', fontSize: '1rem' }}>
+        <div className="markdown-body">
           <ReactMarkdown 
-            remarkPlugins={[remarkGfm]} 
+            remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight]}
+            components={{
+              h1: 'h2',
+              code({node, inline, className, children, ...props}) {
+                const match = /language-(\w+)/.exec(className || '');
+                if (!inline && match && match[1] === 'mermaid') {
+                  return <MermaidChart chart={String(children).replace(/\n$/, '')} theme={appTheme} />;
+                }
+                return <code className={className} {...props}>
+                  {children}
+                </code>;
+              }
+            }}
           >
             {content}
           </ReactMarkdown>

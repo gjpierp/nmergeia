@@ -14,7 +14,7 @@
 - [x] Especificación OpenAPI 3.0 en `openapi.yaml`.
 - [x] Creación de `CONTEXT.md` y `ROADMAP.md`.
 
-🟡 **Fase 3: Desarrollo Core (Hexagonal), TDD y Verificación Formal**
+🟢 **Fase 3: Desarrollo Core (Hexagonal), TDD y Verificación Formal**
 - [x] Extracción y Refactorización del Core UI (MatrixView, DiffView, Sidebar).
 - [x] Desacoplamiento de App.jsx completo.
 - [x] TDD y pruebas unitarias (FileSystemService, MonetizationStore).

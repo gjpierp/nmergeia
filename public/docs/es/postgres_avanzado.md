@@ -1,110 +1,60 @@
-# Nivel Avanzado: Transacciones, Bloqueos y JSONB
+# Motor de Ejecución, Vacuum e Índices Compuestos
 
-> [!IMPORTANT]
-> **Propósito de esta guía:** Asegurar la integridad transaccional (ACID), gestionar concurrencia mediante bloqueos (Locks), y trabajar con datos no estructurados utilizando el poderoso tipo `JSONB`.
+En el nivel avanzado, dejamos de escribir código ciegamente y empezamos a entender **cómo PostgreSQL lee nuestro código**. La diferencia entre una consulta que tarda 5 minutos y una que tarda 50 milisegundos radica en comprender el *Query Planner*.
 
-El nivel avanzado se centra en entornos de producción donde ocurren miles de operaciones por segundo y la integridad de los datos es la máxima prioridad.
+## 1. El Arte de EXPLAIN ANALYZE
 
-## 1. Control de Transacciones (ACID)
-Una transacción agrupa un conjunto de sentencias en una única unidad lógica de trabajo. Si algo falla, se revierte todo (`ROLLBACK`).
+Nunca asumas que un índice está siendo utilizado. PostgreSQL tiene un optimizador basado en costos (Cost-Based Optimizer). Si el motor calcula que hacer un *Sequential Scan* (leer toda la tabla) es más barato que usar el índice porque estás pidiendo el 80% de los datos, ignorará tu índice.
 
-```sql
-BEGIN; -- Inicia la transacción
-
-UPDATE cuentas SET saldo = saldo - 1000 WHERE id = 1; -- Retiro
-UPDATE cuentas SET saldo = saldo + 1000 WHERE id = 2; -- Depósito
-
--- Si todo está correcto
-COMMIT;
--- Si ocurre un error
--- ROLLBACK;
-```
-
-### Puntos de Guardado (Savepoints)
-Permiten hacer rollbacks parciales dentro de una transacción mayor.
-```sql
-BEGIN;
-INSERT INTO logs (msg) VALUES ('Inicio proceso');
-SAVEPOINT mi_punto;
-INSERT INTO datos_criticos (valor) VALUES ('Error intencional');
--- Algo falló aquí
-ROLLBACK TO mi_punto;
-COMMIT;
-```
-
-## 2. Gestión de Bloqueos (Locks) y Concurrencia
-PostgreSQL utiliza MVCC (Multiversion Concurrency Control) para permitir lecturas sin bloquear escrituras. Sin embargo, a veces necesitas bloqueos explícitos.
-
-### FOR UPDATE
-Previene que otras transacciones modifiquen las filas leídas hasta que termine tu transacción. Esto es crítico en sistemas financieros o inventarios.
+### Cómo leer un plan de ejecución
 
 ```sql
-BEGIN;
--- Bloqueamos el registro del producto
-SELECT stock FROM inventario WHERE producto_id = 45 FOR UPDATE;
-
--- Modificamos el stock con seguridad
-UPDATE inventario SET stock = stock - 1 WHERE producto_id = 45;
-COMMIT;
+EXPLAIN ANALYZE 
+SELECT * FROM sales.orders 
+WHERE status = 'pending' AND total > 1000;
 ```
 
-> [!CAUTION]
-> Los Deadlocks ocurren cuando dos transacciones se esperan mutuamente para liberar bloqueos. PostgreSQL los detecta y abortará una de las transacciones (error `40P01`). Diseña tu aplicación para atrapar este error y reintentar la transacción.
+**Métricas Críticas a observar:**
+- `Execution Time`: El tiempo real que tomó.
+- `Buffers: shared hit=... read=...`: Si ves muchos `read`, Postgres está yendo al disco. Si ves muchos `hit`, la data está sirviéndose de la memoria RAM (¡Excelente!).
+- `Seq Scan`: Alarma roja si la tabla tiene millones de filas. Busca reemplazarlo por un `Index Scan` o `Bitmap Heap Scan`.
 
-## 3. Tipos Avanzados: Arrays y JSONB
-PostgreSQL no es solo una base de datos relacional. Soporta de forma nativa estructuras de datos complejas y NoSQL.
+## 2. Índices Compuestos y el Orden de las Columnas
 
-### Trabajando con Arrays
-```sql
-CREATE TABLE publicaciones (
-    id SERIAL PRIMARY KEY,
-    tags TEXT[]
-);
-
-INSERT INTO publicaciones (tags) VALUES (ARRAY['tech', 'postgres', 'avanzado']);
-
--- Consultar si un array contiene un elemento
-SELECT * FROM publicaciones WHERE 'postgres' = ANY(tags);
-```
-
-### El Poder del JSONB
-`JSONB` guarda datos en un formato binario estructurado, permitiendo indexación y consultas ultra rápidas, fusionando lo mejor de SQL y NoSQL.
+Cuando filtras por múltiples columnas, un índice simple no es suficiente.
 
 ```sql
-CREATE TABLE eventos (
-    id SERIAL PRIMARY KEY,
-    payload JSONB
-);
+-- Índice Compuesto
+CREATE INDEX idx_orders_status_total ON sales.orders(status, total);
+```
+**Regla de Oro:** El orden importa. Siempre coloca primero la columna que tenga mayor **cardinalidad** (la que descarte más datos rápidamente) o la columna que uses con operadores de igualdad (`=`). Las columnas usadas para rangos (`>`, `<`) deben ir al final del índice.
 
-INSERT INTO eventos (payload) 
-VALUES ('{"usuario": "jdoe", "accion": "click", "metadata": {"boton": "comprar"}}');
+## 3. Autovacuum: El Recolector de Basura de MVCC
 
--- Extraer valores usando el operador ->> (como texto)
-SELECT payload->>'usuario' AS user_name 
-FROM eventos 
-WHERE payload->'metadata'->>'boton' = 'comprar';
+En el Nivel Medio aprendimos sobre MVCC y las *dead tuples* (filas obsoletas generadas por UPDATEs y DELETEs). Si estas filas no se limpian, tu base de datos sufrirá de **Bloat** (hinchazón), consumiendo disco y destruyendo el rendimiento.
+
+El proceso `Autovacuum` es el encargado de limpiar esto.
+
+### Diagrama del Proceso Autovacuum
+
+```mermaid
+stateDiagram-v2
+    [*] --> OperacionDML: UPDATE / DELETE
+    OperacionDML --> DeadTuples: Genera Filas Obsoletas
+    DeadTuples --> Threshold: Supera el límite de autovacuum_vacuum_scale_factor
+    Threshold -->|No| Espera
+    Threshold -->|Sí| AutovacuumWorker: Despierta Proceso
+    AutovacuumWorker --> FreeSpaceMap: Marca el espacio como reutilizable (FSM)
+    FreeSpaceMap --> VisibilityMap: Actualiza Mapa de Visibilidad
+    VisibilityMap --> [*]: Espacio listo para nuevos INSERTs
 ```
 
-### Indexación GIN para JSONB
-Para búsquedas veloces dentro de un JSONB masivo, utiliza índices GIN.
+**Tuning Crítico para Tablas Grandes:**
+El valor por defecto de Postgres (`autovacuum_vacuum_scale_factor = 0.2`) significa que el Autovacuum solo se dispara cuando cambia el 20% de la tabla. Si tienes una tabla de 100 millones de filas, ¡tendrían que cambiar 20 millones de filas para limpiarla! 
+Ajusta esto por tabla:
+
 ```sql
-CREATE INDEX idx_eventos_payload ON eventos USING GIN (payload);
+ALTER TABLE sales.orders SET (autovacuum_vacuum_scale_factor = 0.01);
 ```
 
-## 4. Vistas Materializadas (Materialized Views)
-Para reportes pesados, las vistas tradicionales pueden ser lentas porque ejecutan la consulta en cada llamada. Las vistas materializadas *guardan* el resultado en disco.
-
-```sql
-CREATE MATERIALIZED VIEW reporte_ventas_diario AS
-SELECT fecha, SUM(monto) AS total
-FROM ventas_historicas
-GROUP BY fecha;
-
--- Para actualizar los datos en la vista (esto bloquea las lecturas a menos que uses CONCURRENTLY)
-REFRESH MATERIALIZED VIEW reporte_ventas_diario;
-```
-
----
-
-*Fuente Oficial:* [PostgreSQL 16 - Transacciones y Concurrencia](https://www.postgresql.org/docs/16/mvcc.html)
-*Autores:* Enjambre de IA NMerge.
+Comprender el EXPLAIN y dominar el Autovacuum separa a un desarrollador senior de un verdadero experto en bases de datos. En el nivel **Experto**, escalaremos esto hacia la replicación y el particionamiento masivo.

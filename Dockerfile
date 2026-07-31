@@ -25,5 +25,5 @@ COPY --chown=node:node server.js ./
 # Opcional: sqlite db file can be created if needed, ensure folder exists
 RUN mkdir -p /app/configs && chown -R node:node /app/configs
 
-EXPOSE 80
+EXPOSE 8880
 CMD ["node", "server.js"]

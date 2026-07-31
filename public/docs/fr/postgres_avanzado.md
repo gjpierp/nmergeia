@@ -1,4 +1,4 @@
-# Guía Avanzada de PostgreSQL: Mantenimiento y Rendimiento
+# Mantenimiento y Rendimiento
 
 ## 1. Análisis Avanzado con EXPLAIN (ANALYZE, BUFFERS)
 El uso simple de EXPLAIN solo muestra estimaciones teóricas del optimizador de consultas. Añadir ANALYZE y BUFFERS fuerza la ejecución real y revela el impacto en los buffers de memoria y accesos a disco duro.

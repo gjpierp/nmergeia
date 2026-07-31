@@ -5,12 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ${COMPOSE_PROJECT_NAME:-nmerge}-app
-    user: "1000:1000"
-    volumes:
-      # Carpeta de persistencia para SQLite y filtros
-      - ./configs:/app/configs
+    container_name: nmerge-app
     restart: unless-stopped
+    environment:
+      - PORT=8880
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./:/app
+      - /app/node_modules
     deploy:
       resources:
         limits:

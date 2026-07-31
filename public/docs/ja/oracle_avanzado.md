@@ -1,4 +1,4 @@
-# Oracle DB: Nivel Avanzado - Introducción a PL/SQL
+# Nivel Avanzado - Introducción a PL/SQL
 
 Oracle no solo almacena datos; permite procesarlos *in-situ* mediante **PL/SQL** (Procedural Language/Structured Query Language). Ejecutar la lógica cerca de los datos reduce masivamente la latencia de red entre el backend y la base de datos.
 

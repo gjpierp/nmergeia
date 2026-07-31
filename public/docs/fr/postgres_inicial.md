@@ -1,86 +1,70 @@
-# PostgreSQL: Despliegue Zero-Setup y Conceptos Base
+# Configuration Initiale et Architecture de Base
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresInicial`  
-> **Tiempo Estimado:** 3 minutos  
-> **Perfil:** Junior / Mid-Level  
+Bienvenue au point de départ pour maîtriser PostgreSQL, le moteur de base de données relationnelle open-source le plus avancé au monde. Dans cette phase initiale, nous ne nous contenterons pas d'installer un binaire ; nous allons comprendre comment PostgreSQL interagit avec le système d'exploitation et comment les données sont structurées sur le disque.
 
-Bienvenido a la guía inicial de PostgreSQL. Esta guía está diseñada bajo estándares operativos estrictos para garantizar que levantes una instancia funcional, segura y aislada en menos de un minuto, sin ensuciar tu entorno local.
+## 1. Architecture des Processus
 
----
+PostgreSQL n'est pas un programme unique, mais une architecture multi-processus robuste.
 
-## 1. Entorno Ejecutable (Zero-Setup)
+### Diagramme des Processus (Postmaster)
 
-En lugar de instalar binarios locales, utilizaremos Docker para mantener el aislamiento absoluto de los componentes.
-
-Crea un archivo llamado `docker-compose.yml` en tu directorio de trabajo y pega el siguiente contenido:
-
-```yaml
-version: '3.8'
-services:
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: postgres-initial
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-<your_secure_password>}
-      POSTGRES_DB: [NOMBRE_DE_TU_BD]
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - local-net
-
-volumes:
-  pgdata:
-
-networks:
-  local-net:
-    driver: bridge
+```mermaid
+graph TD
+    Client[Client (psql / Node.js)] -->|"Connexion TCP/IP"| Postmaster[Processus Postmaster (PID 1)]
+    
+    subgraph sub_1 [Serveur PostgreSQL]
+        Postmaster -->|Fork| Backend1[Processus Backend 1 (Session A)]
+        Postmaster -->|Fork| Backend2[Processus Backend 2 (Session B)]
+        
+        Postmaster -.-> BGWriter[Background Writer]
+        Postmaster -.-> WAL[WAL Writer]
+        Postmaster -.-> Autovacuum[Lanceur Autovacuum]
+        Postmaster -.-> Checkpointer[Checkpointer]
+    end
+    
+    Backend1 --> SharedBuffers[(Shared Buffers / RAM)]
+    Backend2 --> SharedBuffers
+    
+    SharedBuffers --> BGWriter
+    BGWriter --> Disque[(Disque Physique)]
 ```
 
-### Ejecución Rápida
-Ejecuta el siguiente comando en tu terminal para levantar la base de datos en segundo plano:
+**Concept Clé :** À chaque fois qu'une application se connecte, le `Postmaster` (le processus parent) crée un *fork* et alloue un processus backend dédié pour cette connexion. C'est pourquoi PostgreSQL nécessite des ressources RAM considérables dans des environnements à forte concurrence si l'on n'utilise pas de Connection Pooler comme *PgBouncer*.
+
+## 2. Installation Zero-Friction (Docker)
+
+La manière moderne de faire fonctionner et d'apprendre des bases de données localement n'est pas d'installer des binaires sur votre ordinateur, mais d'utiliser des conteneurs éphémères.
 
 ```bash
-docker-compose up -d
+docker run --name pg-initial \
+  -e POSTGRES_PASSWORD=mot_de_passe_ultra_securise \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_DB=nmerge_db \
+  -p 5432:5432 \
+  -d postgres:15-alpine
 ```
 
-> [!NOTE]  
-> **Validación:** Puedes comprobar que el puerto está escuchando mediante `docker ps` o intentando conectar con tu cliente favorito (ej. DBeaver o pgAdmin) usando `localhost:5432`.
+### Anatomie de la Commande :
+* `-e POSTGRES_PASSWORD` : Variable d'environnement OBLIGATOIRE. Sans cela, le conteneur annulera le démarrage.
+* `-p 5432:5432` : Expose le port interne de PostgreSQL vers votre `localhost`.
+* `postgres:15-alpine` : Nous utilisons la version 15 basée sur Alpine Linux. Elle pèse seulement ~80Mo au lieu des ~400Mo de l'image par défaut basée sur Debian.
 
----
+## 3. Le Répertoire de Données (PGDATA)
 
-## 2. Variables de Entorno y Seguridad Base
+Où sont mes données ? Lorsque PostgreSQL démarre, il cherche un cluster de données dans le chemin défini par la variable d'environnement `PGDATA` (par défaut `/var/lib/postgresql/data`).
 
-> [!WARNING]
-> **FinOps & Security Warning:**  
-> Nunca expongas el puerto `5432` en producción sin un firewall (Security Group). Exponer la base de datos a internet incrementa masivamente el riesgo de ataques de fuerza bruta y escaneos de puertos automatizados.  
-> Costo estimado de instancia t3.micro en AWS: ~$12 USD/mes.
-
-Asegúrate de tener un archivo `.env` configurado. El estándar del proyecto dicta el siguiente `.env.example`:
-
-```env
-# .env.example
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=root
-DB_PASSWORD=<your_secure_password>
-DB_NAME=[NOMBRE_DE_TU_BD]
-```
-
----
-
-## 3. Comprobación de Salud (Health-Check)
-
-Para verificar matemáticamente que la base de datos está lista para aceptar conexiones, ejecuta un pulso rápido utilizando `pg_isready`:
+Si vous entrez dans le conteneur et inspectez ce répertoire :
 
 ```bash
-docker exec -it postgres-initial pg_isready -U root
+docker exec -it pg-initial bash
+ls -la /var/lib/postgresql/data
 ```
-*Salida esperada:* `/var/run/postgresql:5432 - accepting connections`
 
----
-*Fin de la Guía Inicial. Para optimizaciones de memoria y queries, visita la Guía Básica.*
+Vous y verrez des dossiers cruciaux tels que :
+* `base/` : Là où résident les vraies données (tables et index en binaire).
+* `pg_wal/` : (Write-Ahead Logs) Les registres vitaux des transactions. Si le serveur s'arrête brusquement, PostgreSQL utilisera ces fichiers pour reconstruire les données perdues en mémoire.
+* `postgresql.conf` : Le "cerveau" de la configuration.
+* `pg_hba.conf` : Le garde du corps (Host-Based Authentication) qui décide quelle adresse IP a accès et comment elle sera authentifiée.
+
+## Prochaines Étapes
+Maintenant que nous avons une fondation physique et architecturale. Au **Niveau Basique**, nous explorerons les Types de Données avancés qui différencient PostgreSQL des bases de données plus simples comme MySQL.

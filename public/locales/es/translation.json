@@ -107,6 +107,7 @@
   "advanced_desc_comment": "o vacías se consideran comentarios.",
   "placeholder_raw_text": "// Escribe tus reglas aquí, una por línea. Ejemplo:\n- *.log\n- temp/\n+ .env",
   "btn_reload": "Recargar",
+  "CAT_NMERGEIA_N4_TEMAS": "Biblioteca Técnica",
   "btn_save_changes": "Guardar Cambios",
   "exclude_minus": "Excluir (-)",
   "include_plus": "Incluir (+)",
@@ -199,5 +200,16 @@
   "diff_ai_status_error": "Error al conectar con la API: ",
   "nav_privacy": "Privacidad",
   "nav_terms": "Términos",
-  "nav_docs": "Documentación"
+  "nav_docs": "Documentación",
+  "MNU_NMERGEIA_LANDING": "Inicio",
+  "MNU_NMERGEIA_FEATURES": "Características",
+  "MNU_NMERGEIA_PRICING": "Planes y Precios",
+  "MNU_NMERGEIA_DOCS": "Documentación",
+  "MNU_NMERGEIA_FAQ": "Preguntas Frecuentes",
+  "CAT_NMERGEIA_N2_AUTH": "Autenticación",
+  "CAT_NMERGEIA_N3_WORKSPACE": "Plataforma Principal",
+  "CAT_NMERGEIA_N4_COURSES": "Biblioteca Técnica",
+  "CAT_NMERGEIA_N5_ASSETS": "Recursos y APIs",
+  "MNU_TEMA_POSTGRES": "PostgreSQL",
+  "MNU_TEMA_02": "Docker Multi-stage"
 }

@@ -1,86 +1,70 @@
-# PostgreSQL: Despliegue Zero-Setup y Conceptos Base
+# 初期設定と基本アーキテクチャ
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresInicial`  
-> **Tiempo Estimado:** 3 minutos  
-> **Perfil:** Junior / Mid-Level  
+世界で最も高度なオープンソースのリレーショナルデータベースであるPostgreSQLをマスターするための出発点へようこそ。この初期段階では、単にバイナリをインストールするだけでなく、PostgreSQLがOSとどのようにやり取りし、データがディスク上でどのように構成されているかを理解します。
 
-Bienvenido a la guía inicial de PostgreSQL. Esta guía está diseñada bajo estándares operativos estrictos para garantizar que levantes una instancia funcional, segura y aislada en menos de un minuto, sin ensuciar tu entorno local.
+## 1. プロセスアーキテクチャ
 
----
+PostgreSQLは単一のプログラムではなく、堅牢なマルチプロセスアーキテクチャです。
 
-## 1. Entorno Ejecutable (Zero-Setup)
+### プロセス図 (Postmaster)
 
-En lugar de instalar binarios locales, utilizaremos Docker para mantener el aislamiento absoluto de los componentes.
-
-Crea un archivo llamado `docker-compose.yml` en tu directorio de trabajo y pega el siguiente contenido:
-
-```yaml
-version: '3.8'
-services:
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: postgres-initial
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-<your_secure_password>}
-      POSTGRES_DB: [NOMBRE_DE_TU_BD]
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - local-net
-
-volumes:
-  pgdata:
-
-networks:
-  local-net:
-    driver: bridge
+```mermaid
+graph TD
+    Client[クライアント (psql / Node.js)] -->|"TCP/IP接続"| Postmaster[Postmasterプロセス (PID 1)]
+    
+    subgraph sub_1 [PostgreSQLサーバー]
+        Postmaster -->|Fork| Backend1[バックエンドプロセス 1 (セッション A)]
+        Postmaster -->|Fork| Backend2[バックエンドプロセス 2 (セッション B)]
+        
+        Postmaster -.-> BGWriter[バックグラウンドライター]
+        Postmaster -.-> WAL[WALライター]
+        Postmaster -.-> Autovacuum[オートバキュームランチャー]
+        Postmaster -.-> Checkpointer[チェックポインター]
+    end
+    
+    Backend1 --> SharedBuffers[(共有バッファ / RAM)]
+    Backend2 --> SharedBuffers
+    
+    SharedBuffers --> BGWriter
+    BGWriter --> Disk[(物理ディスク)]
 ```
 
-### Ejecución Rápida
-Ejecuta el siguiente comando en tu terminal para levantar la base de datos en segundo plano:
+**重要な概念:** アプリケーションが接続するたびに、`Postmaster` (親プロセス) が *fork* を実行し、その接続専用のバックエンドプロセスを割り当てます。そのため、*PgBouncer* などのコネクションプーラーを使用しない場合、高並行環境では PostgreSQL はかなりの RAM リソースを必要とします。
+
+## 2. 摩擦ゼロのインストール (Docker)
+
+ローカルでデータベースを操作し、学習する最新の方法は、コンピューターにバイナリをインストールすることではなく、一時的なコンテナを使用することです。
 
 ```bash
-docker-compose up -d
+docker run --name pg-initial \
+  -e POSTGRES_PASSWORD=超安全なパスワード \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_DB=nmerge_db \
+  -p 5432:5432 \
+  -d postgres:15-alpine
 ```
 
-> [!NOTE]  
-> **Validación:** Puedes comprobar que el puerto está escuchando mediante `docker ps` o intentando conectar con tu cliente favorito (ej. DBeaver o pgAdmin) usando `localhost:5432`.
+### コマンドの解剖:
+* `-e POSTGRES_PASSWORD`: 必須の環境変数。これがないと、コンテナは起動を中止します。
+* `-p 5432:5432`: PostgreSQL の内部ポートを `localhost` に公開します。
+* `postgres:15-alpine`: Alpine Linux をベースにしたバージョン 15 を使用します。Debian ベースのデフォルトのイメージが約 400MB であるのに対し、わずか約 80MB です。
 
----
+## 3. データディレクトリ (PGDATA)
 
-## 2. Variables de Entorno y Seguridad Base
+私のデータはどこにありますか？PostgreSQL が起動すると、`PGDATA` 環境変数によって定義されたパス（デフォルトでは `/var/lib/postgresql/data`）でデータクラスターを探します。
 
-> [!WARNING]
-> **FinOps & Security Warning:**  
-> Nunca expongas el puerto `5432` en producción sin un firewall (Security Group). Exponer la base de datos a internet incrementa masivamente el riesgo de ataques de fuerza bruta y escaneos de puertos automatizados.  
-> Costo estimado de instancia t3.micro en AWS: ~$12 USD/mes.
-
-Asegúrate de tener un archivo `.env` configurado. El estándar del proyecto dicta el siguiente `.env.example`:
-
-```env
-# .env.example
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=root
-DB_PASSWORD=<your_secure_password>
-DB_NAME=[NOMBRE_DE_TU_BD]
-```
-
----
-
-## 3. Comprobación de Salud (Health-Check)
-
-Para verificar matemáticamente que la base de datos está lista para aceptar conexiones, ejecuta un pulso rápido utilizando `pg_isready`:
+コンテナ内に入り、このディレクトリを調べると:
 
 ```bash
-docker exec -it postgres-initial pg_isready -U root
+docker exec -it pg-initial bash
+ls -la /var/lib/postgresql/data
 ```
-*Salida esperada:* `/var/run/postgresql:5432 - accepting connections`
 
----
-*Fin de la Guía Inicial. Para optimizaciones de memoria y queries, visita la Guía Básica.*
+次のような重要なフォルダーが表示されます:
+* `base/`: 実際のデータ（バイナリ形式のテーブルとインデックス）が存在する場所。
+* `pg_wal/`: (Write-Ahead Logs) 重要なトランザクションログ。サーバーが予期せずシャットダウンした場合、PostgreSQL はこれらのファイルを使用して、メモリ内で失われたデータを再構築します。
+* `postgresql.conf`: 設定の「頭脳」。
+* `pg_hba.conf`: どの IP がアクセスでき、どのように認証されるかを決定するゲートキーパー (Host-Based Authentication)。
+
+## 次のステップ
+物理的およびアーキテクチャの基盤が整いました。**基本レベル**では、PostgreSQL を MySQL のような単純なデータベースと区別する高度なデータ型について学習します。

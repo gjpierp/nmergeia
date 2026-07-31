@@ -7,35 +7,11 @@ import logo from '../../assets/logo.png';
 export const LandingPage = () => {
   const { t } = useTranslation();
   const { setActiveTab } = useAppStore();
-  const [openFaq, setOpenFaq] = useState(null);
-
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
-
-  const faqs = [
-    {
-      q: "¿Cómo garantiza NMergeIA la privacidad de mi código fuente?",
-      a: "NMergeIA opera bajo una arquitectura Local-First. Todo el procesamiento del algoritmo de comparación Myers LCS, la normalización sintáctica y las búsquedas se ejecutan localmente en la memoria de su navegador. Su código fuente y archivos jamás se transmiten a nuestros servidores."
-    },
-    {
-      q: "¿Es compatible con cualquier tipo de archivo o lenguaje de programación?",
-      a: "Sí. El comparador avanzado soporta cualquier archivo de texto plano (Javascript, Python, C++, HTML, CSS, Markdown, etc.). Cuenta además con normalizadores sintácticos específicos para JSON, YAML y XML, permitiendo ignorar variaciones de formato irrelevantes."
-    },
-    {
-      q: "¿Cómo funciona el Asistente de IA Híbrido integrado?",
-      a: "El asistente de IA le permite resolver conflictos de código de manera semántica. Puede configurarse con un modelo Ollama de ejecución local sin conexión a Internet (100% privado) o mediante las APIs seguras de Google Gemini en la nube ingresando su API Key personal cifrada."
-    },
-    {
-      q: "¿Se pueden comparar múltiples carpetas y guardar el progreso?",
-      a: "Sí. A través de la MatrixView multi-destino puede comparar una carpeta de origen contra múltiples destinos simultáneamente. Toda su configuración, filtros y matrices de estado se persisten localmente en IndexedDB para consultarlas en futuras sesiones."
-    }
-  ];
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "NMergeIA - Advanced Agentic Diffing & Merge Tool",
+    "name": "StackUpIA - Advanced Agentic Diffing & Merge Tool",
     "description": "Herramienta avanzada de comparación de directorios y fusión de código local-first con asistente de IA integrado y políticas dinámicas NGAC.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Windows, macOS, Linux, Android, iOS",
@@ -64,9 +40,9 @@ export const LandingPage = () => {
     }}>
       <Helmet>
         <title>{t('app_title')} | Local-First Diff & AI Merge Tool</title>
-        <meta name="description" content="NMergeIA es la herramienta número 1 para comparación de directorios y fusión semántica con IA. Local-First, segura, rápida y con soporte de traducción a 7 idiomas." />
+        <meta name="description" content="StackUpIA es la herramienta número 1 para comparación de directorios y fusión semántica con IA. Local-First, segura, rápida y con soporte de traducción a 7 idiomas." />
         <meta name="keywords" content="diff tool, compare folders, git merge, local-first, myers lcs, code fusion, adsense approved" />
-        <meta property="og:title" content="NMergeIA | Advanced Agentic Diff & Merge" />
+        <meta property="og:title" content="StackUpIA | Advanced Agentic Diff & Merge" />
         <meta property="og:description" content="Comparación de código y carpetas en 3D local-first con resolución semántica mediante IA." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">
@@ -77,7 +53,7 @@ export const LandingPage = () => {
       {/* Hero Section */}
       <div style={{ maxWidth: '800px', margin: '0 auto 50px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ marginBottom: '20px' }}>
-          <img src={logo} alt="NMergeIA Logo" style={{ height: '95px', filter: 'drop-shadow(0 4px 20px rgba(16, 185, 129, 0.15))' }} />
+          <img src={logo} alt="StackUpIA Logo" style={{ height: '95px', filter: 'drop-shadow(0 4px 20px rgba(16, 185, 129, 0.15))' }} />
         </div>
         
         <div style={{
@@ -123,7 +99,7 @@ export const LandingPage = () => {
         {/* CTA Button */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <button 
-            className="btn primary-btn"
+            className="premium-btn-primary"
             onClick={() => setActiveTab('main')}
             style={{
               height: '52px',
@@ -229,81 +205,6 @@ export const LandingPage = () => {
               {t('guide_step6_desc')}
             </p>
           </div>
-        </div>
-      </div>
-
-      {/* FAQ Accordion Section (Para mejorar el volumen SEO y AdSense) */}
-      <div style={{
-        maxWidth: '1200px',
-        width: '100%',
-        margin: '0 auto 40px auto',
-        textAlign: 'left',
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '16px',
-        padding: '35px',
-        boxSizing: 'border-box'
-      }}>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: '800', marginBottom: '25px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span className="material-symbols-rounded" style={{ color: '#3b82f6' }}>help_center</span>
-          Preguntas Frecuentes (FAQ)
-        </h2>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          {faqs.map((faq, idx) => (
-            <div 
-              key={idx}
-              style={{
-                border: '1px solid var(--border-light)',
-                borderRadius: '8px',
-                background: 'var(--bg-tertiary)',
-                overflow: 'hidden'
-              }}
-            >
-              <button
-                onClick={() => toggleFaq(idx)}
-                style={{
-                  width: '100%',
-                  padding: '16px 20px',
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  color: 'var(--text-primary)',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  textAlign: 'left'
-                }}
-              >
-                <span>{faq.q}</span>
-                <span 
-                  className="material-symbols-rounded"
-                  style={{
-                    transform: openFaq === idx ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease',
-                    color: '#10b981'
-                  }}
-                >
-                  expand_more
-                </span>
-              </button>
-              {openFaq === idx && (
-                <div style={{
-                  padding: '0 20px 16px 20px',
-                  fontSize: '0.85rem',
-                  color: 'var(--text-secondary)',
-                  lineHeight: '1.6',
-                  borderTop: '1px solid var(--border-light)',
-                  paddingTop: '16px'
-                }}>
-                  {faq.a}
-                </div>
-              )}
-            </div>
-          ))}
         </div>
       </div>
     </div>

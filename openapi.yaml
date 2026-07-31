@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: nmerge.local Backend API
+  title: nmergeia.local Backend API
   description: API interna para gestionar perfiles, configuraciones, filtros y validación de licencias.
   version: 1.0.0
 servers:

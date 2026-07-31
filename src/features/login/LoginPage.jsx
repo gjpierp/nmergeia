@@ -32,16 +32,6 @@ export const LoginPage = () => {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    setLoading(true);
-    addToast(t('login_connecting_provider').replace('{provider}', provider), 'info');
-    setTimeout(() => {
-      setLoading(false);
-      localStorage.setItem('nmerge_user_session', JSON.stringify({ email: `user@${provider.toLowerCase()}.com`, method: provider }));
-      addToast(t('login_success_provider').replace('{provider}', provider), 'success');
-      setActiveTab('main');
-    }, 1200);
-  };
 
   return (
     <div style={{
@@ -73,14 +63,14 @@ export const LoginPage = () => {
         </div>
 
         {/* Email Form */}
-        <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+        <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '20px' }}>
           <input 
             type="email" 
             placeholder={t('login_placeholder_email')} 
             value={email} 
             onChange={(e) => setEmail(e.target.value)}
             className="input-field"
-            style={{ height: '38px', fontSize: '0.85rem' }}
+            style={{ height: '40px', fontSize: '11px' }}
             required
             disabled={loading}
           />
@@ -90,7 +80,7 @@ export const LoginPage = () => {
             value={password} 
             onChange={(e) => setPassword(e.target.value)}
             className="input-field"
-            style={{ height: '38px', fontSize: '0.85rem' }}
+            style={{ height: '40px', fontSize: '11px' }}
             required
             disabled={loading}
           />
@@ -99,73 +89,49 @@ export const LoginPage = () => {
             type="submit" 
             className="btn primary-btn" 
             disabled={loading}
-            style={{ height: '38px', fontSize: '0.85rem', fontWeight: '600', marginTop: '5px' }}
+            style={{ height: '40px', fontSize: '12px', fontWeight: '600', marginTop: '5px' }}
           >
             {loading ? t('login_btn_loading') : t('login_btn_email')}
           </button>
         </form>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '20px' }}>
-          <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-          <span>{t('login_divider_text')}</span>
-          <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-        </div>
 
-        {/* Social logins */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button 
-            className="btn secondary-btn" 
-            onClick={() => handleSocialLogin('Google')}
-            disabled={loading}
-            style={socialBtnStyle}
-          >
-            <span style={{ fontWeight: 'bold', color: '#ea4335', marginRight: '8px', fontSize: '1.1rem' }}>G</span>
-            {t('login_btn_google')}
-          </button>
-          
-          <button 
-            className="btn secondary-btn" 
-            onClick={() => handleSocialLogin('Facebook')}
-            disabled={loading}
-            style={socialBtnStyle}
-          >
-            <span style={{ fontWeight: 'bold', color: '#1877f2', marginRight: '8px', fontSize: '1.1rem' }}>f</span>
-            {t('login_btn_facebook')}
-          </button>
 
+        {/* Bottom Switch Links / Enlace a Registro */}
+        <div style={{
+          marginTop: '22px',
+          paddingTop: '16px',
+          borderTop: '1px dashed var(--border-color)',
+          textAlign: 'center',
+          fontSize: '0.85rem',
+          color: 'var(--text-secondary)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>¿No tienes una cuenta aún?</span>
           <button 
-            className="btn secondary-btn" 
-            onClick={() => handleSocialLogin('GitHub')}
-            disabled={loading}
-            style={socialBtnStyle}
-          >
-            <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '8px', color: 'var(--text-primary)' }}>code</span>
-            {t('login_btn_github')}
-          </button>
-        </div>
-
-        {/* Bottom Switch Links */}
-        <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          {t('login_no_account')}{' '}
-          <span 
+            type="button"
+            className="btn secondary-btn"
             onClick={() => setActiveTab('register')}
-            style={{ color: 'var(--accent-primary)', cursor: 'pointer', fontWeight: '600' }}
+            style={{
+              width: '100%',
+              height: '38px',
+              fontSize: '0.85rem',
+              fontWeight: '600',
+              color: 'var(--accent-secondary)',
+              borderColor: 'var(--border-color)',
+              background: 'var(--bg-tertiary)',
+              cursor: 'pointer'
+            }}
           >
-            {t('login_register_link')}
-          </span>
+            Registrarse / Crear Cuenta
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-const socialBtnStyle = {
-  height: '38px',
-  fontSize: '0.85rem',
-  fontWeight: '500',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: '8px',
-  width: '100%'
-};
+

@@ -18,11 +18,23 @@ export const useAppStore = create((set) => ({
   addToast: (message, type = 'success') => set((state) => ({ toasts: [...state.toasts, { id: Date.now() + Math.random(), message, type }] })),
   removeToast: (id) => set((state) => ({ toasts: state.toasts.filter(t => t.id !== id) })),
 
-  activeTab: 'landing',
+  activeTab: import.meta.env.VITE_IS_DESKTOP === 'true' ? 'main' : 'landing',
   setActiveTab: (val) => setVal(set, 'activeTab', val),
 
-  appTheme: 'dark',
-  setAppTheme: (val) => setVal(set, 'appTheme', val),
+  appTheme: typeof window !== 'undefined'
+    ? (['cyber', 'obsidian', 'tokyo', 'nord', 'emerald', 'light-modern', 'light-cyber', 'light-nord', 'light-paper'].includes(localStorage.getItem('nmerge_app_theme')) 
+        ? localStorage.getItem('nmerge_app_theme') 
+        : 'cyber')
+    : 'cyber',
+  setAppTheme: (val) => set((state) => {
+    const validTheme = ['cyber', 'obsidian', 'tokyo', 'nord', 'emerald', 'light-modern', 'light-cyber', 'light-nord', 'light-paper'].includes(val) ? val : 'cyber';
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nmerge_app_theme', validTheme);
+      document.documentElement.dataset.theme = validTheme;
+      document.documentElement.setAttribute('data-theme', validTheme);
+    }
+    return { appTheme: validTheme };
+  }),
 
   selectedDiffContent: null,
   setSelectedDiffContent: (val) => setVal(set, 'selectedDiffContent', val),
@@ -81,6 +93,37 @@ export const useAppStore = create((set) => ({
   matrixScrollTop: 0,
   setMatrixScrollTop: (val) => setVal(set, 'matrixScrollTop', val),
 
+  sentinelMenuTree: null,
+  setSentinelMenuTree: (val) => setVal(set, 'sentinelMenuTree', val),
+
+  allowedMenus: [
+    'Landing', 'landing', 'MNU_NMERGE_LANDING', 'Comparar', 'main', 'MNU_NMERGE_MAIN', 'Login', 'Register', 'Privacy', 'Terms', 'Docs', 'FAQ', 'Terminal', 'Historial', 'Filtros',
+    'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto',
+    'OracleInicial', 'OracleBasico', 'OracleMedio', 'OracleAvanzado', 'OracleExperto',
+    'DockerInicial', 'DockerBasico', 'DockerMedio', 'DockerAvanzado', 'DockerExperto',
+    'DevsecopsInicial', 'DevsecopsBasico', 'DevsecopsMedio', 'DevsecopsAvanzado', 'DevsecopsExperto',
+    'AuthInicial', 'AuthBasico', 'AuthMedio', 'AuthAvanzado', 'AuthExperto',
+    'CriptoInicial', 'CriptoBasico', 'CriptoMedio', 'CriptoAvanzado', 'CriptoExperto',
+    'OwaspInicial', 'OwaspBasico', 'OwaspMedio', 'OwaspAvanzado', 'OwaspExperto',
+    'MongoInicial', 'MongoBasico', 'MongoMedio', 'MongoAvanzado', 'MongoExperto',
+    'RedisInicial', 'RedisBasico', 'RedisMedio', 'RedisAvanzado', 'RedisExperto',
+    'SqlServerInicial', 'SqlServerBasico', 'SqlServerMedio', 'SqlServerAvanzado', 'SqlServerExperto',
+    'MlInicial', 'MlBasico', 'MlMedio', 'MlAvanzado', 'MlExperto',
+    'NlpInicial', 'NlpBasico', 'NlpMedio', 'NlpAvanzado', 'NlpExperto',
+    'CleanCodeInicial', 'CleanCodeBasico', 'CleanCodeMedio', 'CleanCodeAvanzado', 'CleanCodeExperto',
+    'PatronesInicial', 'PatronesBasico', 'PatronesMedio', 'PatronesAvanzado', 'PatronesExperto',
+    'QaInicial', 'QaBasico', 'QaMedio', 'QaAvanzado', 'QaExperto',
+    'BiInicial', 'BiBasico', 'BiMedio', 'BiAvanzado', 'BiExperto',
+    'DwhInicial', 'DwhBasico', 'DwhMedio', 'DwhAvanzado', 'DwhExperto',
+    'GitInicial', 'GitBasico', 'GitMedio', 'GitAvanzado', 'GitExperto',
+    'TerraformInicial', 'TerraformBasico', 'TerraformMedio', 'TerraformAvanzado', 'TerraformExperto',
+    'K8sAvanzado', 'CloudAvanzado',
+    'ArqInicial', 'ArqBasico', 'ArqMedio', 'ArqAvanzado', 'ArqExperto',
+    'IaInicial', 'IaBasico', 'IaMedio', 'IaAvanzado', 'IaExperto',
+    'ReqInicial', 'ReqBasico', 'ReqMedio', 'ReqAvanzado', 'ReqExperto'
+  ],
+  setAllowedMenus: (val) => setVal(set, 'allowedMenus', val),
+
   userSession: typeof window !== 'undefined'
     ? (() => {
         try {
@@ -95,7 +138,7 @@ export const useAppStore = create((set) => ({
     if (typeof window !== 'undefined') {
       if (session) {
         localStorage.setItem('nmerge_user_session', JSON.stringify(session));
-        const userFilters = localStorage.getItem(`nmergeia_filters_${session.email}`);
+        const userFilters = localStorage.getItem('nmerge_filter_local');
         return { 
           userSession: session, 
           sessionFilterConfig: userFilters 

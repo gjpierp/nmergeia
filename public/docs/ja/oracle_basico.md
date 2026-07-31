@@ -1,4 +1,4 @@
-# Oracle DB: Nivel Básico - Estructuras y DDL
+# Nivel Básico - Estructuras y DDL
 
 Una vez que tenemos nuestro entorno de Oracle funcionando, es momento de comprender la arquitectura lógica y física básica de Oracle, y cómo crear y manipular los objetos que almacenarán nuestra información.
 

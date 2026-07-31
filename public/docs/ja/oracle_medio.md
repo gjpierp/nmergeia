@@ -1,4 +1,4 @@
-# Oracle DB: Nivel Medio - DML y Transaccionalidad
+# Nivel Medio - DML y Transaccionalidad
 
 En este nivel profundizaremos en el Lenguaje de Manipulación de Datos (DML) y una de las características estrella de Oracle: su robusto modelo de control de transacciones (ACID).
 

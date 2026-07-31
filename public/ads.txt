@@ -1,0 +1,16 @@
+# =====================================================================
+# Archivo de Vendedores Digitales Autorizados (ads.txt) - NMergeIA
+# IAB Tech Lab Standard v1.1
+# =====================================================================
+# 
+# Instrucciones de Configuración:
+# Sustituye 'pub-0000000000000000' por tu ID de Vendedor de Google AdSense (Publisher ID).
+# El archivo debe ser servido en la raíz pública del dominio: https://tudominio.com/ads.txt
+#
+# Formato: <Nombre del Sistema>, <ID de Vendedor (Publisher ID)>, <Tipo de Relación>, <ID Certificador>
+
+# Google AdSense (Venta Directa)
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+
+# Redes Secundarias / AdX (Opcional - Reemplazar si aplica)
+# rubiconproject.com, 0000, RESELLER, 0bfb92f28ed180d3

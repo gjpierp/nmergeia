@@ -1,7 +1,6 @@
-# PostgreSQL: Alta Disponibilidad y Arquitectura Interna
+# Alta Disponibilidad y Arquitectura Interna
 
 > [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresExperto`  
 > **Tiempo Estimado:** 15 minutos  
 > **Perfil:** Staff / Principal Engineer  
 
