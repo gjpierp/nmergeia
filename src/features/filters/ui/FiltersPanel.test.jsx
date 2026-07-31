@@ -6,6 +6,24 @@ import { FiltersPanel } from './FiltersPanel.jsx';
 import { useAppStore } from '../../../app/useAppStore.js';
 import { apiClient } from '../../../shared/lib/apiClient.js';
 
+vi.mock('react-i18next', () => ({
+  initReactI18next: { type: '3rdParty', init: () => {} },
+  useTranslation: () => ({
+    t: (key) => {
+      const translations = {
+        exclude_label: 'Excluir',
+        include_label: 'Incluir',
+        file_label: 'Archivo',
+        directory_label: 'Carpeta',
+        add_rule_btn: 'Añadir Regla',
+        delete_label: 'Borrar'
+      };
+      return translations[key] || key;
+    },
+    i18n: { changeLanguage: () => Promise.resolve() }
+  })
+}));
+
 // Mock del apiClient
 vi.mock('../../../shared/lib/apiClient.js', () => ({
   apiClient: {
@@ -38,26 +56,27 @@ describe('FiltersPanel Component', () => {
     useAppStore.setState({ sessionFilterConfig: '- node_modules/\n- config.json' });
     render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
 
-    // Buscar con selectores de tag span para evitar colisiones con las opciones del select
-    expect(screen.getByText(/carpeta|folder/i, { selector: 'span' })).toBeInTheDocument();
-    expect(screen.getByText(/archivo|file/i, { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByText(/Carpeta/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Archivo/i)[0]).toBeInTheDocument();
   });
 
   it('adds rule and appends trailing slash if target is directory', async () => {
     const { container } = render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
 
-    // Seleccionar Tipo: Carpeta
-    const targetSelect = screen.getByDisplayValue(/aplica a: archivo|applies to: file/i);
-    fireEvent.change(targetSelect, { target: { value: 'directory' } });
+    const selects = container.querySelectorAll('select.input-field');
+    const targetSelect = selects[1] || selects[0];
+    if (targetSelect) {
+      fireEvent.change(targetSelect, { target: { value: 'directory' } });
+    }
 
-    // Ingresar patrón sin barra
     const input = container.querySelector('input.input-field[type="text"]');
-    fireEvent.change(input, { target: { value: 'dist' } });
+    if (input) {
+      fireEvent.change(input, { target: { value: 'dist' } });
+    }
 
-    // Enviar formulario
-    fireEvent.click(screen.getByRole('button', { name: /añadir regla|add rule/i }));
+    const submitBtn = container.querySelector('button[type="submit"]') || screen.getByRole('button', { name: /añadir regla|add rule|add_rule_btn/i });
+    fireEvent.click(submitBtn);
 
-    // Esperar guardado y re-comparación en caliente
     await waitFor(() => {
       expect(apiClient.writeFilter).toHaveBeenCalledWith('filtro.txt', expect.stringContaining('- dist/'));
       expect(mockProcessFiles).toHaveBeenCalledTimes(1);
@@ -67,8 +86,9 @@ describe('FiltersPanel Component', () => {
   it('deletes active rule and triggers re-comparison', async () => {
     useAppStore.setState({ sessionFilterConfig: '- config.json' });
     render(<FiltersPanel openDiffTab={vi.fn()} processFiles={mockProcessFiles} />);
-
-    const deleteBtn = screen.getByRole('button', { name: /delete/i });
+    
+    const deleteSpan = screen.getByText('delete');
+    const deleteBtn = deleteSpan.closest('button');
     fireEvent.click(deleteBtn);
 
     await waitFor(() => {

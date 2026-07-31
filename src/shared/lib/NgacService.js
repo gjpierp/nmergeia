@@ -410,7 +410,7 @@ export const NgacService = {
       }
     }
     if (['Ventas', 'Login', 'Licencia'].includes(optionName)) {
-      return userRoles.includes('ROLE_NMERGEIA_ADMIN');
+      return userRoles.includes('ROLE_NMERGEIA_ADMIN') || userRoles.includes('ROLE_ADMINISTRADOR');
     }
     return true;
   },

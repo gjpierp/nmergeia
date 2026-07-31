@@ -49,13 +49,15 @@ describe('useMatrixProcessor Integration Test - openDiffTab logic', () => {
     const mockOriginFile = {
       name: 'App.jsx',
       webkitRelativePath: 'origen-raiz/src/App.jsx',
-      fileHandle: { name: 'App.jsx', kind: 'file' }
+      fileHandle: { name: 'App.jsx', kind: 'file', getFile: async () => ({ text: async () => 'const a = 1;', webkitRelativePath: 'origen-raiz/src/App.jsx' }) },
+      actualFile: { text: async () => 'const a = 1;', webkitRelativePath: 'origen-raiz/src/App.jsx' }
     };
 
     const mockDestFile = {
       name: 'App.jsx',
       webkitRelativePath: 'destino-raiz/src/App.jsx',
-      fileHandle: { name: 'App.jsx', kind: 'file' }
+      fileHandle: { name: 'App.jsx', kind: 'file', getFile: async () => ({ text: async () => 'const a = 2;', webkitRelativePath: 'destino-raiz/src/App.jsx' }) },
+      actualFile: { text: async () => 'const a = 2;', webkitRelativePath: 'destino-raiz/src/App.jsx' }
     };
 
     const matrixTab = {

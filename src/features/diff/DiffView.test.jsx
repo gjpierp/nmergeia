@@ -5,6 +5,22 @@ import '@testing-library/jest-dom';
 import { DiffView } from './DiffView';
 import { useAppStore } from '../../app/useAppStore';
 
+vi.mock('react-i18next', () => ({
+  initReactI18next: { type: '3rdParty', init: () => {} },
+  useTranslation: () => ({
+    t: (key) => {
+      const translations = {
+        normalize_json: 'Normalizar JSON',
+        clean_spaces: 'Limpiar espacios',
+        diff_origin: 'Origen',
+        diff_destination: 'Destino'
+      };
+      return translations[key] || key;
+    },
+    i18n: { changeLanguage: () => Promise.resolve() }
+  })
+}));
+
 // Mock Monaco Editor reactive state
 let currentEditorLine = 1;
 
@@ -164,7 +180,7 @@ describe('DiffView Component', () => {
             />
         );
 
-        const checkbox = screen.getByLabelText(/normalize json|normalizar json/i);
+        const checkbox = screen.getByText(/diff_normalize_json|normalizar json/i).closest('label').querySelector('input');
         expect(checkbox).toBeInTheDocument();
 
         expect(screen.getByTestId('original-code').textContent).toBe(rawJsonOriginal);
@@ -191,7 +207,7 @@ describe('DiffView Component', () => {
             />
         );
 
-        const checkbox = screen.getByLabelText(/clean spaces|limpiar espacios/i);
+        const checkbox = screen.getByText(/diff_clean_spaces|limpiar espacios/i).closest('label').querySelector('input');
         expect(checkbox).toBeInTheDocument();
 
         fireEvent.click(checkbox);

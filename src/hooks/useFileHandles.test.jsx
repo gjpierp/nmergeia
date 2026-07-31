@@ -44,7 +44,7 @@ describe('useFileHandles Hook - Picker safety and secure context alerts', () => 
 
     // Verificamos que alerte al usuario vía Toast de error
     expect(store.addToast).toHaveBeenCalledWith(
-      expect.stringContaining('El navegador bloquea el selector en conexiones HTTP simples'),
+      expect.stringContaining('no está soportado'),
       'error'
     );
     expect(store.setOriginHandle).not.toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('useFileHandles Hook - Picker safety and secure context alerts', () => 
     });
 
     expect(store.addToast).toHaveBeenCalledWith(
-      expect.stringContaining('El navegador bloquea el selector en conexiones HTTP simples'),
+      expect.stringContaining('no está soportado'),
       'error'
     );
     expect(store.setOriginHandle).not.toHaveBeenCalled();

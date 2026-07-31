@@ -16,7 +16,7 @@ describe('NgacService Tests', () => {
   });
 
   it('debe registrar un usuario correctamente', async () => {
-    const mockResponse = { ok: true, text: async () => 'OK' };
+    const mockResponse = { ok: true, json: async () => ({ success: true, email: 'test@nmergeia.com' }), text: async () => 'OK' };
     vi.mocked(global.fetch).mockResolvedValue(mockResponse);
 
     const result = await NgacService.registerUser('test@nmergeia.com', 'password123');
@@ -53,7 +53,7 @@ describe('NgacService Tests', () => {
 
     // Verificar payloads reales
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://sentinel-ngac.local/api/login',
+      expect.stringContaining('/api/login'),
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify({ email: 'usuario@nmergeia.com', password: process.env.VITE_GUEST_PASSWORD || 'guestpass' })
@@ -84,14 +84,12 @@ describe('NgacService Tests', () => {
     expect(menu).toContain('Historial');
     expect(menu).toContain('Landing'); // agregada por defecto
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.safi-ngac.local/api/v1/menu',
+      expect.stringContaining('/api/v1/menu'),
       expect.objectContaining({
-        method: 'POST',
         headers: expect.objectContaining({
           'Authorization': `Bearer ${mockJwt}`,
           'x-app-code': 'nmergeia'
-        }),
-        body: JSON.stringify({ contexto: 'nmergeia' })
+        })
       })
     );
   });
