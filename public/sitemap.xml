@@ -119,199 +119,43 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#terminal"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/postgres/inicial</loc>
+    <loc>https://nmergeia.com/#temas/postgres</loc>
     <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/postgres/inicial"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/postgres/inicial"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/postgres"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/postgres"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/postgres/basico</loc>
+    <loc>https://nmergeia.com/#temas/docker</loc>
     <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/postgres/basico"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/postgres/basico"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/docker"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/docker"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/postgres/medio</loc>
+    <loc>https://nmergeia.com/#temas/ngac</loc>
     <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/postgres/medio"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/postgres/medio"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/postgres/avanzado</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/postgres/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/postgres/avanzado"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/postgres/experto</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/postgres/experto"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/postgres/experto"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/docker/inicial</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/docker/inicial"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/docker/inicial"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/docker/basico</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/docker/basico"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/docker/basico"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/docker/medio</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/docker/medio"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/docker/medio"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/docker/avanzado</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/docker/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/docker/avanzado"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/docker/experto</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/docker/experto"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/docker/experto"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/ngac/inicial</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/ngac/inicial"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/inicial"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/ngac/basico</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/ngac/basico"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/basico"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/ngac/medio</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/ngac/medio"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/medio"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/ngac/avanzado</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/ngac/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/avanzado"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/ngac/experto</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/ngac/experto"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/experto"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ngac"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ngac"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-react</loc>

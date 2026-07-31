@@ -23,45 +23,13 @@ export const MENU_TREE = [
   {
     id: 120, code: 'CAT_NMERGEIA_GUIAS', label: 'Biblioteca Técnica & Especialidades', icon: 'school',
     children: [
-      {
-        id: 121, code: 'SUB_POSTGRES', label: 'PostgreSQL', icon: 'storage',
-        children: [
-          { id: 122, code: 'MNU_POSTGRES_INICIAL', label: 'PostgreSQL (Inicial)', path: '/guias/postgres/inicial', priority: '0.7', changefreq: 'monthly' },
-          { id: 123, code: 'MNU_POSTGRES_BASICO', label: 'PostgreSQL (Básico)', path: '/guias/postgres/basico', priority: '0.7', changefreq: 'monthly' },
-          { id: 124, code: 'MNU_POSTGRES_MEDIO', label: 'PostgreSQL (Medio)', path: '/guias/postgres/medio', priority: '0.7', changefreq: 'monthly' },
-          { id: 125, code: 'MNU_POSTGRES_AVANZADO', label: 'PostgreSQL (Avanzado)', path: '/guias/postgres/avanzado', priority: '0.7', changefreq: 'monthly' },
-          { id: 126, code: 'MNU_POSTGRES_EXPERTO', label: 'PostgreSQL (Experto)', path: '/guias/postgres/experto', priority: '0.7', changefreq: 'monthly' }
-        ]
-      },
-      {
-        id: 130, code: 'SUB_DOCKER', label: 'Docker & Contenedores', icon: 'cloud',
-        children: [
-          { id: 131, code: 'MNU_DOCKER_INICIAL', label: 'Docker (Inicial)', path: '/guias/docker/inicial', priority: '0.7', changefreq: 'monthly' },
-          { id: 132, code: 'MNU_DOCKER_BASICO', label: 'Docker (Básico)', path: '/guias/docker/basico', priority: '0.7', changefreq: 'monthly' },
-          { id: 133, code: 'MNU_DOCKER_MEDIO', label: 'Docker (Medio)', path: '/guias/docker/medio', priority: '0.7', changefreq: 'monthly' },
-          { id: 134, code: 'MNU_DOCKER_AVANZADO', label: 'Docker (Avanzado)', path: '/guias/docker/avanzado', priority: '0.7', changefreq: 'monthly' },
-          { id: 135, code: 'MNU_DOCKER_EXPERTO', label: 'Docker (Experto)', path: '/guias/docker/experto', priority: '0.7', changefreq: 'monthly' }
-        ]
-      },
-      {
-        id: 140, code: 'SUB_NGAC', label: 'Control de Acceso NGAC', icon: 'security',
-        children: [
-          { id: 141, code: 'MNU_NGAC_INICIAL', label: 'NGAC (Inicial)', path: '/guias/ngac/inicial', priority: '0.7', changefreq: 'monthly' },
-          { id: 142, code: 'MNU_NGAC_BASICO', label: 'NGAC (Básico)', path: '/guias/ngac/basico', priority: '0.7', changefreq: 'monthly' },
-          { id: 143, code: 'MNU_NGAC_MEDIO', label: 'NGAC (Medio)', path: '/guias/ngac/medio', priority: '0.7', changefreq: 'monthly' },
-          { id: 144, code: 'MNU_NGAC_AVANZADO', label: 'NGAC (Avanzado)', path: '/guias/ngac/avanzado', priority: '0.7', changefreq: 'monthly' },
-          { id: 145, code: 'MNU_NGAC_EXPERTO', label: 'NGAC (Experto)', path: '/guias/ngac/experto', priority: '0.7', changefreq: 'monthly' }
-        ]
-      },
-      {
-        id: 150, code: 'SUB_EXTESPECIALIDADES', label: 'Especialidades Técnicas', icon: 'extension',
-        children: [
-          { id: 151, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', priority: '0.7', changefreq: 'monthly' },
-          { id: 152, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', priority: '0.7', changefreq: 'monthly' },
-          { id: 153, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', priority: '0.7', changefreq: 'monthly' },
-          { id: 154, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', priority: '0.7', changefreq: 'monthly' }
-        ]
-      }
+      { id: 121, code: 'MNU_POSTGRES_GUIDE', label: 'PostgreSQL (Guía Completa & Niveles)', path: '/temas/postgres', icon: 'storage', priority: '0.8', changefreq: 'weekly' },
+      { id: 130, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores (Guía Completa & Niveles)', path: '/temas/docker', icon: 'cloud', priority: '0.8', changefreq: 'weekly' },
+      { id: 140, code: 'MNU_NGAC_GUIDE', label: 'Control de Acceso NGAC (Guía Completa & Niveles)', path: '/temas/ngac', icon: 'security', priority: '0.8', changefreq: 'weekly' },
+      { id: 151, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', priority: '0.7', changefreq: 'monthly' },
+      { id: 152, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', priority: '0.7', changefreq: 'monthly' },
+      { id: 153, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', priority: '0.7', changefreq: 'monthly' },
+      { id: 154, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', priority: '0.7', changefreq: 'monthly' }
     ]
   },
   {
