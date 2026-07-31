@@ -1,6 +1,6 @@
 .markdown-body {
   text-align: left;
-  color: var(--text-primary, #e5e7eb);
+  color: var(--text-primary);
 }
 
 .markdown-body h1, 
@@ -8,19 +8,19 @@
 .markdown-body h3, 
 .markdown-body h4, 
 .markdown-body h5 {
-  color: var(--text-h, #ffffff);
+  color: var(--text-primary);
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 
 .markdown-body p, 
 .markdown-body li {
-  color: var(--text, #d1d5db);
+  color: var(--text-secondary);
   margin-bottom: 1em;
 }
 
 .markdown-body a {
-  color: var(--accent-primary, #646cff);
+  color: var(--accent-primary);
   text-decoration: none;
 }
 
@@ -29,27 +29,35 @@
 }
 
 .markdown-body pre {
-  background: var(--code-bg, #1a1b26);
-  border: 1px solid var(--border-color, #2e303a);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 1em;
   overflow-x: auto;
 }
 
 .markdown-body code {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-hover);
+  color: var(--accent-primary);
   padding: 0.2em 0.4em;
   border-radius: 3px;
-  font-family: var(--mono, monospace);
+  font-family: monospace;
   font-size: 0.9em;
 }
 
 /* Fix for nested lists and blocks */
 .markdown-body blockquote {
-  border-left: 4px solid var(--accent-primary, #646cff);
+  border-left: 4px solid var(--accent-primary);
   margin: 1.5em 0;
   padding-left: 1em;
-  background: var(--accent-bg, rgba(100, 108, 255, 0.1));
+  background: var(--border-light);
   padding: 1em;
   border-radius: 0 8px 8px 0;
 }
+
+.markdown-body h1 { font-size: 1.6rem !important; border-bottom: none !important; }
+.markdown-body h2 { font-size: 1.4rem !important; border-bottom: 1px solid var(--border-light); padding-bottom: 0.3em; }
+.markdown-body h3 { font-size: 1.2rem !important; }
+.markdown-body h4 { font-size: 1.1rem !important; }
+.markdown-body h5 { font-size: 1rem !important; }
+

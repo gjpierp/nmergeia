@@ -1,0 +1,51 @@
+.legal-page-container {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  color: #e2e8f0;
+  line-height: 1.7;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* h1 removed to rely on PageHeader standard */
+
+.legal-page-container .last-updated {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 2.5rem;
+  font-style: italic;
+}
+
+.legal-page-container section {
+  /* Premium card styling managed globally in App.css */
+}
+
+.legal-page-container h2 {
+}
+
+.legal-page-container p {
+  margin-bottom: 1rem;
+}
+
+.legal-page-container ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.legal-page-container li {
+  margin-bottom: 0.5rem;
+}
+
+.cookie-category {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  border-left: 3px solid #38bdf8;
+}
+
+.cookie-category h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #f1f5f9;
+}

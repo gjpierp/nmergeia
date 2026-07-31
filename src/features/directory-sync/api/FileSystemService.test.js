@@ -73,4 +73,23 @@ describe('FileSystemService', () => {
         expect(files.length).toBe(1);
         expect(files[0].webkitRelativePath).toBe('mockRoot/file1.txt');
     });
+
+    it('getFilesFromHandle should ignore .docs directory when excluded', async () => {
+        const mockDocsDir = { kind: 'directory', name: '.docs' };
+        const mockNormalFile = { kind: 'file', name: 'app.js', getFile: vi.fn().mockResolvedValue({ name: 'app.js' }) };
+
+        const mockDirHandle = {
+            kind: 'directory',
+            name: 'root',
+            values: async function* () {
+                yield mockDocsDir;
+                yield mockNormalFile;
+            }
+        };
+
+        const files = await FileSystemService.getFilesFromHandle(mockDirHandle, '', ['.docs']);
+        expect(files.length).toBe(1);
+        expect(files[0].webkitRelativePath).toBe('root/app.js');
+    });
 });
+

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 
 const faqData = {
   es: [
@@ -157,29 +158,26 @@ export const FaqPage = ({ appLanguage }) => {
       flexDirection: 'column',
       height: '100%',
       width: '100%',
-      padding: '2.5rem',
+      maxWidth: '1000px',
+      margin: '0 auto',
+      padding: '30px 20px',
       boxSizing: 'border-box',
-      background: 'radial-gradient(circle at top, var(--bg-tertiary) 0%, var(--bg-primary) 80%)',
       color: 'var(--text-primary)',
       fontFamily: '"Outfit", sans-serif',
       overflowY: 'auto'
     }}>
-      {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-        <h2 style={{ fontSize: '2.2rem', fontWeight: '800', marginBottom: '0.75rem', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          {lang === 'es' ? 'Centro de Respuestas y FAQ' : 'Help & Answers Center'}
-        </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
-          {lang === 'es' 
-            ? 'Encuentra soluciones a dudas frecuentes sobre sincronización local, seguridad y el asistente de IA.'
-            : 'Find solutions to common questions regarding local synchronization, security, and the AI assistant.'
-          }
-        </p>
-      </div>
+      {/* Header Estandarizado */}
+      <PageHeader 
+        icon="help"
+        title={lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'Frequently Asked Questions'}
+        subtitle={lang === 'es' 
+          ? 'Centro de ayuda sobre sincronización local, seguridad y el asistente de IA' 
+          : 'Help center regarding local synchronization, security, and AI assistant'
+        }
+      />
 
       {/* Buscador y Filtros */}
       <div style={{
-        maxWidth: '750px',
         width: '100%',
         margin: '0 auto 2rem auto',
         display: 'flex',
@@ -199,6 +197,7 @@ export const FaqPage = ({ appLanguage }) => {
           </span>
           <input
             type="text"
+            className="premium-input"
             placeholder={lang === 'es' ? 'Buscar en las preguntas frecuentes...' : 'Search FAQs...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -207,20 +206,12 @@ export const FaqPage = ({ appLanguage }) => {
               padding: '12px 15px 12px 48px',
               borderRadius: '12px',
               border: '1px solid var(--border-color)',
-              background: 'var(--bg-glass)',
+              background: 'var(--bg-secondary)',
               color: 'var(--text-primary)',
               fontSize: '0.95rem',
               outline: 'none',
               transition: 'border-color 0.25s, box-shadow 0.25s',
               boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--accent-primary)';
-              e.target.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.15)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-color)';
-              e.target.style.boxShadow = 'none';
             }}
           />
         </div>
@@ -230,7 +221,7 @@ export const FaqPage = ({ appLanguage }) => {
           display: 'flex',
           gap: '8px',
           flexWrap: 'wrap',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           width: '100%'
         }}>
           {categories.map((cat) => (
@@ -244,13 +235,12 @@ export const FaqPage = ({ appLanguage }) => {
                 padding: '8px 16px',
                 borderRadius: '20px',
                 border: '1px solid ' + (activeCategory === cat ? 'var(--accent-primary)' : 'var(--border-color)'),
-                background: activeCategory === cat ? 'var(--accent-primary)' : 'var(--bg-glass)',
+                background: activeCategory === cat ? 'var(--accent-primary)' : 'var(--bg-secondary)',
                 color: activeCategory === cat ? '#ffffff' : 'var(--text-secondary)',
                 fontSize: '0.85rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.25s ease',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
+                transition: 'all 0.25s ease'
               }}
             >
               {cat === 'All' ? (lang === 'es' ? 'Todas' : 'All') : cat}
@@ -261,9 +251,7 @@ export const FaqPage = ({ appLanguage }) => {
 
       {/* Preguntas */}
       <div style={{
-        maxWidth: '750px',
         width: '100%',
-        margin: '0 auto',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.75rem',
@@ -275,13 +263,13 @@ export const FaqPage = ({ appLanguage }) => {
             return (
               <div
                 key={idx}
+                className="faq-card"
                 style={{
                   borderRadius: '12px',
                   border: '1px solid var(--border-color)',
-                  background: 'var(--bg-glass)',
+                  background: 'var(--bg-secondary)',
                   overflow: 'hidden',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.02)'
+                  transition: 'transform 0.2s, box-shadow 0.2s'
                 }}
               >
                 <button
@@ -328,7 +316,7 @@ export const FaqPage = ({ appLanguage }) => {
                     fontSize: '0.92rem',
                     lineHeight: '1.5',
                     borderTop: '1px solid var(--border-color)',
-                    background: 'rgba(255,255,255,0.01)',
+                    background: 'var(--bg-tertiary)',
                     animation: 'fadeIn 0.2s ease-out'
                   }}>
                     {faq.a}

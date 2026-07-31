@@ -1,39 +1,111 @@
+import ignore from 'ignore';
 import { useAppStore } from '../app/useAppStore.js';
 import { getRelativePath } from '../utils/pathUtils.js';
 import { verifyPermission, getFilesFromHandle, saveFileToHandle, deleteFileFromHandle, getFileObject } from '../features/directory-sync/api/FileSystemService.js';
-import { apiClient } from '../shared/lib/apiClient.js';
+import { apiClient, FILTER_LOCAL_KEY } from '../shared/lib/apiClient.js';
 import { showModal } from '../shared/ui/CustomModal.jsx';
 import { saveHandle } from '../shared/lib/DatabaseService.js';
 import { extractTextFromDocument } from '../shared/lib/DocumentExtractor.js';
 
-export const readFileAsync = (file) => {
-  return new Promise((resolve) => {
+export const parseFilterRules = (filterText) => {
+  if (!filterText) return { excludes: [], includes: [] };
+  const lines = filterText
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('//') && !l.startsWith('#'));
+
+  const excludes = [];
+  const includes = [];
+
+  for (const line of lines) {
+    if (line.startsWith('+')) {
+      const pattern = line.substring(1).trim();
+      if (pattern) includes.push(pattern);
+    } else if (line.startsWith('-') || line.startsWith('!')) {
+      const pattern = line.substring(1).trim();
+      if (pattern) excludes.push(pattern);
+    } else {
+      // Regla por defecto: líneas sin signo explícito son exclusiones (ej: .docs, node_modules)
+      excludes.push(line);
+    }
+  }
+
+  return { excludes, includes };
+};
+
+export const DEFAULT_FILTER_CONTENT = `- node_modules
+- dist
+- build
+- .git
+- .docs
+- .docs/
+- .agents
+- .next
+- .vscode`;
+
+export const getEffectiveFilterText = async (overrideTabFilterText, sessionFilterConfig) => {
+  // 1. Filtro específico del tab (mayor prioridad)
+  if (overrideTabFilterText !== undefined && overrideTabFilterText !== null && overrideTabFilterText.trim() !== '') {
+    return overrideTabFilterText;
+  }
+  // 2. Config de sesión ya cargada en memoria
+  if (sessionFilterConfig && sessionFilterConfig.trim() !== '') {
+    return sessionFilterConfig;
+  }
+  // 3. localStorage unificado (siempre disponible, sin servidor)
+  if (typeof window !== 'undefined') {
+    const local = localStorage.getItem(FILTER_LOCAL_KEY);
+    if (local && local.trim() !== '') return local;
+  }
+  // 4. Intento al servidor (best-effort, ya tiene timeout interno de 3s)
+  try {
+    const loadedFilter = await apiClient.readFilter('filtro.txt');
+    if (loadedFilter && loadedFilter.trim() !== '') return loadedFilter;
+  } catch (_e) {}
+
+  return DEFAULT_FILTER_CONTENT;
+};
+
+
+export const readFileAsync = async (file) => {
+  try {
     const extension = file.name.split('.').pop().toLowerCase();
     const isBinary = ['pdf', 'docx', 'xlsx', 'xls', 'zip', 'pem', 'crt', 'key', 'jpg', 'jpeg', 'png'].includes(extension);
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      let content = '';
-      if (isBinary) {
-        content = await extractTextFromDocument(file.name, e.target.result);
-      } else {
-        content = e.target.result;
-      }
-      resolve({
-        id: Math.random().toString(36).substr(2, 9),
-        name: file.name,
-        path: file.webkitRelativePath || file.name,
-        content: content,
-        fileHandle: file.fileHandle || null
-      });
-    };
-
-    if (isBinary) {
-      reader.readAsArrayBuffer(file);
-    } else {
-      reader.readAsText(file);
+    let actualFile = file;
+    if (actualFile.fileHandle && typeof actualFile.fileHandle.getFile === 'function') {
+        try {
+            actualFile = await actualFile.fileHandle.getFile();
+        } catch (e) {
+            console.warn("No se pudo refrescar el archivo desde el disco:", e);
+        }
     }
-  });
+
+    let content = '';
+    if (isBinary) {
+      const buffer = await actualFile.arrayBuffer();
+      content = await extractTextFromDocument(actualFile.name, buffer);
+    } else {
+      content = await actualFile.text();
+    }
+
+    return {
+      id: Math.random().toString(36).substr(2, 9),
+      name: actualFile.name,
+      path: file.webkitRelativePath || actualFile.name,
+      content: content,
+      fileHandle: file.fileHandle || null
+    };
+  } catch (err) {
+    console.error("Error en readFileAsync:", err);
+    return {
+      id: Math.random().toString(36).substr(2, 9),
+      name: file.name || "Error",
+      path: file.webkitRelativePath || file.name || "Error",
+      content: "ERROR AL LEER EL ARCHIVO: " + err.message,
+      fileHandle: file.fileHandle || null
+    };
+  }
 };
 
 export const useMatrixProcessor = () => {
@@ -54,6 +126,7 @@ export const useMatrixProcessor = () => {
     const setProcessedDestSlots = useAppStore(s => s.setProcessedDestSlots);
     const setHasProcessed = useAppStore(s => s.setHasProcessed);
     const setSessionFilterConfig = useAppStore(s => s.setSessionFilterConfig);
+    const sessionFilterConfig = useAppStore(s => s.sessionFilterConfig);
     const setSavedProfiles = useAppStore(s => s.setSavedProfiles);
     const addToast = useAppStore(s => s.addToast);
     
@@ -72,15 +145,16 @@ export const useMatrixProcessor = () => {
     };
 
     const processFiles = async (isUpdate = false, overrideTab = null) => {
+      const globalState = useAppStore.getState();
       let actualTab = overrideTab;
       if (!actualTab && isUpdate) {
-          actualTab = tabs.find(t => t.id === activeTab);
+          actualTab = globalState.tabs.find(t => t.id === globalState.activeTab);
           if (!actualTab || actualTab.type !== 'matrix') {
-              actualTab = [...tabs].reverse().find(t => t.type === 'matrix');
+              actualTab = [...globalState.tabs].reverse().find(t => t.type === 'matrix');
           }
       }
-      const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
-      const currentDestSlots = actualTab ? actualTab.destSlots : destSlots;
+      const currentOriginHandle = actualTab ? actualTab.originHandle : globalState.originHandle;
+      const currentDestSlots = actualTab ? actualTab.destSlots : globalState.destSlots;
 
       if (!currentOriginHandle && currentDestSlots.every(s => !s.handle)) return;
 
@@ -109,143 +183,164 @@ export const useMatrixProcessor = () => {
 
     setIsProcessing(true);
     setProgressMsg('Leyendo filtro.txt...');
+    try {
     
-    let excludes = [];
-    let includes = [];
-    let currentFilterTxt = '';
-    
-    if (isUpdate && overrideTab && overrideTab.filterText !== undefined) {
-        currentFilterTxt = overrideTab.filterText;
-        const lines = currentFilterTxt.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//'));
-        excludes = lines.filter(l => l.startsWith('-') || l.startsWith('!')).map(l => l.substring(1).trim().toLowerCase());
-        includes = lines.filter(l => l.startsWith('+')).map(l => l.substring(1).trim().toLowerCase());
-    } else {
-        try {
-          currentFilterTxt = await apiClient.readFilter('filtro.txt');
-          if (currentFilterTxt) {
-            const lines = currentFilterTxt.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//'));
-            excludes = lines.filter(l => l.startsWith('-') || l.startsWith('!')).map(l => l.substring(1).trim().toLowerCase());
-            includes = lines.filter(l => l.startsWith('+')).map(l => l.substring(1).trim().toLowerCase());
-          }
-        } catch(_e) {}
+    const currentFilterTxt = await getEffectiveFilterText(
+        isUpdate && overrideTab ? overrideTab.filterText : undefined,
+        globalState.sessionFilterConfig
+    );
+    if (!globalState.sessionFilterConfig) {
+        setSessionFilterConfig(currentFilterTxt);
     }
+
+    const { excludes, includes } = parseFilterRules(currentFilterTxt);
 
     setProgressMsg("Leyendo archivos...");
     
-    let oFiles = [];
-    if (currentOriginHandle) {
-        let hasPerm = false;
+    // 1. Verificar permisos en paralelo
+    const originPermPromise = (async () => {
+        if (!currentOriginHandle) return true;
         if (currentOriginHandle.type === 'files') {
             const perms = await Promise.all(currentOriginHandle.handles.map(h => verifyPermission(h)));
-            hasPerm = perms.every(p => p);
-        } else {
-            hasPerm = await verifyPermission(currentOriginHandle);
+            return perms.every(p => p);
         }
-        if (!hasPerm) {
-             setIsProcessing(false);
-             alert("Permiso denegado para el origen. Haz clic en 'Procesar y Comparar' de nuevo para reintentar.");
-             return;
-        }
-        oFiles = await getFilesFromHandle(currentOriginHandle, '', excludes, includes);
-    }
-    
-    const processedDests = [];
-    for (const slot of effectiveDestSlots) {
-        if (slot.handle) {
-            let hasPerm = false;
-            if (slot.handle.type === 'files') {
-                const perms = await Promise.all(slot.handle.handles.map(h => verifyPermission(h)));
-                hasPerm = perms.every(p => p);
-            } else {
-                hasPerm = await verifyPermission(slot.handle);
-            }
-            if (!hasPerm) {
-                 setIsProcessing(false);
-                 alert(`Permiso denegado para el destino: ${slot.handle.name}. Haz clic en 'Procesar y Comparar' de nuevo para reintentar.`);
-                 return;
-            }
-            const dFiles = await getFilesFromHandle(slot.handle, '', excludes, includes);
-            processedDests.push({ ...slot, files: dFiles });
-        } else {
-            processedDests.push(slot);
-        }
-    }
-    setProcessedDestSlots(processedDests);
-    setHasProcessed(true);
-    let finalTabId = null;
-      try {
-          setTabs(prev => {
-              const baseName = loadedProfileName ? loadedProfileName : 'Resultados';
-              const specificTab = overrideTab;
-              let existingId = null;
-              let finalTitle = baseName;
-              
-              if (specificTab || isUpdate) {
-                  existingId = specificTab ? specificTab.id : null;
-                  if (!existingId) {
-                      const active = prev.find(t => t.id === activeTab);
-                      if (active && active.type === 'matrix') {
-                          existingId = active.id;
-                      } else {
-                          const lastMatrix = [...prev].reverse().find(t => t.type === 'matrix');
-                          if (lastMatrix) existingId = lastMatrix.id;
-                      }
-                  }
-                  if (existingId) {
-                      const exTab = prev.find(t => t.id === existingId);
-                      if (exTab) finalTitle = exTab.title;
-                  }
-              } else if (loadedProfileName) {
-                  const existingMatrix = prev.find(t => t.type === 'matrix' && t.title === loadedProfileName);
-                  if (existingMatrix) {
-                      existingId = existingMatrix.id;
-                      finalTitle = existingMatrix.title;
-                  }
-              } else {
-                  let count = 1;
-                  while (prev.some(t => t.title === finalTitle)) {
-                      count++;
-                      finalTitle = `${baseName} ${count}`;
-                  }
-              }
-              
-              if (existingId) {
-                  finalTabId = existingId;
-                  return prev.map(t => t.id === existingId ? {
-                      ...t,
-                      title: finalTitle,
-                      processedOrigin: oFiles,
-                      processedDestSlots: processedDests,
-                      originHandle: currentOriginHandle,
-                      destSlots: effectiveDestSlots,
-                      filterText: isUpdate && t.filterText !== undefined ? t.filterText : currentFilterTxt
-                  } : t);
-              } else {
-                  const newId = `matrix-${Date.now()}`;
-                  finalTabId = newId;
-                  return [...prev, { 
-                      id: newId, 
-                      title: finalTitle, 
-                      type: 'matrix',
-                      processedOrigin: oFiles,
-                      processedDestSlots: processedDests,
-                      originHandle: currentOriginHandle,
-                      destSlots: effectiveDestSlots,
-                      filterText: currentFilterTxt
-                  }];
-              }
-          });
+        return await verifyPermission(currentOriginHandle);
+    })();
 
-          if (!isUpdate) {
-              handleClear(false);
-              setTimeout(() => {
-                  if (finalTabId) setActiveTab(finalTabId);
-              }, 0);
+    const destPermsPromise = Promise.all(effectiveDestSlots.map(async slot => {
+        if (!slot.handle) return true;
+        if (slot.handle.type === 'files') {
+            const perms = await Promise.all(slot.handle.handles.map(h => verifyPermission(h)));
+            return perms.every(p => p);
+        }
+        return await verifyPermission(slot.handle);
+    }));
+
+    const [hasOriginPerm, destPerms] = await Promise.all([originPermPromise, destPermsPromise]);
+
+      if (!hasOriginPerm) {
+          alert("Permiso denegado para el origen. Haz clic en 'Procesar y Comparar' de nuevo para reintentar.");
+          return;
+      }
+
+      const failedDestIdx = destPerms.findIndex(p => !p);
+      if (failedDestIdx !== -1) {
+          alert(`Permiso denegado para el destino: ${effectiveDestSlots[failedDestIdx].handle?.name}. Haz clic en 'Procesar y Comparar' de nuevo para reintentar.`);
+          return;
+      }
+
+    // 2. Leer archivos de origen y destinos en paralelo
+    const [oFilesRaw, ...destFilesResults] = await Promise.all([
+        currentOriginHandle ? getFilesFromHandle(currentOriginHandle, '', excludes, includes) : Promise.resolve([]),
+        ...effectiveDestSlots.map(async slot => {
+            if (!slot.handle) return [];
+            return await getFilesFromHandle(slot.handle, '', excludes, includes);
+        })
+    ]);
+
+    const systemDefaults = ['.docs', '.docs/', '.agents', '.gemini', '.history', 'node_modules', '.git', '.svn', '.hg', '.DS_Store', 'Thumbs.db', 'dist', 'dist_electron', 'build', 'out', 'bin', 'obj', 'target', 'vendor', 'coverage', '.next', '.nuxt', '.svelte-kit', '.cache', '.parcel-cache', '.turbo', '.vscode', '.idea', 'tmp', 'temp', 'logs'];
+    const expandedTabExcludes = new Set([...systemDefaults, ...excludes]);
+    const postIg = ignore().add(Array.from(expandedTabExcludes));
+
+    const filterFileList = (fileList, rootName) => {
+        if (!fileList || !rootName) return fileList;
+        return fileList.filter(f => {
+            const rel = getRelativePath(f.webkitRelativePath, rootName);
+            const relLower = rel.toLowerCase();
+            return !postIg.ignores(rel) && 
+                   !postIg.ignores(rel + '/') && 
+                   !postIg.ignores(relLower) && 
+                   !postIg.ignores(relLower + '/');
+        });
+    };
+
+    const oFiles = currentOriginHandle ? filterFileList(oFilesRaw, currentOriginHandle.name) : oFilesRaw;
+
+    const processedDests = effectiveDestSlots.map((slot, idx) => {
+        if (slot.handle) {
+            const slotFiles = destFilesResults[idx] || [];
+            return { ...slot, files: filterFileList(slotFiles, slot.handle.name) };
+        }
+        return slot;
+    });
+      setProcessedDestSlots(processedDests);
+      setHasProcessed(true);
+
+      let finalTabId = null;
+      setTabs(prev => {
+          const baseName = loadedProfileName ? loadedProfileName : 'Resultados';
+          const specificTab = overrideTab;
+          let existingId = null;
+          let finalTitle = baseName;
+
+          if (specificTab || isUpdate) {
+              existingId = specificTab ? specificTab.id : null;
+              if (!existingId) {
+                  const active = prev.find(t => t.id === activeTab);
+                  if (active && active.type === 'matrix') {
+                      existingId = active.id;
+                  } else {
+                      const lastMatrix = [...prev].reverse().find(t => t.type === 'matrix');
+                      if (lastMatrix) existingId = lastMatrix.id;
+                  }
+              }
+              if (existingId) {
+                  const exTab = prev.find(t => t.id === existingId);
+                  if (exTab) finalTitle = exTab.title;
+              }
+          } else if (loadedProfileName) {
+              const existingMatrix = prev.find(t => t.type === 'matrix' && t.title === loadedProfileName);
+              if (existingMatrix) {
+                  existingId = existingMatrix.id;
+                  finalTitle = existingMatrix.title;
+              }
+          } else {
+              let count = 1;
+              while (prev.some(t => t.title === finalTitle)) {
+                  count++;
+                  finalTitle = `${baseName} ${count}`;
+              }
           }
+
+          if (existingId) {
+              finalTabId = existingId;
+              return prev.map(t => t.id === existingId ? {
+                  ...t,
+                  title: finalTitle,
+                  processedOrigin: oFiles,
+                  processedDestSlots: processedDests,
+                  originHandle: currentOriginHandle,
+                  destSlots: effectiveDestSlots,
+                  filterText: isUpdate && t.filterText !== undefined ? t.filterText : currentFilterTxt
+              } : t);
+          } else {
+              const newId = `matrix-${Date.now()}`;
+              finalTabId = newId;
+              return [...prev, {
+                  id: newId,
+                  title: finalTitle,
+                  type: 'matrix',
+                  processedOrigin: oFiles,
+                  processedDestSlots: processedDests,
+                  originHandle: currentOriginHandle,
+                  destSlots: effectiveDestSlots,
+                  filterText: currentFilterTxt
+              }];
+          }
+      });
+
+      if (!isUpdate) {
+          handleClear(false);
+          setTimeout(() => {
+              if (finalTabId) setActiveTab(finalTabId);
+          }, 0);
+      }
     } catch (_err) {
-        alert("Hubo un error al procesar los archivos.");
+        console.error('Error en processFiles:', _err);
+        alert('Hubo un error al procesar los archivos: ' + (_err?.message || String(_err)));
     } finally {
         setIsProcessing(false);
+        setProgressMsg('');
     }
   };
 
@@ -282,21 +377,18 @@ export const useMatrixProcessor = () => {
 
       const destValues = [];
       if (!isBackendFile && currentDestSlots) {
-          for (let i = 0; i < currentDestSlots.length; i++) {
-              const slot = currentDestSlots[i];
-              let slotContent = '';
+          const reads = currentDestSlots.map(async (slot) => {
               if (slot && slot.files) {
-                  const foundFile = slot.files.find(f => {
-                      const fRel = getRelativePath(f.webkitRelativePath, slot.handle.name);
-                      return fRel === relPath;
-                  });
-                  if (foundFile && foundFile.fileHandle) {
+                  const foundFile = slot.files.find(f => getRelativePath(f.webkitRelativePath, slot.handle.name) === relPath);
+                  if (foundFile && (foundFile.fileHandle || foundFile.name)) {
                       const fileData = await readFileAsync(foundFile);
-                      slotContent = fileData.content;
+                      return fileData.content;
                   }
               }
-              destValues.push(slotContent);
-          }
+              return '';
+          });
+          const readResults = await Promise.all(reads);
+          destValues.push(...readResults);
       } else {
           destValues.push(modifiedTxt);
       }

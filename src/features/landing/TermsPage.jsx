@@ -31,7 +31,7 @@ export const TermsPage = () => {
                 {lang === 'es' ? 'Términos y Condiciones de Uso' : 'Terms and Conditions of Service'}
               </h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {lang === 'es' ? 'Última revisión: 31 de julio de 2026' : 'Last revised: July 31, 2026'}
+                {lang === 'es' ? 'Última revisión: Agosto 2026' : 'Last revised: August 2026'}
               </span>
             </div>
           </div>
@@ -76,7 +76,7 @@ export const TermsPage = () => {
             <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
               <li>Intentar descompilar, realizar ingeniería inversa o eludir los mecanismos de seguridad y licenciamiento de Sentinel-NGAC.</li>
               <li>Utilizar NMerge IA para procesar o distribuir malware, material ilegal o contenido que viole derechos de autor o propiedad intelectual de terceros.</li>
-              <li>Automatizar la realización de consultas masivas (scraping o botnetbing) contra los endpoints o infraestructura del servidor sin autorización.</li>
+              <li>Automatizar la realización de consultas masivas (scraping o botnets) contra los endpoints o infraestructura del servidor sin autorización.</li>
             </ul>
 
             <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Propiedad Intelectual</h2>
@@ -111,41 +111,22 @@ export const TermsPage = () => {
           <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>
             <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>1. Acceptance of Terms of Service</h2>
             <p>
-              By accessing, browsing, or utilizing the <strong>NMerge IA</strong> web or desktop application (developed by <strong>StackUpIA Software Labs S.A.</strong>), you signify your explicit agreement to be bound by these Terms and Conditions of Service. If you do not agree with any part of these terms, you must discontinue using the application immediately.
+              By accessing, browsing, or utilizing the <strong>NMerge IA</strong> web or desktop application (developed by <strong>StackUpIA Software Labs S.A.</strong>), you signify your explicit agreement to be bound by these Terms and Conditions of Service.
             </p>
 
             <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>2. License Grant & Usage Tiers</h2>
             <p>
-              NMerge IA grants the user a revocable, non-exclusive, non-transferable, limited license to operate the software for personal, educational, or commercial software engineering purposes, subject to the following tiers governed by Sentinel-NGAC:
-            </p>
-            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
-              <li><strong>Free Tier / Non-Premium:</strong> Allows full access to core local folder diffing and file comparison features. Access is supported by non-intrusive Google AdSense advertising. Modifying or circumventing ad delivery scripts without a Pro license is prohibited.</li>
-              <li><strong>Pro Tier / Premium Subscription:</strong> Delivers a 100% ad-free experience, priority customer support, and unrestricted access to advanced matrix comparison capabilities. Licenses are authenticated securely via Stripe.</li>
-            </ul>
-
-            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Acceptable Use & Security Restrictions</h2>
-            <p>
-              You agree to use NMerge IA lawfully and refrain from prohibited actions, including but not limited to:
-            </p>
-            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
-              <li>Attempting to decompile, reverse engineer, or bypass Sentinel-NGAC access control security policies.</li>
-              <li>Using NMerge IA to process or distribute malware or infringing third-party intellectual property.</li>
-              <li>Launching automated scraping or DDoS attacks against application endpoints.</li>
-            </ul>
-
-            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Intellectual Property Rights</h2>
-            <p>
-              All source code, user interface designs, the "NMerge IA" trademark, logos, documentation, and original algorithms are the exclusive property of StackUpIA Software Labs S.A. or its licensors. All rights not expressly granted herein are reserved.
+              NMerge IA grants the user a revocable, non-exclusive, non-transferable, limited license to operate the software for personal, educational, or commercial software engineering purposes, subject to Sentinel-NGAC governance.
             </p>
 
-            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>5. Limitation of Liability & Disclaimer of Warranties</h2>
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Intellectual Property Rights</h2>
             <p>
-              NMerge IA is provided "as is" and "as available", without warranties of any kind, express or implied. StackUpIA Software Labs shall not be liable for any data loss resulting from operating system errors or user overwrite actions. Users are solely responsible for maintaining local backups before confirming destructive merge operations.
+              All source code, user interface designs, the "NMerge IA" trademark, logos, documentation, and original algorithms are the exclusive property of StackUpIA Software Labs S.A. or its licensors.
             </p>
 
-            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>6. Governing Law</h2>
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Governing Law</h2>
             <p>
-              These terms shall be governed by and construed in accordance with the applicable laws of StackUpIA Labs' operating jurisdiction.
+              These terms shall be governed by and construed in accordance with the applicable laws of StackUpIA Labs.
             </p>
 
             <div style={{ marginTop: '40px', display: 'flex', gap: '15px' }}>

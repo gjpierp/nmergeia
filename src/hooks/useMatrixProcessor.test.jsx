@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useMatrixProcessor } from './useMatrixProcessor.js';
+import { useMatrixProcessor, parseFilterRules } from './useMatrixProcessor.js';
 import { useAppStore } from '../app/useAppStore.js';
 
 // Mock de submódulos externos
@@ -120,4 +120,22 @@ describe('useMatrixProcessor Integration Test - openDiffTab logic', () => {
     expect(diffTab.original).toBe('const a = 1;');
     expect(diffTab.modified).toBe('const a = 2;'); // Si el bug existiera, aquí fallaría devolviendo ''
   });
+
+  describe('parseFilterRules', () => {
+    it('correctly parses rules with minus, plus, exclamations and default exclusions without prefix', () => {
+      const input = `
+        // Comentario
+        # Otro comentario
+        - node_modules
+        + src/
+        .docs
+        .docs/
+        ! build
+      `;
+      const { excludes, includes } = parseFilterRules(input);
+      expect(includes).toEqual(['src/']);
+      expect(excludes).toEqual(['node_modules', '.docs', '.docs/', 'build']);
+    });
+  });
 });
+

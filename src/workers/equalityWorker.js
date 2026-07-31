@@ -21,34 +21,37 @@ async function computeFileHash(file) {
 }
 
 /**
- * Calcula de forma ligera la cantidad de líneas añadidas y eliminadas
- * usando el algoritmo LCS para archivos de tamaño razonable.
+ * Calcula de forma ultrarrápida O(N) la cantidad estimada de líneas añadidas y eliminadas
+ * utilizando mapas de conjuntos de frecuencias para evitar cuellos de botella cuadráticos O(N^2).
  */
 function countLineChanges(oldText, newText) {
     const oldLines = oldText.split('\n');
     const newLines = newText.split('\n');
-    const m = oldLines.length;
-    const n = newLines.length;
     
-    if (m > 2000 || n > 2000) {
-        return { added: Math.max(0, n - m), deleted: Math.max(0, m - n) };
+    if (oldLines.length > 5000 || newLines.length > 5000) {
+        return { added: Math.max(0, newLines.length - oldLines.length), deleted: Math.max(0, oldLines.length - newLines.length) };
     }
 
-    const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
+    const oldFreq = new Map();
+    for (let i = 0; i < oldLines.length; i++) {
+        const trimmed = oldLines[i].trim();
+        if (!trimmed) continue;
+        oldFreq.set(trimmed, (oldFreq.get(trimmed) || 0) + 1);
+    }
 
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (oldLines[i - 1].trim() === newLines[j - 1].trim()) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
+    let commonCount = 0;
+    for (let j = 0; j < newLines.length; j++) {
+        const trimmed = newLines[j].trim();
+        if (!trimmed) continue;
+        const count = oldFreq.get(trimmed);
+        if (count && count > 0) {
+            commonCount++;
+            oldFreq.set(trimmed, count - 1);
         }
     }
 
-    const lcsLength = dp[m][n];
-    const deleted = m - lcsLength;
-    const added = n - lcsLength;
+    const deleted = Math.max(0, oldLines.length - commonCount);
+    const added = Math.max(0, newLines.length - commonCount);
     
     return { added, deleted };
 }
@@ -67,49 +70,60 @@ self.onmessage = async (e) => {
         return { id: slot.id, map };
     });
 
+    const tasks = [];
     for (const oFile of originFiles) {
         for (const slot of destMaps) {
             const dFile = slot.map.get(oFile.path);
             if (dFile) {
                 const key = `${slot.id}-${oFile.path}`;
                 
-                // Si el tamaño difiere, son diferentes (O(1))
-                if (oFile.file.size !== dFile.size) {
-                    newMap[key] = { status: 'different', added: 0, deleted: 0 };
-                    continue;
-                }
+                tasks.push(async () => {
+                    try {
+                        let nativeOFile = oFile.file;
+                        let nativeDFile = dFile;
 
-                // Si tienen el mismo tamaño
-                if (oFile.file.size > 500 * 1024) {
-                    try {
-                        const oHash = await computeFileHash(oFile.file);
-                        const dHash = await computeFileHash(dFile);
-                        if (oHash === dHash) {
-                            newMap[key] = { status: 'identical', added: 0, deleted: 0 };
-                        } else {
+                        if (nativeOFile.fileHandle && typeof nativeOFile.fileHandle.getFile === 'function') {
+                            nativeOFile = await nativeOFile.fileHandle.getFile();
+                        }
+                        if (nativeDFile.fileHandle && typeof nativeDFile.fileHandle.getFile === 'function') {
+                            nativeDFile = await nativeDFile.fileHandle.getFile();
+                        }
+
+                        if (nativeOFile.size !== nativeDFile.size) {
                             newMap[key] = { status: 'different', added: 0, deleted: 0 };
+                            return;
                         }
-                    } catch(_e) {
-                        newMap[key] = { status: 'different', added: 0, deleted: 0 };
-                    }
-                } else {
-                    // Para archivos pequeños, cargamos texto normalizado
-                    try {
-                        const oText = await oFile.file.text();
-                        const dText = await dFile.text();
-                        const normalize = t => t.replace(/^\uFEFF/, '').replace(/\s+/g, ' ').trim();
-                        if (normalize(oText) === normalize(dText)) {
-                            newMap[key] = { status: 'identical', added: 0, deleted: 0 };
+
+                        if (nativeOFile.size > 500 * 1024) {
+                            const [oHash, dHash] = await Promise.all([computeFileHash(nativeOFile), computeFileHash(nativeDFile)]);
+                            if (oHash === dHash) {
+                                newMap[key] = { status: 'identical', added: 0, deleted: 0 };
+                            } else {
+                                newMap[key] = { status: 'different', added: 0, deleted: 0 };
+                            }
                         } else {
-                            const stats = countLineChanges(oText, dText);
-                            newMap[key] = { status: 'different', added: stats.added, deleted: stats.deleted };
+                            const [oText, dText] = await Promise.all([nativeOFile.text(), nativeDFile.text()]);
+                            const normalize = t => t.replace(/^\uFEFF/, '').replace(/\s+/g, ' ').trim();
+                            if (normalize(oText) === normalize(dText)) {
+                                newMap[key] = { status: 'identical', added: 0, deleted: 0 };
+                            } else {
+                                const stats = countLineChanges(oText, dText);
+                                newMap[key] = { status: 'different', added: stats.added, deleted: stats.deleted };
+                            }
                         }
                     } catch(_e) {
                         newMap[key] = { status: 'different', added: 0, deleted: 0 };
                     }
-                }
+                });
             }
         }
+    }
+    
+    // Procesar en lotes de 20 tareas concurrentes en paralelo
+    const BATCH_SIZE = 20;
+    for (let i = 0; i < tasks.length; i += BATCH_SIZE) {
+        const batch = tasks.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(fn => fn()));
     }
     
     self.postMessage(newMap);

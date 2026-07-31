@@ -9,7 +9,7 @@ export const RegisterPage = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('G3rC4t_01_##'); // Contraseña estandarizada por defecto
+  const [password, setPassword] = useState(import.meta.env.VITE_GUEST_PASSWORD || ''); // Seguridad: Vía variable de entorno
   const [typedKey, setTypedKey] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -131,7 +131,7 @@ export const RegisterPage = () => {
           /* Formulario de Registro o Activación */
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             {/* Opción 1: Obtener Llave de Prueba */}
-            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <h3 style={{ fontSize: '0.95rem', fontWeight: '700', margin: '0 0 5px 0', color: 'var(--text-primary)' }}>1. Registrar cuenta de Prueba</h3>
               <input 
                 type="text" 
@@ -139,7 +139,7 @@ export const RegisterPage = () => {
                 value={name} 
                 onChange={(e) => setName(e.target.value)}
                 className="input-field"
-                style={{ height: '38px', fontSize: '0.85rem' }}
+                style={{ height: '40px', fontSize: '11px' }}
                 required
               />
               <input 
@@ -148,14 +148,14 @@ export const RegisterPage = () => {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field"
-                style={{ height: '38px', fontSize: '0.85rem' }}
+                style={{ height: '40px', fontSize: '11px' }}
                 required
               />
               <button 
                 type="submit" 
                 className="btn primary-btn" 
                 disabled={loading}
-                style={{ height: '38px', fontSize: '0.85rem', fontWeight: '600', marginTop: '5px' }}
+                style={{ height: '40px', fontSize: '12px', fontWeight: '600', marginTop: '5px' }}
               >
                 {loading ? 'Procesando...' : 'Obtener Llave PRO Gratis'}
               </button>
@@ -168,7 +168,7 @@ export const RegisterPage = () => {
             </div>
 
             {/* Opción 2: Activar Llave Existente */}
-            <form onSubmit={handleActivateManual} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleActivateManual} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <h3 style={{ fontSize: '0.95rem', fontWeight: '700', margin: '0 0 5px 0', color: 'var(--text-primary)' }}>2. Activar Clave Existente</h3>
               <input 
                 type="text" 
@@ -176,14 +176,14 @@ export const RegisterPage = () => {
                 value={typedKey} 
                 onChange={(e) => setTypedKey(e.target.value)}
                 className="input-field"
-                style={{ height: '38px', fontSize: '0.85rem' }}
+                style={{ height: '40px', fontSize: '11px' }}
                 required
               />
               <button 
                 type="submit" 
                 className="btn secondary-btn" 
                 disabled={loading}
-                style={{ height: '38px', fontSize: '0.85rem', fontWeight: '600', marginTop: '5px' }}
+                style={{ height: '40px', fontSize: '12px', fontWeight: '600', marginTop: '5px' }}
               >
                 Activar Licencia
               </button>

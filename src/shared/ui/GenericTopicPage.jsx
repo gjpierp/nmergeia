@@ -1,0 +1,103 @@
+import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+import { MarkdownViewer } from './MarkdownViewer.jsx';
+import { PageHeader } from './PageHeader.jsx';
+
+export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
+  const [activeTab, setActiveTab] = useState('inicial');
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    setActiveTab('inicial');
+    document.getElementById('generic-topic-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [topicId]);
+
+  const topicToMenuKey = {
+    'postgres': 'MNU_TEMA_POSTGRES',
+    'docker': 'MNU_TEMA_02',
+    'ext_react': 'MNU_EXT_REACT',
+    'ext_node': 'MNU_EXT_NODE',
+    'ext_aws': 'MNU_EXT_AWS',
+    'ext_pentest': 'MNU_EXT_PENTEST'
+  };
+  const translatedTitle = topicToMenuKey[topicId] ? t(topicToMenuKey[topicId]) : title;
+
+  const tabs = [
+    { id: 'inicial', label: t('TAB_INICIAL', 'Inicial') },
+    { id: 'basico', label: t('TAB_BASICO', 'Básico') },
+    { id: 'medio', label: t('TAB_MEDIO', 'Medio') },
+    { id: 'avanzado', label: t('TAB_AVANZADO', 'Avanzado') },
+    { id: 'experto', label: t('TAB_EXPERTO', 'Experto') },
+    { id: 'optimizaciones', label: t('TAB_OPTIMIZACIONES', '🔥 Optimizaciones') },
+  ];
+
+  const filename = `${topicId}_${activeTab}.md`;
+  const currentTab = tabs.find(t => t.id === activeTab);
+
+  return (
+    <div id="generic-topic-container" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
+      <Helmet>
+        <title>NMerge | {translatedTitle}</title>
+      </Helmet>
+
+      <div style={{ 
+        padding: '1.5rem 2rem 0', 
+        background: 'var(--bg-secondary)', 
+        borderBottom: '1px solid var(--border-color)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10
+      }}>
+        <PageHeader 
+          title={translatedTitle} 
+          subtitle={`${translatedTitle} - Nivel ${currentTab.label}`} 
+        />
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '1rem' }}>
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id);
+                document.getElementById('generic-topic-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                padding: '0.6rem 1.2rem',
+                background: activeTab === tab.id ? 'var(--accent-primary)' : 'rgba(255,255,255,0.05)',
+                color: activeTab === tab.id ? '#fff' : 'var(--text-secondary)',
+                border: `1px solid ${activeTab === tab.id ? 'var(--accent-primary)' : 'transparent'}`,
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: activeTab === tab.id ? '600' : '400',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s ease-in-out',
+                boxShadow: activeTab === tab.id ? '0 4px 12px rgba(100, 108, 255, 0.3)' : 'none'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      <div style={{ flex: 1, padding: '2rem', boxSizing: 'border-box' }}>
+        <MarkdownViewer 
+          filename={filename}
+          title={`${translatedTitle} - Nivel ${currentTab.label}`}
+          requiredRole="TEMA_ACCESO"
+        />
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+          <button 
+            className="premium-btn-secondary"
+            onClick={() => {
+              document.getElementById('generic-topic-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_upward</span>
+            Volver al Inicio
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

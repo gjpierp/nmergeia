@@ -1,102 +1,97 @@
-# Nivel Básico: Primeros Pasos con PostgreSQL
+# Fundamentos, Tipos de Datos y Consultas Core
 
-> [!NOTE]
-> **Propósito de esta guía:** Comprender los fundamentos de la sintaxis SQL en PostgreSQL, la creación de tablas, relaciones y las consultas básicas de manipulación de datos (CRUD).
+Ya superamos la fase de infraestructura. Ahora entraremos al "terreno de juego" del desarrollador. PostgreSQL no es solo un almacén de filas y columnas; es un sistema de bases de datos Objeto-Relacional (ORDBMS). Esto significa que soporta herencia, tipos de datos complejos y extensiones.
 
-Esta guía te llevará de la mano por los conceptos fundamentales de PostgreSQL. Todo lo que necesitas saber para empezar a construir y consultar tu primera base de datos.
+## 1. El Paradigma de los Esquemas (Schemas)
 
-## 1. Tipos de Datos Fundamentales
-Antes de crear una tabla, debes entender qué tipo de datos puedes almacenar. PostgreSQL ofrece un conjunto rico de tipos:
+Un error muy común entre desarrolladores que migran desde MySQL es usar la base de datos como el único contenedor lógico de tablas. En PostgreSQL, tenemos una capa intermedia: el **Esquema (Schema)**.
 
-*   **Numéricos:** `INTEGER`, `SERIAL` (autoincremental clásico), `NUMERIC(precision, scale)`, `REAL`, `DOUBLE PRECISION`.
-*   **Texto:** `VARCHAR(n)` (longitud variable con límite), `CHAR(n)` (longitud fija), `TEXT` (longitud ilimitada recomendada).
-*   **Fechas y Tiempo:** `DATE`, `TIME`, `TIMESTAMP` (con o sin zona horaria).
-*   **Lógicos:** `BOOLEAN` (`true`, `false`, `null`).
-
-> [!TIP]
-> **Best Practice:** En PostgreSQL moderno, generalmente se prefiere usar `TEXT` o `VARCHAR` sin especificar longitud a menos que exista una restricción estricta de negocio, ya que no hay penalización de rendimiento entre ellos.
-
-## 2. DDL: Creación de Tablas y Relaciones
-El Lenguaje de Definición de Datos (DDL) nos permite estructurar nuestra información.
-
-```sql
--- Creación de la tabla de Autores
-CREATE TABLE autores (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    nacionalidad VARCHAR(50),
-    fecha_nacimiento DATE
-);
-
--- Creación de la tabla de Libros con una llave foránea
-CREATE TABLE libros (
-    isbn VARCHAR(20) PRIMARY KEY,
-    titulo TEXT NOT NULL,
-    precio NUMERIC(5,2) DEFAULT 0.00,
-    autor_id INTEGER REFERENCES autores(id) ON DELETE CASCADE
-);
-```
-
-### Relaciones Visualizadas
 ```mermaid
-erDiagram
-    AUTORES ||--o{ LIBROS : "escribe"
-    AUTORES {
-        int id PK
-        varchar nombre
-        date fecha_nacimiento
-    }
-    LIBROS {
-        varchar isbn PK
-        text titulo
-        numeric precio
-        int autor_id FK
-    }
+graph LR
+    Instancia[Instancia PostgreSQL] --> DB1[(Base de Datos A)]
+    Instancia --> DB2[(Base de Datos B)]
+    
+    DB1 --> Public[Esquema public]
+    DB1 --> Auth[Esquema auth]
+    DB1 --> Sales[Esquema sales]
+    
+    Public --> T1(Tabla Users)
+    Auth --> T2(Tabla Roles)
+    Sales --> T3(Tabla Invoices)
 ```
 
-## 3. DML: Inserción, Actualización y Eliminación (CRUD)
-
-### Crear (Insert)
-```sql
-INSERT INTO autores (nombre, nacionalidad, fecha_nacimiento) 
-VALUES ('Gabriel García Márquez', 'Colombiana', '1927-03-06'),
-       ('Isabel Allende', 'Chilena', '1942-08-02');
-```
-
-### Leer (Select)
-```sql
-SELECT nombre, nacionalidad 
-FROM autores 
-WHERE nacionalidad = 'Colombiana'
-ORDER BY nombre ASC;
-```
-
-### Actualizar (Update)
-```sql
-UPDATE libros 
-SET precio = precio * 1.10 
-WHERE autor_id = 1;
-```
-
-### Eliminar (Delete)
-```sql
-DELETE FROM autores 
-WHERE id = 2;
-```
-> [!WARNING]
-> Dado que nuestra llave foránea tiene `ON DELETE CASCADE`, al eliminar un autor, **todos los libros asociados a ese autor se eliminarán automáticamente**. Úsalo con extrema precaución.
-
-## 4. Uniones Básicas (JOINs)
-Para recuperar información de múltiples tablas, utilizamos `JOIN`. El más común es `INNER JOIN`.
+Por defecto, todas las tablas se crean en el esquema `public`. **Buena Práctica:** Si estás construyendo una arquitectura monolítica o de microservicios con una sola BD, divide tus dominios de negocio usando esquemas.
 
 ```sql
-SELECT l.titulo, a.nombre AS autor, l.precio
-FROM libros l
-INNER JOIN autores a ON l.autor_id = a.id
-WHERE l.precio > 20.00;
+CREATE SCHEMA IF NOT EXISTS billing;
+CREATE SCHEMA IF NOT EXISTS inventory;
 ```
 
----
+## 2. Tipos de Datos: El Poder de JSONB y Arrays
 
-*Fuente Oficial:* [PostgreSQL 16 Documentation - SQL Syntax](https://www.postgresql.org/docs/16/sql-syntax.html)
-*Autores:* Enjambre de IA NMerge.
+PostgreSQL destruye el mito de que "las bases de datos SQL son rígidas". Postgres soporta nativamente tipos de datos NoSQL con un rendimiento excepcional.
+
+### El tipo JSONB (JSON Binario)
+Mientras que `JSON` guarda texto plano, `JSONB` pre-procesa el JSON en un formato binario personalizado. Esto hace que la inserción sea un poco más lenta, pero las lecturas y **búsquedas indexadas** sean asombrosamente rápidas.
+
+```sql
+CREATE TABLE billing.invoices (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_name VARCHAR(150) NOT NULL,
+    total_amount NUMERIC(10, 2),
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Inserción de datos NoSQL dentro de una tabla relacional
+INSERT INTO billing.invoices (customer_name, total_amount, metadata)
+VALUES ('Acme Corp', 500.50, '{"tags": ["b2b", "premium"], "payment_gateway": "stripe", "tax_exempt": false}');
+```
+
+### Consultando el interior del JSONB
+PostgreSQL proporciona operadores especiales (como `->>` y `@>`) para buscar dentro del documento:
+
+```sql
+-- Buscar todas las facturas procesadas por Stripe
+SELECT customer_name, total_amount 
+FROM billing.invoices 
+WHERE metadata @> '{"payment_gateway": "stripe"}';
+
+-- Extraer el primer tag de la lista
+SELECT metadata->'tags'->>0 AS primary_tag 
+FROM billing.invoices;
+```
+
+## 3. Integridad Referencial Estricta (Constraints)
+
+Un esquema bien diseñado no confía en que el código del Frontend o del Backend filtre los errores; la base de datos es la **última línea de defensa**.
+
+```sql
+CREATE TABLE inventory.products (
+    id SERIAL PRIMARY KEY,
+    sku VARCHAR(20) UNIQUE NOT NULL,
+    price NUMERIC(8,2) CHECK (price > 0),
+    discount_percentage INT DEFAULT 0 CHECK (discount_percentage BETWEEN 0 AND 100),
+    status VARCHAR(20) DEFAULT 'draft' CHECK (status IN ('draft', 'active', 'archived'))
+);
+```
+El uso indiscriminado de `CHECK` constraints asegura que *nunca* entrará un producto con precio negativo, sin importar cuántos bugs tenga tu API en Node.js o Python.
+
+## 4. Introducción a los Índices B-Tree
+
+El Índice B-Tree (Árbol Balanceado) es el caballo de batalla de Postgres. Es el índice por defecto y está optimizado para operadores de igualdad y rangos (`<`, `<=`, `=`, `>=`, `>`).
+
+```sql
+-- Creando un índice B-Tree clásico para acelerar búsquedas
+CREATE INDEX idx_products_sku ON inventory.products(sku);
+
+-- Índice parcial: Solo indexa las filas que cumplen la condición.
+-- Ahorra muchísimo espacio en disco y memoria RAM.
+CREATE INDEX idx_active_products ON inventory.products(status) WHERE status = 'active';
+```
+
+### ¿Cuándo usar índices parciales?
+Si tienes una tabla de "Usuarios" con 10 millones de registros, pero solo 50,000 están marcados como `is_deleted = false`, un índice parcial sobre los usuarios activos será microscópico y ultra-rápido en comparación a indexar la tabla entera.
+
+## Reflexión de Cierre
+Dominar los tipos `JSONB`, usar esquemas lógicos y proteger tu información con `CHECK` constraints transformará tus bases de datos de simples hojas de cálculo glorificadas en bóvedas de datos robustas. En el **Nivel Medio**, exploraremos el arte negro de las consultas complejas: *Common Table Expressions (CTEs)* y *Window Functions*.

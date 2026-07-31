@@ -13,11 +13,11 @@ export const useFileHandles = () => {
 
     const openOrigin = async (type) => {
         if (type === 'folder' && !window.showDirectoryPicker) {
-            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmergeia.local).", "error");
             return;
         }
         if (type === 'files' && !window.showOpenFilePicker) {
-            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmergeia.local).", "error");
             return;
         }
         try {
@@ -41,11 +41,11 @@ export const useFileHandles = () => {
 
     const openDest = async (slotId, type) => {
         if (type === 'folder' && !window.showDirectoryPicker) {
-            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            addToast("El selector de carpetas no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmergeia.local).", "error");
             return;
         }
         if (type === 'files' && !window.showOpenFilePicker) {
-            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmerge.local).", "error");
+            addToast("El selector de archivos no está soportado en este navegador (ej. Firefox o HTTP). Por favor usa Chrome/Edge sobre HTTPS (https://nmergeia.local).", "error");
             return;
         }
         try {

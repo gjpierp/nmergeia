@@ -1,83 +1,73 @@
-# PostgreSQL: Alta Disponibilidad y Arquitectura Interna
+# Replication and Massive Partitioning
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresExperto`  
-> **Tiempo Estimado:** 15 minutos  
-> **Perfil:** Staff / Principal Engineer  
+When a single PostgreSQL instance can no longer handle the read load or the storage volume (we are talking Terabytes of data), we enter the Expert domain. It's time to distribute the load.
 
-Esta guía define los estándares arquitectónicos para escalar PostgreSQL en clústeres distribuidos. Analizaremos la integración con **Patroni**, **PgBouncer** y **HAProxy** para garantizar un *Recovery Time Objective* (RTO) menor a 30 segundos.
+## 1. Declarative Partitioning (Local Sharding)
 
----
+If you have a `logs` table with 500 million records, attempting to delete old data with a `DELETE` will lock the table and cause a performance collapse. The solution is to physically split the table while maintaining a single logical table.
 
-## 1. Arquitectura Topológica (Digital Twin)
+### Example: Time-based Partitioning (Range)
 
-La siguiente arquitectura de Alta Disponibilidad asegura replicación física sincrónica o asincrónica y failover automático.
+```sql
+-- 1. Create the "Parent" table
+CREATE TABLE telemetry.sensor_logs (
+    id UUID,
+    sensor_id INT,
+    reading NUMERIC,
+    created_at TIMESTAMP NOT NULL
+) PARTITION BY RANGE (created_at);
+
+-- 2. Create the "Child" tables (Physical)
+CREATE TABLE sensor_logs_y2023m10 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-10-01') TO ('2023-11-01');
+
+CREATE TABLE sensor_logs_y2023m11 PARTITION OF telemetry.sensor_logs
+    FOR VALUES FROM ('2023-11-01') TO ('2023-12-01');
+```
+
+**Critical Advantage:** When the month of October is no longer useful, you don't do a `DELETE`. You simply run a `DROP TABLE sensor_logs_y2023m10;`. This operation frees up Gigabytes of space instantly without hitting server performance.
+
+## 2. Replication Topology: Streaming vs Logical
+
+To scale reads or guarantee High Availability (HA), you need replicas.
 
 ```mermaid
 graph TD
-    Client[Cliente/API] --> HAProxy[HAProxy Load Balancer]
-    HAProxy --> PgBouncer1[PgBouncer Master]
-    HAProxy --> PgBouncer2[PgBouncer Replica]
+    subgraph primary_node [Master Node Primary]
+        P[PostgreSQL Primary]
+        WAL[WAL Logs]
+    end
     
-    PgBouncer1 --> Node1[(PG Node 1 - Master)]
-    PgBouncer2 --> Node2[(PG Node 2 - Replica)]
+    subgraph standby_node [Read Replicas Standby]
+        S1[Physical Replica 1]
+        S2[Physical Replica 2]
+    end
     
-    Node1 -. Replicación Streaming .-> Node2
-    
-    Patroni1[Patroni Agent 1] --- Node1
-    Patroni2[Patroni Agent 2] --- Node2
-    
-    Patroni1 <--> etcd[(etcd DCS)]
-    Patroni2 <--> etcd
+    subgraph analytics_node [Logical Replica Analytics]
+        L1[Data Warehouse / Redshift]
+    end
+
+    P -->|"WAL Streaming (Binary)"| WAL
+    WAL -->|Asynchronous Physical Replication| S1
+    WAL -->|Asynchronous Physical Replication| S2
+    P -->|"Logical Decoding (Pub/Sub)"| L1
 ```
 
-> [!NOTE]  
-> **Consenso Distribuido:** Patroni utiliza `etcd` (o Consul/ZooKeeper) para mantener el estado del clúster y elegir a un nuevo líder mediante el algoritmo de consenso Raft en caso de partición de red (Split-Brain).
+### Physical Replication (Streaming Replication)
+Copies the entire database, block by block, by reading the Write-Ahead Logs (WAL). Physical replicas are **read-only**. This is ideal for failover (if the master dies, a replica takes the throne).
 
----
+### Logical Replication (Pub/Sub)
+Instead of copying raw binary blocks, Postgres decodes the WALs into application-layer events (`INSERT`, `UPDATE`, `DELETE`) and sends them to subscribers.
+- Allows replicating **only specific tables** (ideal for sending sales tables to a Data Lake).
+- Allows the destination node to accept writes in its own independent tables.
 
-## 2. Ajuste Crítico: Pool de Conexiones
+```sql
+-- On the Master server:
+CREATE PUBLICATION sales_pub FOR TABLE sales.orders, sales.invoices;
 
-> [!WARNING]
-> **FinOps & Performance Warning:**  
-> Cada conexión nativa en PostgreSQL consume aproximadamente 10MB de memoria debido a su arquitectura multiproceso (fork por conexión). 5000 conexiones concurrentes sin pooler causarían OOM (Out Of Memory) en instancias con menos de 64GB RAM.  
-> Costo estimado de un clúster RDS Multi-AZ r6g.4xlarge: ~$1,600 USD/mes.
-
-Para mitigar el consumo masivo de memoria, es obligatorio el uso de un Pooler transaccional (`PgBouncer`).
-
-### Archivo de Configuración Quirúrgico (`pgbouncer.ini`)
-
-```ini
-[databases]
-nmerge_db = host=127.0.0.1 port=5432 dbname=nmerge_db
-
-[pgbouncer]
-listen_port = 6432
-listen_addr = *
-auth_type = md5
-auth_file = /etc/pgbouncer/userlist.txt
-pool_mode = transaction
-max_client_conn = 10000
-default_pool_size = 100
-reserve_pool_size = 20
+-- On the Analytics server:
+CREATE SUBSCRIPTION sales_sub CONNECTION 'host=master_ip port=5432 user=rep_user password=secret' PUBLICATION sales_pub;
 ```
 
----
+Mastering partitioning and replication allows you to scale Postgres virtually to infinity. In the **Master Level (Optimizations)**, we will explore Kernel tuning and connection pooling to push the hardware to its absolute limit.
 
-## 3. Optimización del Kernel (Sysctl)
-
-Para bases de datos masivas (Terabytes de RAM), el *tuning* de memoria compartida de Linux es imperativo.
-
-```bash
-# Habilitar Huge Pages para reducir la sobrecarga de la tabla de paginación
-echo "vm.nr_hugepages = 10240" >> /etc/sysctl.conf
-
-# Prevenir que Linux haga Swap agresivo de la BD
-echo "vm.swappiness = 1" >> /etc/sysctl.conf
-
-# Aplicar los cambios en caliente
-sysctl -p
-```
-
----
-*Fin de la Guía Experta. Procede a aplicar estos perfiles directamente a través de Terraform en tu infraestructura Cloud Native.*

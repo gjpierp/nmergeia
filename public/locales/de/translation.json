@@ -198,5 +198,16 @@
   "diff_ai_status_error": "TODO: Error al conectar con la API: ",
   "nav_privacy": "TODO: Privacidad",
   "nav_terms": "TODO: Términos",
-  "nav_docs": "TODO: Documentación"
+  "nav_docs": "TODO: Documentación",
+  "MNU_NMERGEIA_LANDING": "Startseite",
+  "MNU_NMERGEIA_FEATURES": "Eigenschaften",
+  "MNU_NMERGEIA_PRICING": "Preise",
+  "MNU_NMERGEIA_DOCS": "Dokumentation",
+  "MNU_NMERGEIA_FAQ": "FAQ",
+  "CAT_NMERGEIA_N2_AUTH": "Authentifizierung",
+  "CAT_NMERGEIA_N3_WORKSPACE": "Hauptplattform",
+  "CAT_NMERGEIA_N4_COURSES": "Technische Bibliothek",
+  "CAT_NMERGEIA_N5_ASSETS": "Ressourcen und APIs",
+  "MNU_TEMA_POSTGRES": "PostgreSQL",
+  "MNU_TEMA_02": "Docker Multi-stage"
 }

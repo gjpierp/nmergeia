@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
-import logo from '../../assets/logo.png';
+import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 
 export const PricingPage = () => {
   const { setActiveTab } = useAppStore();
@@ -20,12 +20,7 @@ export const PricingPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '20px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
-          <img src={logo} alt="Logo" style={{ height: '40px' }} />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-            Planes y Precios
-          </h1>
-        </div>
+        <PageHeader title="Planes y Precios" />
         <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '1rem', maxWidth: '600px', margin: '0 auto 40px auto' }}>
           Elige el plan ideal para optimizar tu flujo de trabajo. Todas las comparaciones se ejecutan 100% de forma local en tu máquina.
         </p>
@@ -57,7 +52,7 @@ export const PricingPage = () => {
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span className="material-symbols-rounded" style={{ color: '#ef4444', fontSize: '1.1rem' }}>cancel</span> Sin Asistente de IA</li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span className="material-symbols-rounded" style={{ color: '#ef4444', fontSize: '1.1rem' }}>cancel</span> Contiene Anuncios Publicitarios</li>
             </ul>
-            <button className="btn secondary-btn" style={{ width: '100%', height: '40px' }} onClick={() => setActiveTab('main')}>Comenzar Gratis</button>
+            <button className="premium-btn-secondary" style={{ width: '100%', height: '40px' }} onClick={() => setActiveTab('main')}>Comenzar Gratis</button>
           </div>
 
           {/* Plan Premium */}
@@ -72,7 +67,7 @@ export const PricingPage = () => {
             position: 'relative',
             boxShadow: '0 8px 24px rgba(16, 185, 129, 0.1)'
           }}>
-            <div style={{ position: 'absolute', top: '-12px', background: '#10b981', color: '#ffffff', padding: '4px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '0.05em' }}>RECOMENDADO</div>
+            <div className="premium-badge" style={{ position: 'absolute', top: '-12px', background: 'var(--accent-secondary)', color: '#ffffff', border: 'none' }}>RECOMENDADO</div>
             <h3 style={{ fontSize: '1.2rem', margin: '0 0 10px 0', color: 'var(--text-primary)' }}>Registrado Premium</h3>
             <div style={{ fontSize: '2rem', fontWeight: '800', margin: '10px 0', color: '#10b981' }}>$19 <span style={{ fontSize: '0.9rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>/ pago único</span></div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', minHeight: '40px', textAlign: 'center' }}>Acceso total sin anuncios obligatorios y con Asistente de IA Híbrido.</p>
@@ -82,12 +77,12 @@ export const PricingPage = () => {
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span className="material-symbols-rounded" style={{ color: '#10b981', fontSize: '1.15rem' }}>check_circle</span> 🚫 Cero Anuncios (Ad-Free)</li>
               <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span className="material-symbols-rounded" style={{ color: '#10b981', fontSize: '1.15rem' }}>check_circle</span> Historial Ilimitado Aislado</li>
             </ul>
-            <button className="btn primary-btn" style={{ width: '100%', height: '40px' }} onClick={() => setActiveTab('register')}>Obtener Premium</button>
+            <button className="premium-btn-primary" style={{ width: '100%', height: '40px' }} onClick={() => setActiveTab('register')}>Obtener Premium</button>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-          <button className="btn secondary-btn" onClick={() => setActiveTab('landing')}>
+        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '30px' }}>
+          <button className="premium-btn-secondary" onClick={() => setActiveTab('landing')}>
             <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_back</span>
             Volver al Inicio
           </button>

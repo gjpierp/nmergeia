@@ -1,7 +1,9 @@
-import React, { memo, useState, useRef, useEffect } from 'react';
+import React, { memo, useState, useRef, useEffect, useMemo } from 'react';
+import ignore from 'ignore';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { getRelativePath } from "../../utils/pathUtils.js";
+import { parseFilterRules, DEFAULT_FILTER_CONTENT } from "../../hooks/useMatrixProcessor.js";
 import { NgacAdBanner } from '../monetization/NgacAdBanner.jsx';
 
 export const MatrixView = memo(({ 
@@ -19,11 +21,21 @@ export const MatrixView = memo(({
         isProcessing, 
         collapsedFolders, setCollapsedFolders,
         fileEqualityMap,
-        matrixScrollTop, setMatrixScrollTop
+        matrixScrollTop, setMatrixScrollTop,
+        sessionFilterConfig
     } = useAppStore();
 
     const containerRef = useRef(null);
     const [containerHeight, setContainerHeight] = useState(600);
+
+    const toggleFolder = (path) => {
+        setCollapsedFolders(prev => {
+            const next = new Set(prev);
+            if (next.has(path)) next.delete(path);
+            else next.add(path);
+            return next;
+        });
+    };
 
     useEffect(() => {
         const el = containerRef.current;
@@ -57,34 +69,162 @@ export const MatrixView = memo(({
         };
     }, [matrixScrollTop]);
 
-    const originMap = new Map();
-    if (tab.processedOrigin) {
-        tab.processedOrigin.forEach(f => {
-            originMap.set(getRelativePath(f.webkitRelativePath, tab.originHandle.name), f);
-        });
-    }
-    
-    const destMaps = tab.processedDestSlots ? tab.processedDestSlots.map(slot => {
-        const map = new Map();
-        if (slot.files) {
-            slot.files.forEach(f => map.set(getRelativePath(f.webkitRelativePath, slot.handle.name), f));
+    const { originMap, destMaps, allPaths } = useMemo(() => {
+        const oMap = new Map();
+        if (tab.processedOrigin) {
+            tab.processedOrigin.forEach(f => {
+                oMap.set(getRelativePath(f.webkitRelativePath, tab.originHandle?.name), f);
+            });
         }
-        return { slot, map };
-    }) : [];
+        
+        const dMaps = tab.processedDestSlots ? tab.processedDestSlots.map(slot => {
+            const map = new Map();
+            if (slot.files) {
+                slot.files.forEach(f => map.set(getRelativePath(f.webkitRelativePath, slot.handle?.name), f));
+            }
+            return { slot, map };
+        }) : [];
 
-    const allPaths = new Set();
-    for (const path of originMap.keys()) allPaths.add(path);
-    for (const { map } of destMaps) {
-        for (const path of map.keys()) allPaths.add(path);
-    }
+        const paths = new Set();
+        for (const path of oMap.keys()) paths.add(path);
+        for (const { map } of dMaps) {
+            for (const path of map.keys()) paths.add(path);
+        }
+        return { originMap: oMap, destMaps: dMaps, allPaths: paths };
+    }, [tab.processedOrigin, tab.processedDestSlots, tab.originHandle]);
 
-    let pathsArray = Array.from(allPaths);
+    const filteredPaths = useMemo(() => {
+        let pathsArray = Array.from(allPaths);
+        const activeFilterTxt = tab.filterText || sessionFilterConfig || DEFAULT_FILTER_CONTENT;
+        const { excludes: activeExcludes } = parseFilterRules(activeFilterTxt);
+        
+        if (activeExcludes.length > 0) {
+            const systemDefaults = ['.docs', '.docs/', '.agents', '.gemini', '.history', 'node_modules', '.git', 'dist', 'build', '.next', '.vscode'];
+            const expandedTabExcludes = new Set([...systemDefaults]);
+            activeExcludes.forEach(pat => {
+                if (!pat) return;
+                const cleanPat = pat.endsWith('/') ? pat.slice(0, -1) : pat;
+                expandedTabExcludes.add(cleanPat);
+                expandedTabExcludes.add(cleanPat.toLowerCase());
+            });
+            const tabIg = ignore().add(Array.from(expandedTabExcludes));
+            pathsArray = pathsArray.filter(relPath => {
+                const relLower = relPath.toLowerCase();
+                return !tabIg.ignores(relPath) && 
+                       !tabIg.ignores(relPath + '/') && 
+                       !tabIg.ignores(relLower) && 
+                       !tabIg.ignores(relLower + '/');
+            });
+        }
 
-    if (filterText) {
-        pathsArray = pathsArray.filter(p => p.toLowerCase().includes(filterText.toLowerCase()));
-    }
+        if (filterText) {
+            pathsArray = pathsArray.filter(p => p.toLowerCase().includes(filterText.toLowerCase()));
+        }
 
-    if (pathsArray.length === 0) {
+        if (showOnlyChanges) {
+           pathsArray = pathsArray.filter(relPath => {
+               const oFile = originMap.get(relPath);
+               const hasDiff = destMaps.some(({ slot, map }) => {
+                  if (!slot.handle) return true;
+                  const dFile = map.get(relPath);
+                  if (oFile && !dFile) return true;
+                  if (!oFile && dFile) return true;
+
+                  const key = `${slot.id}-${relPath}`;
+                  if (fileEqualityMap[key]) {
+                      const eq = fileEqualityMap[key];
+                      const status = typeof eq === 'object' ? eq.status : eq;
+                      return status === 'different';
+                  }
+
+                  if (oFile && dFile && oFile.size !== undefined && dFile.size !== undefined && oFile.size !== dFile.size) return true;
+                  return false;
+               });
+               return !oFile || hasDiff;
+           });
+        }
+        return pathsArray;
+    }, [allPaths, tab.filterText, sessionFilterConfig, filterText, showOnlyChanges, originMap, destMaps, fileEqualityMap]);
+
+    const sortedRows = useMemo(() => {
+        const folderSet = new Set();
+        filteredPaths.forEach(p => {
+           const parts = p.split('/');
+           parts.pop(); 
+           let current = '';
+           parts.forEach(part => {
+              current = current ? current + '/' + part : part;
+              folderSet.add(current);
+           });
+        });
+        
+        const allRows = [];
+        folderSet.forEach(f => {
+           allRows.push({ type: 'folder', path: f, name: f.split('/').pop(), depth: f.split('/').length - 1 });
+        });
+        filteredPaths.forEach(p => {
+           allRows.push({ type: 'file', path: p, name: p.split('/').pop(), depth: p.split('/').length - 1 });
+        });
+        
+        allRows.forEach(row => {
+           const parts = row.path.split('/');
+           if (row.type === 'folder') {
+               row._sortKey = parts.map(p => '0_' + p).join('/');
+           } else {
+               const name = parts.pop();
+               row._sortKey = (parts.length > 0 ? parts.map(p => '0_' + p).join('/') + '/' : '') + '1_' + name;
+           }
+        });
+
+        allRows.sort((a, b) => a._sortKey.localeCompare(b._sortKey));
+        return allRows;
+    }, [filteredPaths]);
+
+    const rowData = useMemo(() => {
+        const visibleRows = sortedRows.filter(row => {
+           const parts = row.path.split('/');
+           parts.pop();
+           let current = '';
+           for(let part of parts) {
+               current = current ? current + '/' + part : part;
+               if (collapsedFolders.has(current)) return false;
+           }
+           return true;
+        });
+
+        return visibleRows.map(row => {
+          if (row.type === 'folder') {
+              return { ...row, isCollapsed: collapsedFolders.has(row.path) };
+          }
+          const oFile = originMap.get(row.path);
+          const statuses = destMaps.map(({ slot, map }) => {
+            if (!slot.handle) return { status: 'missing', file: null, handle: null };
+            const dFile = map.get(row.path);
+            if (oFile && !dFile) return { status: 'missing', file: null, handle: slot.handle };
+            if (!oFile && dFile) return { status: 'different', file: dFile, handle: slot.handle };
+            
+            const key = `${slot.id}-${row.path}`;
+            if (fileEqualityMap[key]) {
+                 const eq = fileEqualityMap[key];
+                 const status = typeof eq === 'object' ? eq.status : eq;
+                 return { 
+                     status, 
+                     file: dFile, 
+                     handle: slot.handle,
+                     diffStats: typeof eq === 'object' && eq.status === 'different' && (eq.added > 0 || eq.deleted > 0)
+                         ? { added: eq.added, deleted: eq.deleted } 
+                         : null 
+                 };
+            }
+
+            if (oFile.size !== undefined && dFile.size !== undefined && oFile.size !== dFile.size) return { status: 'different', file: dFile, handle: slot.handle };
+            return { status: 'identical', file: dFile, handle: slot.handle };
+          });
+          return { ...row, oFile, statuses };
+        });
+    }, [sortedRows, collapsedFolders, originMap, destMaps, fileEqualityMap]);
+
+    if (filteredPaths.length === 0) {
         return (
             <div className="main-screen" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                <div className="section-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', textAlign: 'center', background: 'transparent', border: 'none' }}>
@@ -97,110 +237,6 @@ export const MatrixView = memo(({
             </div>
         );
     }
-
-    if (showOnlyChanges) {
-       pathsArray = pathsArray.filter(relPath => {
-           const oFile = originMap.get(relPath);
-           const hasDiff = destMaps.some(({ slot, map }) => {
-              if (!slot.handle) return true;
-              const dFile = map.get(relPath);
-                if (oFile && !dFile) return true;
-                if (!oFile && dFile) return true;
-
-                 const key = `${slot.id}-${relPath}`;
-                 if (fileEqualityMap[key]) {
-                     const eq = fileEqualityMap[key];
-                     const status = typeof eq === 'object' ? eq.status : eq;
-                     return status === 'different';
-                 }
-
-                if (oFile && dFile && oFile.size !== dFile.size) return true;
-                return false;
-           });
-           return !oFile || hasDiff;
-       });
-    }
-
-    const folderSet = new Set();
-    pathsArray.forEach(p => {
-       const parts = p.split('/');
-       parts.pop(); 
-       let current = '';
-       parts.forEach(part => {
-          current = current ? current + '/' + part : part;
-          folderSet.add(current);
-       });
-    });
-    
-    const allRows = [];
-    folderSet.forEach(f => {
-       allRows.push({ type: 'folder', path: f, name: f.split('/').pop(), depth: f.split('/').length - 1 });
-    });
-    pathsArray.forEach(p => {
-       allRows.push({ type: 'file', path: p, name: p.split('/').pop(), depth: p.split('/').length - 1 });
-    });
-    
-    const sortKey = (row) => {
-       const parts = row.path.split('/');
-       if (row.type === 'folder') {
-           return parts.map(p => '0_' + p).join('/');
-       } else {
-           const name = parts.pop();
-           return (parts.length > 0 ? parts.map(p => '0_' + p).join('/') + '/' : '') + '1_' + name;
-       }
-    };
-
-    allRows.sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
-
-    const visibleRows = allRows.filter(row => {
-       const parts = row.path.split('/');
-       parts.pop();
-       let current = '';
-       for(let part of parts) {
-           current = current ? current + '/' + part : part;
-           if (collapsedFolders.has(current)) return false;
-       }
-       return true;
-    });
-
-    const toggleFolder = (folderPath) => {
-      setCollapsedFolders(prev => {
-         const newSet = new Set(prev);
-         if (newSet.has(folderPath)) newSet.delete(folderPath);
-         else newSet.add(folderPath);
-         return newSet;
-      });
-    };
-
-    const rowData = visibleRows.map(row => {
-      if (row.type === 'folder') {
-          return { ...row, isCollapsed: collapsedFolders.has(row.path) };
-      }
-      const oFile = originMap.get(row.path);
-      const statuses = destMaps.map(({ slot, map }) => {
-        if (!slot.handle) return { status: 'missing', file: null, handle: null };
-        const dFile = map.get(row.path);
-        if (oFile && !dFile) return { status: 'missing', file: null, handle: slot.handle };
-        if (!oFile && dFile) return { status: 'different', file: dFile, handle: slot.handle };
-                const key = `${slot.id}-${row.path}`;
-         if (fileEqualityMap[key]) {
-             const eq = fileEqualityMap[key];
-             const status = typeof eq === 'object' ? eq.status : eq;
-             return { 
-                 status, 
-                 file: dFile, 
-                 handle: slot.handle,
-                 diffStats: typeof eq === 'object' && eq.status === 'different' && (eq.added > 0 || eq.deleted > 0)
-                     ? { added: eq.added, deleted: eq.deleted } 
-                     : null 
-             };
-         }
-
-        if (oFile.size !== dFile.size) return { status: 'different', file: dFile, handle: slot.handle };
-        return { status: 'identical', file: dFile, handle: slot.handle };
-      });
-      return { ...row, oFile, statuses };
-    });
 
     const ROW_HEIGHT = 36;
     const overscan = 10;

@@ -1,86 +1,70 @@
-# PostgreSQL: Despliegue Zero-Setup y Conceptos Base
+# Initiale Konfiguration und Basis-Architektur
 
-> [!IMPORTANT]
-> **🔐 NGAC Policy Required:** `PostgresInicial`  
-> **Tiempo Estimado:** 3 minutos  
-> **Perfil:** Junior / Mid-Level  
+Willkommen am Startpunkt zur Beherrschung von PostgreSQL, der fortschrittlichsten Open-Source-relationalen Datenbank der Welt. In dieser Anfangsphase werden wir nicht nur ein Binary installieren; wir werden verstehen, wie PostgreSQL mit dem Betriebssystem interagiert und wie die Daten auf der Festplatte strukturiert sind.
 
-Bienvenido a la guía inicial de PostgreSQL. Esta guía está diseñada bajo estándares operativos estrictos para garantizar que levantes una instancia funcional, segura y aislada en menos de un minuto, sin ensuciar tu entorno local.
+## 1. Prozess-Architektur
 
----
+PostgreSQL ist kein einzelnes Programm, sondern eine robuste Multi-Prozess-Architektur.
 
-## 1. Entorno Ejecutable (Zero-Setup)
+### Prozess-Diagramm (Postmaster)
 
-En lugar de instalar binarios locales, utilizaremos Docker para mantener el aislamiento absoluto de los componentes.
-
-Crea un archivo llamado `docker-compose.yml` en tu directorio de trabajo y pega el siguiente contenido:
-
-```yaml
-version: '3.8'
-services:
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: postgres-initial
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-<your_secure_password>}
-      POSTGRES_DB: nmerge_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - local-net
-
-volumes:
-  pgdata:
-
-networks:
-  local-net:
-    driver: bridge
+```mermaid
+graph TD
+    Client[Client (psql / Node.js)] -->|"TCP/IP Verbindung"| Postmaster[Postmaster Prozess (PID 1)]
+    
+    subgraph sub_1 [PostgreSQL Server]
+        Postmaster -->|Fork| Backend1[Backend Prozess 1 (Sitzung A)]
+        Postmaster -->|Fork| Backend2[Backend Prozess 2 (Sitzung B)]
+        
+        Postmaster -.-> BGWriter[Background Writer]
+        Postmaster -.-> WAL[WAL Writer]
+        Postmaster -.-> Autovacuum[Autovacuum Launcher]
+        Postmaster -.-> Checkpointer[Checkpointer]
+    end
+    
+    Backend1 --> SharedBuffers[(Shared Buffers / RAM)]
+    Backend2 --> SharedBuffers
+    
+    SharedBuffers --> BGWriter
+    BGWriter --> Festplatte[(Physische Festplatte)]
 ```
 
-### Ejecución Rápida
-Ejecuta el siguiente comando en tu terminal para levantar la base de datos en segundo plano:
+**Schlüsselkonzept:** Jedes Mal, wenn sich eine Anwendung verbindet, führt der `Postmaster` (der Elternprozess) einen *Fork* durch und weist dieser Verbindung einen dedizierten Backend-Prozess zu. Aus diesem Grund erfordert PostgreSQL in Umgebungen mit hoher Parallelität beträchtliche RAM-Ressourcen, wenn wir keinen Connection Pooler wie *PgBouncer* verwenden.
+
+## 2. Zero-Friction Installation (Docker)
+
+Die moderne Methode, Datenbanken lokal auszuführen und zu erlernen, besteht nicht darin, Binärdateien auf Ihrem Computer zu installieren, sondern flüchtige Container zu verwenden.
 
 ```bash
-docker-compose up -d
+docker run --name pg-initial \
+  -e POSTGRES_PASSWORD=super_sicheres_passwort \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_DB=nmerge_db \
+  -p 5432:5432 \
+  -d postgres:15-alpine
 ```
 
-> [!NOTE]  
-> **Validación:** Puedes comprobar que el puerto está escuchando mediante `docker ps` o intentando conectar con tu cliente favorito (ej. DBeaver o pgAdmin) usando `localhost:5432`.
+### Anatomie des Befehls:
+* `-e POSTGRES_PASSWORD`: ZWINGEND ERFORDERLICHE Umgebungsvariable. Ohne sie wird der Container den Start abbrechen.
+* `-p 5432:5432`: Stellt den internen Port von PostgreSQL auf Ihrem `localhost` zur Verfügung.
+* `postgres:15-alpine`: Wir verwenden die auf Alpine Linux basierende Version 15. Sie ist nur ca. 80 MB groß anstelle der ca. 400 MB großen Standard-Debian-basierten Image.
 
----
+## 3. Das Datenverzeichnis (PGDATA)
 
-## 2. Variables de Entorno y Seguridad Base
+Wo sind meine Daten? Wenn PostgreSQL startet, sucht es nach einem Daten-Cluster im Pfad, der durch die Umgebungsvariable `PGDATA` definiert ist (standardmäßig `/var/lib/postgresql/data`).
 
-> [!WARNING]
-> **FinOps & Security Warning:**  
-> Nunca expongas el puerto `5432` en producción sin un firewall (Security Group). Exponer la base de datos a internet incrementa masivamente el riesgo de ataques de fuerza bruta y escaneos de puertos automatizados.  
-> Costo estimado de instancia t3.micro en AWS: ~$12 USD/mes.
-
-Asegúrate de tener un archivo `.env` configurado. El estándar del proyecto dicta el siguiente `.env.example`:
-
-```env
-# .env.example
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=root
-DB_PASSWORD=<your_secure_password>
-DB_NAME=nmerge_db
-```
-
----
-
-## 3. Comprobación de Salud (Health-Check)
-
-Para verificar matemáticamente que la base de datos está lista para aceptar conexiones, ejecuta un pulso rápido utilizando `pg_isready`:
+Wenn Sie in den Container gehen und dieses Verzeichnis überprüfen:
 
 ```bash
-docker exec -it postgres-initial pg_isready -U root
+docker exec -it pg-initial bash
+ls -la /var/lib/postgresql/data
 ```
-*Salida esperada:* `/var/run/postgresql:5432 - accepting connections`
 
----
-*Fin de la Guía Inicial. Para optimizaciones de memoria y queries, visita la Guía Básica.*
+Sie werden dort wichtige Ordner sehen, wie z.B.:
+* `base/`: Hier befinden sich die tatsächlichen Daten (Tabellen und Indizes im Binärformat).
+* `pg_wal/`: (Write-Ahead Logs) Die lebenswichtigen Transaktionsprotokolle. Wenn der Server unerwartet heruntergefahren wird, verwendet PostgreSQL diese Dateien, um die im Arbeitsspeicher verlorenen Daten wiederherzustellen.
+* `postgresql.conf`: Das "Gehirn" der Konfiguration.
+* `pg_hba.conf`: Der Türsteher (Host-Based Authentication), der entscheidet, welche IP Zugriff hat und wie sie authentifiziert wird.
+
+## Nächste Schritte
+Jetzt, da wir ein physisches und architektonisches Fundament haben. Auf der **Basis-Stufe** werden wir die fortgeschrittenen Datentypen untersuchen, die PostgreSQL von einfacheren Datenbanken wie MySQL unterscheiden.

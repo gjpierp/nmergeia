@@ -44,7 +44,7 @@ describe('NgacService Tests', () => {
     };
     vi.mocked(global.fetch).mockResolvedValue(mockResponse);
 
-    const result = await NgacService.loginUser('usuario@nmergeia.com', 'G3rC4t_01_##');
+    const result = await NgacService.loginUser('usuario@nmergeia.com', process.env.VITE_GUEST_PASSWORD || 'guestpass');
     
     expect(result.email).toBe('usuario@nmergeia.com');
     expect(result.token).toBe(mockJwt);
@@ -56,7 +56,7 @@ describe('NgacService Tests', () => {
       'https://sentinel-ngac.local/api/login',
       expect.objectContaining({
         method: 'POST',
-        body: JSON.stringify({ email: 'usuario@nmergeia.com', password: 'G3rC4t_01_##' })
+        body: JSON.stringify({ email: 'usuario@nmergeia.com', password: process.env.VITE_GUEST_PASSWORD || 'guestpass' })
       })
     );
   });
