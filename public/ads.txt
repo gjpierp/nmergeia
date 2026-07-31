@@ -10,7 +10,7 @@
 # Formato: <Nombre del Sistema>, <ID de Vendedor (Publisher ID)>, <Tipo de Relación>, <ID Certificador>
 
 # Google AdSense (Venta Directa)
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-1905747793263573, DIRECT, f08c47fec0942fa0
 
 # Redes Secundarias / AdX (Opcional - Reemplazar si aplica)
 # rubiconproject.com, 0000, RESELLER, 0bfb92f28ed180d3
