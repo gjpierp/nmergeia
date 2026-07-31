@@ -27,15 +27,36 @@ const MermaidChart = ({ chart, theme }) => {
     
     const renderChart = async () => {
       try {
-        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-        // Mermaid falla categóricamente si hay retornos de carro (\r) en Windows
-        // Además, la sintaxis <-->|"text"| es exclusiva de 'flowchart', por lo que promovemos 'graph' a 'flowchart' on-the-fly.
-        // También Mermaid 11 falla con paréntesis/espacios en títulos de subgraphs si no tienen comillas: subgraph id [Título (Algo)] -> subgraph id ["Título (Algo)"]
-        const safeChart = chart
-          .replace(/\r/g, '')
-          .replace(/^graph /m, 'flowchart ')
-          .replace(/subgraph\s+([a-zA-Z0-9_]+)\s+\[([^"\]]+)\]/g, 'subgraph $1 ["$2"]');
-          
+        const sanitizeMermaidChart = (rawChart = '') => {
+          if (!rawChart) return '';
+          let str = rawChart.replace(/\r/g, '');
+
+          // Normalizar 'graph' -> 'flowchart'
+          str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
+
+          // Envolver títulos de subgraphs no entrecomillados: subgraph id [Texto]
+          str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            const nodeName = id ? id.trim() : `sub_${Math.random().toString(36).substring(2, 7)}`;
+            return `subgraph ${nodeName} ["${cleanLabel}"]`;
+          });
+
+          // Envolver etiquetas de nodos corchete: A[Texto] -> A["Texto"]
+          str = str.replace(/([a-zA-Z0-9_-]+)\[([^"\n][^\]]*?)\]/g, (match, id, label) => {
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            return `${id}["${cleanLabel}"]`;
+          });
+
+          // Envolver etiquetas de flechas: -->|Texto| -> -->|"Texto"|
+          str = str.replace(/(-->|---|==>|-.->)\s*\|([^"\n|]+?)\|/g, (match, arrow, label) => {
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            return `${arrow}|"${cleanLabel}"|`;
+          });
+
+          return str;
+        };
+
+        const safeChart = sanitizeMermaidChart(chart);
         const { svg } = await mermaid.render(id, safeChart);
         if (isMounted && ref.current) {
           ref.current.innerHTML = svg;
