@@ -385,7 +385,7 @@ export const NgacService = {
         'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto',
         'DockerInicial', 'DockerBasico', 'DockerMedio', 'DockerAvanzado', 'DockerExperto',
         'NgacInicial', 'NgacBasico', 'NgacMedio', 'NgacAvanzado', 'NgacExperto',
-        'OracleInicial', 'OracleBasico', 'OracleMedio', 'OracleAvanzado', 'OracleExperto',
+        'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest',
         'Tema01OptPostgres', 'Tema02DockerMultistage', 'Tema03GitAvanzado', 'Tema04IacTerraform', 'Tema05RbacAbacNgac', 'Tema06NgacMenus', 'Tema07RlsGobernanza', 'Tema08DevsecopsVault', 'Tema09MigracionDb', 'Tema10EtlSaga', 'Tema11SaasMultitenant', 'Tema12ResilienciaBackend', 'Tema13LlmRag', 'Tema14AiAgents', 'Tema15Arquitecturas', 'Tema16Requerimientos', 'Tema17Kubernetes', 'Tema18CloudNative'
       ];
 

@@ -314,69 +314,56 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/ngac/experto"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/oracle/inicial</loc>
+    <loc>https://nmergeia.com/#temas/ext-react</loc>
     <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/oracle/inicial"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/oracle/inicial"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-react"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-react"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/oracle/basico</loc>
+    <loc>https://nmergeia.com/#temas/ext-node</loc>
     <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/oracle/basico"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/oracle/basico"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-node"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-node"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/oracle/medio</loc>
+    <loc>https://nmergeia.com/#temas/ext-aws</loc>
     <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/oracle/medio"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/oracle/medio"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-aws"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#guias/oracle/avanzado</loc>
+    <loc>https://nmergeia.com/#temas/ext-pentest</loc>
     <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/oracle/avanzado"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/oracle/avanzado"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#guias/oracle/experto</loc>
-    <lastmod>2026-07-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#guias/oracle/experto"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#guias/oracle/experto"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-pentest"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#about</loc>

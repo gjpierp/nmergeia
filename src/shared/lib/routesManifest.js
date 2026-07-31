@@ -21,7 +21,7 @@ export const MENU_TREE = [
     ]
   },
   {
-    id: 120, code: 'CAT_NMERGEIA_GUIAS', label: 'Guías por Tecnología y Nivel', icon: 'school',
+    id: 120, code: 'CAT_NMERGEIA_GUIAS', label: 'Biblioteca Técnica & Especialidades', icon: 'school',
     children: [
       {
         id: 121, code: 'SUB_POSTGRES', label: 'PostgreSQL', icon: 'storage',
@@ -54,13 +54,12 @@ export const MENU_TREE = [
         ]
       },
       {
-        id: 150, code: 'SUB_ORACLE', label: 'Oracle Database', icon: 'dataset',
+        id: 150, code: 'SUB_EXTESPECIALIDADES', label: 'Especialidades Técnicas', icon: 'extension',
         children: [
-          { id: 151, code: 'MNU_ORACLE_INICIAL', label: 'Oracle (Inicial)', path: '/guias/oracle/inicial', priority: '0.7', changefreq: 'monthly' },
-          { id: 152, code: 'MNU_ORACLE_BASICO', label: 'Oracle (Básico)', path: '/guias/oracle/basico', priority: '0.7', changefreq: 'monthly' },
-          { id: 153, code: 'MNU_ORACLE_MEDIO', label: 'Oracle (Medio)', path: '/guias/oracle/medio', priority: '0.7', changefreq: 'monthly' },
-          { id: 154, code: 'MNU_ORACLE_AVANZADO', label: 'Oracle (Avanzado)', path: '/guias/oracle/avanzado', priority: '0.7', changefreq: 'monthly' },
-          { id: 155, code: 'MNU_ORACLE_EXPERTO', label: 'Oracle (Experto)', path: '/guias/oracle/experto', priority: '0.7', changefreq: 'monthly' }
+          { id: 151, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', priority: '0.7', changefreq: 'monthly' },
+          { id: 152, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', priority: '0.7', changefreq: 'monthly' },
+          { id: 153, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', priority: '0.7', changefreq: 'monthly' },
+          { id: 154, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', priority: '0.7', changefreq: 'monthly' }
         ]
       }
     ]
