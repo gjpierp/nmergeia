@@ -232,8 +232,27 @@ Genera el código resultante unificado de la mejor manera resolviendo el conflic
     }
 });
 
-// Serve static frontend
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve webmanifest with explicit JSON MIME type for crawler compatibility
+app.get(['/manifest.webmanifest', '/site.webmanifest'], (req, res) => {
+    res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+    const manifestDist = path.join(__dirname, 'dist', 'manifest.webmanifest');
+    const manifestPublic = path.join(__dirname, 'public', 'manifest.webmanifest');
+    if (fs.existsSync(manifestDist)) {
+        return res.sendFile(manifestDist);
+    } else if (fs.existsSync(manifestPublic)) {
+        return res.sendFile(manifestPublic);
+    }
+    return res.status(404).json({ error: 'Manifest file not found' });
+});
+
+// Serve static frontend with explicit headers
+app.use(express.static(path.join(__dirname, 'dist'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.webmanifest')) {
+            res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+        }
+    }
+}));
 
 // SPA Fallback
 app.use((req, res) => {
