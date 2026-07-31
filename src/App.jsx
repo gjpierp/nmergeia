@@ -353,19 +353,23 @@ function App() {
     saveHandle('lastSession', null);
   }, [setOriginHandle, setOriginPath, setDestSlots]);
 
-  // Sincronización automática de URL hash (#privacy, #terms, #about, #contact, etc.)
+  // Sincronización automática de URL hash (#privacy, #terms, #about, #contact, #postgres-inicial, etc.) y pathname (/privacy, /about)
   useEffect(() => {
     const syncTabFromLocation = () => {
       const hash = window.location.hash.replace('#', '').toLowerCase();
       const path = window.location.pathname.replace('/', '').toLowerCase();
       const target = hash || path;
-      if (['privacy', 'terms', 'about', 'contact', 'docs', 'faq', 'pricing', 'features'].includes(target)) {
+      if (target && target !== 'index.html' && target !== '') {
         setActiveTab(target);
       }
     };
     syncTabFromLocation();
     window.addEventListener('hashchange', syncTabFromLocation);
-    return () => window.removeEventListener('hashchange', syncTabFromLocation);
+    window.addEventListener('popstate', syncTabFromLocation);
+    return () => {
+      window.removeEventListener('hashchange', syncTabFromLocation);
+      window.removeEventListener('popstate', syncTabFromLocation);
+    };
   }, [setActiveTab]);
 
   useEffect(() => {
