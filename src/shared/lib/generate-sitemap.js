@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ALL_MENU_ROUTES } from './routesManifest.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,39 +10,25 @@ const DOMAIN = 'https://nmergeia.com';
 const LANGUAGES = ['es', 'en', 'pt', 'fr', 'de', 'zh', 'ja'];
 const TODAY = new Date().toISOString().split('T')[0];
 
-const PAGES = [
-  { path: '', priority: '1.0', changefreq: 'daily' },
-  { path: '#about', priority: '0.9', changefreq: 'monthly' },
-  { path: '#contact', priority: '0.9', changefreq: 'monthly' },
-  { path: '#privacy', priority: '0.8', changefreq: 'monthly' },
-  { path: '#terms', priority: '0.8', changefreq: 'monthly' },
-  { path: '#docs', priority: '0.8', changefreq: 'weekly' },
-  { path: '#faq', priority: '0.8', changefreq: 'weekly' },
-  { path: '#pricing', priority: '0.8', changefreq: 'monthly' },
-  { path: '#features', priority: '0.8', changefreq: 'monthly' },
-  { path: '#postgres-inicial', priority: '0.7', changefreq: 'monthly' },
-  { path: '#postgres-basico', priority: '0.7', changefreq: 'monthly' },
-  { path: '#postgres-medio', priority: '0.7', changefreq: 'monthly' },
-  { path: '#postgres-avanzado', priority: '0.7', changefreq: 'monthly' },
-  { path: '#postgres-experto', priority: '0.7', changefreq: 'monthly' },
-];
-
 function generateSitemap() {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n`;
   xml += `        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n`;
 
-  PAGES.forEach(page => {
-    const loc = page.path ? `${DOMAIN}/${page.path}` : `${DOMAIN}/`;
+  ALL_MENU_ROUTES.forEach(page => {
+    // Convierte rutas tipo '/guias/postgres/inicial' a hash '#guias/postgres/inicial' o '#'
+    let hashPath = page.path === '/' ? '' : `#${page.path.replace(/^\//, '')}`;
+    const loc = hashPath ? `${DOMAIN}/${hashPath}` : `${DOMAIN}/`;
+    
     xml += `  <url>\n`;
     xml += `    <loc>${loc}</loc>\n`;
     xml += `    <lastmod>${TODAY}</lastmod>\n`;
-    xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-    xml += `    <priority>${page.priority}</priority>\n`;
+    xml += `    <changefreq>${page.changefreq || 'monthly'}</changefreq>\n`;
+    xml += `    <priority>${page.priority || '0.7'}</priority>\n`;
 
     LANGUAGES.forEach(lang => {
-      const langUrl = page.path 
-        ? `${DOMAIN}/?lang=${lang}${page.path}`
+      const langUrl = hashPath 
+        ? `${DOMAIN}/?lang=${lang}${hashPath}`
         : `${DOMAIN}/?lang=${lang}`;
       xml += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${langUrl}"/>\n`;
     });
@@ -64,7 +51,7 @@ function generateSitemap() {
     fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml, 'utf8');
   }
 
-  console.log(`[Sitemap Generator] ✅ sitemap.xml generado exitosamente en ${sitemapPath} (${PAGES.length} páginas, ${LANGUAGES.length} idiomas)`);
+  console.log(`[Sitemap Generator] ✅ sitemap.xml generado exitosamente desde el Árbol del Menú en ${sitemapPath} (${ALL_MENU_ROUTES.length} páginas de menú, ${LANGUAGES.length} idiomas)`);
 }
 
 generateSitemap();
