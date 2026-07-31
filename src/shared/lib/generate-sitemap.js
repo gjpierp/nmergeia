@@ -58,6 +58,12 @@ function generateSitemap() {
 
   const sitemapPath = path.join(publicDir, 'sitemap.xml');
   fs.writeFileSync(sitemapPath, xml, 'utf8');
+
+  const distDir = path.join(__dirname, '..', '..', '..', 'dist');
+  if (fs.existsSync(distDir)) {
+    fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml, 'utf8');
+  }
+
   console.log(`[Sitemap Generator] ✅ sitemap.xml generado exitosamente en ${sitemapPath} (${PAGES.length} páginas, ${LANGUAGES.length} idiomas)`);
 }
 

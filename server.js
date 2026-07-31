@@ -232,6 +232,27 @@ Genera el código resultante unificado de la mejor manera resolviendo el conflic
     }
 });
 
+// Serve sitemap.xml with explicit XML MIME type
+app.get('/sitemap.xml', (req, res) => {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    const pathDist = path.join(__dirname, 'dist', 'sitemap.xml');
+    const pathPublic = path.join(__dirname, 'public', 'sitemap.xml');
+    if (fs.existsSync(pathDist)) return res.sendFile(pathDist);
+    if (fs.existsSync(pathPublic)) return res.sendFile(pathPublic);
+    return res.status(404).send('Sitemap not found');
+});
+
+// Serve robots.txt & ads.txt with text/plain MIME type
+app.get(['/robots.txt', '/ads.txt', '/filtro.txt'], (req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    const fileName = req.path.replace('/', '');
+    const pathDist = path.join(__dirname, 'dist', fileName);
+    const pathPublic = path.join(__dirname, 'public', fileName);
+    if (fs.existsSync(pathDist)) return res.sendFile(pathDist);
+    if (fs.existsSync(pathPublic)) return res.sendFile(pathPublic);
+    return res.status(404).send(`${fileName} not found`);
+});
+
 // Serve webmanifest with explicit JSON MIME type for crawler compatibility
 app.get(['/manifest.webmanifest', '/site.webmanifest'], (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
