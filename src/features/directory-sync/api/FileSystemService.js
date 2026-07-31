@@ -1,7 +1,5 @@
 import ignore from 'ignore';
 import { telemetry } from '../../../shared/lib/TelemetryService.js';
-// Importamos helper para mostrar mensaje al usuario antes de pedir permiso
-import { requestUserPermission } from '../../../shared/ui/PermissionPrompt.js';
 
 /**
  * @file FileSystemService.js
@@ -49,12 +47,9 @@ export const verifyPermission = async (fileHandle) => {
   try {
     // Primero verificamos si ya tenemos permiso
     if ((await fileHandle.queryPermission({ mode: 'readwrite' })) === 'granted') return true;
-    // Si no, informamos al usuario el motivo del permiso
-    await requestUserPermission(
-      "NMerge necesita acceso a tu sistema de archivos para sincronizar directorios y exportar/importar datos.\n\n" +
-      "¿Quieres permitir el acceso de lectura/escritura?"
-    );
-    // Luego solicitamos permiso al navegador/Electron
+    // No solicitamos permiso al usuario para evitar el cuadro de diálogo nativo
+    // Intentamos solicitar permiso de forma silenciosa (puede lanzar el mismo diálogo del navegador)
+    // pero evitamos mostrar nuestro propio mensaje.
     if ((await fileHandle.requestPermission({ mode: 'readwrite' })) === 'granted') return true;
   } catch (e) {
     console.warn("Permiso denegado o expirado el gesto del usuario:", e);
