@@ -198,6 +198,8 @@ export const NgacService = {
         let response = null;
         for (const menuUrl of menuEndpoints) {
           try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1200);
             let res = await fetch(menuUrl, {
               method: 'GET',
               headers: {
@@ -205,13 +207,17 @@ export const NgacService = {
                 'x-app-code': 'nmergeia',
                 'Accept-Language': lang,
                 'Content-Type': 'application/json'
-              }
+              },
+              signal: controller.signal
             });
+            clearTimeout(timeoutId);
 
             if ((res.status === 401 || res.status === 403) && typeof window !== 'undefined') {
               localStorage.removeItem('nmerge_jwt_token');
               const freshToken = await ensureToken(isLoggedIn);
               if (freshToken) {
+                const controller2 = new AbortController();
+                const timeoutId2 = setTimeout(() => controller2.abort(), 1200);
                 res = await fetch(menuUrl, {
                   method: 'GET',
                   headers: {
@@ -219,8 +225,10 @@ export const NgacService = {
                     'x-app-code': 'nmergeia',
                     'Accept-Language': lang,
                     'Content-Type': 'application/json'
-                  }
+                  },
+                  signal: controller2.signal
                 });
+                clearTimeout(timeoutId2);
               }
             }
 
@@ -370,18 +378,18 @@ export const NgacService = {
       // Fallback local basado en roles si falla la conexión al backend real
       const hasPremiumAccess = userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN') || userRoles.includes('ROLE_NMERGEIA_ADMIN') || (userRoles.includes('ROLE_REGISTRADO') && isPremium);
       
-      const topics = [
-        'Postgres', 'Oracle', 'Mongo', 'Redis', 'SqlServer', 'Docker', 'Git', 'Terraform', 'Kubernetes', 'Cloud', 'Arquitectura', 'Requerimientos', 'CleanCode', 'Patrones', 'Qa', 'Devsecops', 'Auth', 'Cripto', 'Owasp', 'Ia', 'Ml', 'Nlp', 'Bi', 'Dwh',
-        'ExtReact', 'ExtVue', 'ExtAngular', 'ExtSvelte', 'ExtWasm',
-        'ExtNode', 'ExtSpring', 'ExtDjango', 'ExtFastapi', 'ExtGraphql',
-        'ExtAws', 'ExtAzure', 'ExtGcp', 'ExtCicd', 'ExtObs',
-        'ExtPentest', 'ExtMalware', 'ExtCripto', 'ExtHarden', 'ExtZerot',
-        'ExtPrompt', 'ExtFinetune', 'ExtDatalake', 'ExtKafka', 'ExtSpark',
-        'About', 'Contact', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'
+      // Menús auditados reales que existen en la aplicación
+      const realAuditedNodes = [
+        'Landing', 'landing', 'MNU_NMERGE_LANDING', 'Comparar', 'main', 'MNU_NMERGE_MAIN', 
+        'Login', 'Register', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'Terminal', 'FAQ', 'Historial', 'Filtros', 'Pricing', 'Features',
+        'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto',
+        'DockerInicial', 'DockerBasico', 'DockerMedio', 'DockerAvanzado', 'DockerExperto',
+        'NgacInicial', 'NgacBasico', 'NgacMedio', 'NgacAvanzado', 'NgacExperto',
+        'OracleInicial', 'OracleBasico', 'OracleMedio', 'OracleAvanzado', 'OracleExperto',
+        'Tema01OptPostgres', 'Tema02DockerMultistage', 'Tema03GitAvanzado', 'Tema04IacTerraform', 'Tema05RbacAbacNgac', 'Tema06NgacMenus', 'Tema07RlsGobernanza', 'Tema08DevsecopsVault', 'Tema09MigracionDb', 'Tema10EtlSaga', 'Tema11SaasMultitenant', 'Tema12ResilienciaBackend', 'Tema13LlmRag', 'Tema14AiAgents', 'Tema15Arquitecturas', 'Tema16Requerimientos', 'Tema17Kubernetes', 'Tema18CloudNative'
       ];
 
-      const baseCodes = ['Landing', 'landing', 'MNU_NMERGE_LANDING', 'Comparar', 'main', 'MNU_NMERGE_MAIN', 'Login', 'Register', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'Terminal', 'FAQ', 'Historial', 'Filtros'];
-      const fallbackResult = [...baseCodes, ...topics];
+      const fallbackResult = Array.from(new Set(realAuditedNodes));
       if (typeof window !== 'undefined') {
         const fallbackJson = {
           ok: true,
