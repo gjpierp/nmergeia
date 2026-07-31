@@ -232,14 +232,46 @@ Genera el código resultante unificado de la mejor manera resolviendo el conflic
     }
 });
 
-// Serve sitemap.xml with explicit XML MIME type
+// Serve sitemap.xml with explicit XML MIME type and on-the-fly dynamic fallback (Zero 404 guarantee)
+import { ALL_MENU_ROUTES } from './src/shared/lib/routesManifest.js';
+
 app.get('/sitemap.xml', (req, res) => {
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
     const pathDist = path.join(__dirname, 'dist', 'sitemap.xml');
     const pathPublic = path.join(__dirname, 'public', 'sitemap.xml');
     if (fs.existsSync(pathDist)) return res.sendFile(pathDist);
     if (fs.existsSync(pathPublic)) return res.sendFile(pathPublic);
-    return res.status(404).send('Sitemap not found');
+
+    // Fallback dinámico instantáneo si el archivo físico no ha sido leído de disco
+    const DOMAIN = 'https://nmergeia.com';
+    const LANGUAGES = ['es', 'en', 'pt', 'fr', 'de', 'zh', 'ja'];
+    const TODAY = new Date().toISOString().split('T')[0];
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n`;
+    xml += `        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n`;
+
+    ALL_MENU_ROUTES.forEach(page => {
+        let hashPath = page.path === '/' ? '' : `#${page.path.replace(/^\//, '')}`;
+        const loc = hashPath ? `${DOMAIN}/${hashPath}` : `${DOMAIN}/`;
+        xml += `  <url>\n`;
+        xml += `    <loc>${loc}</loc>\n`;
+        xml += `    <lastmod>${TODAY}</lastmod>\n`;
+        xml += `    <changefreq>${page.changefreq || 'monthly'}</changefreq>\n`;
+        xml += `    <priority>${page.priority || '0.7'}</priority>\n`;
+
+        LANGUAGES.forEach(lang => {
+            const langUrl = hashPath 
+                ? `${DOMAIN}/?lang=${lang}${hashPath}`
+                : `${DOMAIN}/?lang=${lang}`;
+            xml += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${langUrl}"/>\n`;
+        });
+
+        xml += `  </url>\n`;
+    });
+
+    xml += `</urlset>\n`;
+    return res.status(200).send(xml);
 });
 
 // Serve robots.txt & ads.txt with text/plain MIME type
