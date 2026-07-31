@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import logo from '../../assets/logo.png';
 
 export const TermsPage = () => {
   const { setActiveTab } = useAppStore();
+  const [lang, setLang] = useState('es');
 
   return (
     <div style={{
@@ -19,42 +20,148 @@ export const TermsPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '800px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
-          <img src={logo} alt="Logo" style={{ height: '40px' }} />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-            Términos y Condiciones
-          </h1>
-        </div>
-
-        <div className="section-card" style={{ padding: '30px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.6' }}>
-          <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>1. Aceptación de los Términos</h2>
-          <p>
-            Al acceder o utilizar NMergeIA, usted acepta estar sujeto a estos términos de servicio. Si no está de acuerdo con alguna de las cláusulas aquí especificadas, se le prohíbe el uso o acceso a esta herramienta web.
-          </p>
-
-          <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>2. Licencia de Uso</h2>
-          <p>
-            Se otorga permiso para cargar temporalmente una copia de los materiales en NMergeIA para uso personal o comercial de desarrollo. Esta es la concesión de una licencia, no una transferencia de título, y bajo esta licencia usted no puede modificar de forma maliciosa el motor de control de accesos Sentinel-NGAC para eludir anuncios sin contar con el rol premium correspondiente.
-          </p>
-
-          <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Limitación de Responsabilidad</h2>
-          <p>
-            NMergeIA se proporciona "tal cual". No ofrecemos garantías, explícitas o implícitas, y por la presente renunciamos y negamos todas las demás garantías, incluyendo, sin limitación, las garantías implícitas o condiciones de comerciabilidad, idoneidad para un propósito particular o no infracción de propiedad intelectual.
-          </p>
-
-          <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Modificaciones del Servicio</h2>
-          <p>
-            NMergeIA puede revisar estos términos de servicio para su aplicación web en cualquier momento sin previo aviso. Al utilizar este sitio web, usted acepta estar sujeto a la versión actual de estos términos de servicio.
-          </p>
-
-          <div style={{ marginTop: '40px', display: 'flex', gap: '15px' }}>
-            <button className="btn primary-btn" onClick={() => setActiveTab('landing')}>
-              <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_back</span>
-              Volver al Inicio
+      <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+        
+        {/* Header & Language Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <img src={logo} alt="Logo" style={{ height: '40px' }} />
+            <div>
+              <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
+                {lang === 'es' ? 'Términos y Condiciones de Uso' : 'Terms and Conditions of Service'}
+              </h1>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
+                {lang === 'es' ? 'Última revisión: 31 de julio de 2026' : 'Last revised: July 31, 2026'}
+              </span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className={`btn ${lang === 'es' ? 'primary-btn' : 'secondary-btn'}`} 
+              onClick={() => setLang('es')}
+              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+            >
+              Español
+            </button>
+            <button 
+              className={`btn ${lang === 'en' ? 'primary-btn' : 'secondary-btn'}`} 
+              onClick={() => setLang('en')}
+              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+            >
+              English
             </button>
           </div>
         </div>
+
+        {lang === 'es' ? (
+          <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>1. Aceptación de las Condiciones de Servicio</h2>
+            <p>
+              Al acceder, navegar o utilizar la aplicación web o de escritorio <strong>NMerge IA</strong> (desarrollada por <strong>StackUpIA Software Labs S.A.</strong>), usted expresa su acuerdo formal vinculante con los presentes Términos y Condiciones de Uso. Si no está de acuerdo con alguna cláusula o disposición contenida en este documento, debe abstenerse de utilizar el servicio de forma inmediata.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>2. Concesión de Licencia y Niveles de Uso</h2>
+            <p>
+              NMerge IA otorga al usuario una licencia revocable, no exclusiva, no transferible y limitada para operar el software con fines personales, profesionales o comerciales, sujeta a los siguientes niveles gobernados por el sistema de control de accesos Sentinel-NGAC:
+            </p>
+            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
+              <li><strong>Nivel Gratuito / No-Premium:</strong> Permite el uso de las funciones principales de comparación de carpetas y edición de diferencias local. El acceso es financiado mediante la exhibición no intrusiva de anuncios de Google AdSense. Queda prohibida la alteración maliciosa del código o scripts para bloquear anuncios sin contar con suscripción Pro.</li>
+              <li><strong>Nivel Pro / Suscripción Premium:</strong> Otorga una experiencia 100% libre de anuncios, soporte prioritario y acceso ilimitado a funciones avanzadas de la matriz de comparación y resolución por IA. La licencia se verifica de forma segura mediante Stripe y claves activas encriptadas.</li>
+            </ul>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Uso Aceptable y Restricciones de Seguridad</h2>
+            <p>
+              El usuario se compromete a hacer un uso legítimo del software y a no incurrir en actividades prohibidas, incluyendo sin limitación:
+            </p>
+            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
+              <li>Intentar descompilar, realizar ingeniería inversa o eludir los mecanismos de seguridad y licenciamiento de Sentinel-NGAC.</li>
+              <li>Utilizar NMerge IA para procesar o distribuir malware, material ilegal o contenido que viole derechos de autor o propiedad intelectual de terceros.</li>
+              <li>Automatizar la realización de consultas masivas (scraping o botnetbing) contra los endpoints o infraestructura del servidor sin autorización.</li>
+            </ul>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Propiedad Intelectual</h2>
+            <p>
+              El código fuente, los diseños de interfaz visual, la marca comercial "NMerge IA", los logotipos, la documentación y los algoritmos originales son propiedad exclusiva de StackUpIA Software Labs S.A. o de sus respetivos licenciantes. Todos los derechos no concedidos expresamente en este contrato están reservados.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>5. Limitación de Responsabilidad y Exención de Garantías</h2>
+            <p>
+              NMerge IA se proporciona "tal cual" y "según disponibilidad", sin garantías de ningún tipo, explícitas o implícitas. StackUpIA Software Labs no garantiza que la aplicación esté libre de errores ininterrumpidos o que las funciones de sincronización de archivos eviten pérdidas derivadas de fallos en el sistema operativo del usuario. Es responsabilidad exclusiva del usuario mantener copias de seguridad de sus archivos locales antes de confirmar operaciones destructivas de fusión o sobreescritura.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>6. Ley Aplicable y Jurisdicción</h2>
+            <p>
+              Estos términos se regirán e interpretarán de acuerdo con las leyes vigentes del país de operación de StackUpIA Labs. Cualquier controversia será sometida a los tribunales competentes de dicha jurisdicción.
+            </p>
+
+            <div style={{ marginTop: '40px', display: 'flex', gap: '15px' }}>
+              <button className="btn primary-btn" onClick={() => setActiveTab('landing')}>
+                <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_back</span>
+                Volver al Inicio
+              </button>
+              <button className="btn secondary-btn" onClick={() => setActiveTab('privacy')}>
+                Política de Privacidad
+              </button>
+              <button className="btn secondary-btn" onClick={() => setActiveTab('about')}>
+                Sobre Nosotros (EEAT)
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>1. Acceptance of Terms of Service</h2>
+            <p>
+              By accessing, browsing, or utilizing the <strong>NMerge IA</strong> web or desktop application (developed by <strong>StackUpIA Software Labs S.A.</strong>), you signify your explicit agreement to be bound by these Terms and Conditions of Service. If you do not agree with any part of these terms, you must discontinue using the application immediately.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>2. License Grant & Usage Tiers</h2>
+            <p>
+              NMerge IA grants the user a revocable, non-exclusive, non-transferable, limited license to operate the software for personal, educational, or commercial software engineering purposes, subject to the following tiers governed by Sentinel-NGAC:
+            </p>
+            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
+              <li><strong>Free Tier / Non-Premium:</strong> Allows full access to core local folder diffing and file comparison features. Access is supported by non-intrusive Google AdSense advertising. Modifying or circumventing ad delivery scripts without a Pro license is prohibited.</li>
+              <li><strong>Pro Tier / Premium Subscription:</strong> Delivers a 100% ad-free experience, priority customer support, and unrestricted access to advanced matrix comparison capabilities. Licenses are authenticated securely via Stripe.</li>
+            </ul>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Acceptable Use & Security Restrictions</h2>
+            <p>
+              You agree to use NMerge IA lawfully and refrain from prohibited actions, including but not limited to:
+            </p>
+            <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
+              <li>Attempting to decompile, reverse engineer, or bypass Sentinel-NGAC access control security policies.</li>
+              <li>Using NMerge IA to process or distribute malware or infringing third-party intellectual property.</li>
+              <li>Launching automated scraping or DDoS attacks against application endpoints.</li>
+            </ul>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Intellectual Property Rights</h2>
+            <p>
+              All source code, user interface designs, the "NMerge IA" trademark, logos, documentation, and original algorithms are the exclusive property of StackUpIA Software Labs S.A. or its licensors. All rights not expressly granted herein are reserved.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>5. Limitation of Liability & Disclaimer of Warranties</h2>
+            <p>
+              NMerge IA is provided "as is" and "as available", without warranties of any kind, express or implied. StackUpIA Software Labs shall not be liable for any data loss resulting from operating system errors or user overwrite actions. Users are solely responsible for maintaining local backups before confirming destructive merge operations.
+            </p>
+
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>6. Governing Law</h2>
+            <p>
+              These terms shall be governed by and construed in accordance with the applicable laws of StackUpIA Labs' operating jurisdiction.
+            </p>
+
+            <div style={{ marginTop: '40px', display: 'flex', gap: '15px' }}>
+              <button className="btn primary-btn" onClick={() => setActiveTab('landing')}>
+                <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_back</span>
+                Back to Home
+              </button>
+              <button className="btn secondary-btn" onClick={() => setActiveTab('privacy')}>
+                Privacy Policy
+              </button>
+              <button className="btn secondary-btn" onClick={() => setActiveTab('about')}>
+                About Us (EEAT)
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

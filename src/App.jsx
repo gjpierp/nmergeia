@@ -22,6 +22,8 @@ import { CommandTerminal } from './features/terminal/CommandTerminal.jsx';
 import { LandingPage } from './features/landing/LandingPage.jsx';
 import { PrivacyPage } from './features/landing/PrivacyPage.jsx';
 import { TermsPage } from './features/landing/TermsPage.jsx';
+import { AboutPage } from './features/landing/AboutPage.jsx';
+import { ContactPage } from './features/landing/ContactPage.jsx';
 import { DocsPanel } from './features/landing/DocsPanel.jsx';
 import { FaqPage } from './features/landing/FaqPage.jsx';
 import { PostgresGuideInitialPage } from './features/landing/PostgresGuideInitialPage.jsx';
@@ -116,6 +118,21 @@ function App() {
     setDestSlots([{ id: Date.now().toString(), handle: null, path: '', files: null }]);
     saveHandle('lastSession', null);
   }, [setOriginHandle, setOriginPath, setDestSlots]);
+
+  // Sincronización automática de URL hash (#privacy, #terms, #about, #contact, etc.)
+  useEffect(() => {
+    const syncTabFromLocation = () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const path = window.location.pathname.replace('/', '').toLowerCase();
+      const target = hash || path;
+      if (['privacy', 'terms', 'about', 'contact', 'docs', 'faq', 'pricing', 'features'].includes(target)) {
+        setActiveTab(target);
+      }
+    };
+    syncTabFromLocation();
+    window.addEventListener('hashchange', syncTabFromLocation);
+    return () => window.removeEventListener('hashchange', syncTabFromLocation);
+  }, [setActiveTab]);
 
   useEffect(() => {
     const tab = tabs.find(t => t.id === activeTab);
@@ -217,6 +234,8 @@ function App() {
     if (activeTab === 'filters') return <FiltersPanel appLanguage={appLanguage} openDiffTab={openDiffTab} processFiles={processFiles} />;
     if (activeTab === 'privacy') return <PrivacyPage />;
     if (activeTab === 'terms') return <TermsPage />;
+    if (activeTab === 'about') return <AboutPage />;
+    if (activeTab === 'contact') return <ContactPage />;
     if (activeTab === 'docs') return <DocsPanel />;
     if (activeTab === 'faq') return <FaqPage appLanguage={appLanguage} />;
     if (activeTab === 'postgres-inicial') return <PostgresGuideInitialPage />;
@@ -359,10 +378,12 @@ function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <span>&copy; 2026 {t('app_title')}. Desarrollado por <strong>StackUpIa</strong> | {t('app_subtitle')}</span>
           <span style={{ color: 'var(--border-color)' }}>|</span>
-          <a href="#privacy" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_privacy') || 'Privacidad'}</a>
-          <a href="#terms" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_terms') || 'Términos'}</a>
-          <a href="#docs" onClick={(e) => { e.preventDefault(); setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_docs') || 'Documentación'}</a>
-          <a href="#faq" onClick={(e) => { e.preventDefault(); setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_faq') || 'FAQ'}</a>
+          <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_privacy') || 'Privacidad'}</a>
+          <a href="#terms" onClick={(e) => { e.preventDefault(); window.location.hash = 'terms'; setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_terms') || 'Términos'}</a>
+          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>Sobre Nosotros (EEAT)</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); window.location.hash = 'contact'; setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>Contacto</a>
+          <a href="#docs" onClick={(e) => { e.preventDefault(); window.location.hash = 'docs'; setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_docs') || 'Documentación'}</a>
+          <a href="#faq" onClick={(e) => { e.preventDefault(); window.location.hash = 'faq'; setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>{t('nav_faq') || 'FAQ'}</a>
           <a href="#postgres-basico" onClick={(e) => { e.preventDefault(); setActiveTab('postgres-basico'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-secondary)'} onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}>Guía Postgres (Básica)</a>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

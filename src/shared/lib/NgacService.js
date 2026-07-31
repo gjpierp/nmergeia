@@ -179,6 +179,8 @@ export const NgacService = {
       if (!allowed.includes('Register')) allowed.push('Register');
       if (!allowed.includes('Privacy')) allowed.push('Privacy');
       if (!allowed.includes('Terms')) allowed.push('Terms');
+      if (!allowed.includes('About')) allowed.push('About');
+      if (!allowed.includes('Contact')) allowed.push('Contact');
       if (!allowed.includes('Docs')) allowed.push('Docs');
       if (!allowed.includes('FAQ')) allowed.push('FAQ');
       if (!allowed.includes('PostgresInicial')) allowed.push('PostgresInicial');
@@ -195,9 +197,9 @@ export const NgacService = {
       // Fallback local basado en roles si falla la conexión al backend real
       const hasPremiumAccess = userRoles.includes('ROLE_ADMINISTRADOR') || userRoles.includes('ROLE_ADMIN') || (userRoles.includes('ROLE_REGISTRADO') && isPremium);
       if (isLoggedIn && hasPremiumAccess) {
-        return ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'Privacy', 'Terms', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
+        return ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       }
-      return ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'Privacy', 'Terms', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
+      return ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'Terminal', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
     }
   },
 
@@ -262,7 +264,7 @@ export const NgacService = {
         body: JSON.stringify({ padre: 'POLITICA_NMERGEIA', hijo: 'NMERGEIA_ROOT' })
       }).catch(() => {});
 
-      const allOptions = ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
+      const allOptions = ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       for (const opt of allOptions) {
         await fetch(`${baseUrl}/nodos`, {
           method: 'POST',
@@ -287,7 +289,7 @@ export const NgacService = {
         }).catch(() => {});
       }
 
-      const guestOptions = ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
+      const guestOptions = ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', 'PostgresInicial', 'PostgresBasico', 'PostgresMedio', 'PostgresAvanzado', 'PostgresExperto'];
       for (const opt of guestOptions) {
         await fetch(`${baseUrl}/enlaces`, {
           method: 'POST',
