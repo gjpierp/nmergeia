@@ -7,7 +7,7 @@ Bienvenido a la Nube. Durante décadas, hospedar una aplicación significaba alq
 Serverless (Sin Servidor) no significa que los servidores mágicamente desaparecieron. Significa que **la gestión, escalabilidad y el mantenimiento de los servidores son completamente invisibles para ti.**
 
 ```mermaid
-graph LR
+flowchart LR
     Usuario[Usuario] -->|Request HTTP| API[API Gateway]
     API -->|Desencadena| Lambda[AWS Lambda (Código)]
     Lambda -->|Consulta| DB[(DynamoDB)]
@@ -65,7 +65,7 @@ El componente de **AWS Cloud** abordado en este módulo representa un pilar crí
 Cuando se procesan diferencias de código y topologías de directorios complejas, **AWS Cloud** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo AWS Cloud]

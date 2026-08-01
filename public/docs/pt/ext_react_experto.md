@@ -9,7 +9,7 @@ En este nivel experto, aceptamos una verdad fundamental: **Los datos que vienen 
 Zustand y Redux son perfectos para UI (Si un panel está abierto, el tema actual, un carrito en memoria). Pero para manejar APIs y base de datos, el estándar industrial absoluto es **TanStack Query**.
 
 ```mermaid
-graph TD
+flowchart TD
     React[Componente UI] -->|Pide Datos posts| QueryClient[React Query Cache]
     QueryClient -->|Verifica Caché| CacheHit{Datos Frescos}
     
@@ -104,7 +104,7 @@ El componente de **React & Web Architecture** abordado en este módulo represent
 Cuando se procesan diferencias de código y topologías de directorios complejas, **React & Web Architecture** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo React & Web Architecture]

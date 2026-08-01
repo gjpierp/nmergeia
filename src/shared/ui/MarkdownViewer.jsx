@@ -17,56 +17,52 @@ const MermaidChart = ({ chart, theme }) => {
     let isMounted = true;
     setHasError(false);
     setErrorMsg("");
-    
-    // Configuración dinámica basada en el tema global
+
+    // Configuración dinámica de Mermaid basada en el tema global
     const isLight = theme && theme.includes('light');
-    mermaid.initialize({ 
-      startOnLoad: false, 
-      theme: isLight ? 'default' : 'dark'
-    });
-    
+    try {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isLight ? 'default' : 'dark',
+        securityLevel: 'loose',
+        fontFamily: '"Outfit", sans-serif'
+      });
+    } catch (_) {}
+
     const renderChart = async () => {
       try {
         const sanitizeMermaidChart = (rawChart = '') => {
           if (!rawChart) return '';
-          let str = rawChart.replace(/\r/g, '');
+          let str = rawChart.replace(/\r/g, '').trim();
+
+          // Verificar palabras clave válidas de Mermaid
+          const validKeywords = ['graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'gantt', 'pie', 'gitGraph', 'C4Context'];
+          const firstWord = str.split(/\s+/)[0];
+          if (!validKeywords.includes(firstWord)) {
+            str = 'flowchart TD\n' + str;
+          }
 
           // Normalizar 'graph' -> 'flowchart'
           str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
-
-          // Envolver títulos de subgraphs no entrecomillados: subgraph id [Texto]
-          str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            const nodeName = id ? id.trim() : `sub_${Math.random().toString(36).substring(2, 7)}`;
-            return `subgraph ${nodeName} ["${cleanLabel}"]`;
-          });
-
-          // Envolver etiquetas de nodos corchete: A[Texto] -> A["Texto"]
-          str = str.replace(/([a-zA-Z0-9_-]+)\[([^"\n][^\]]*?)\]/g, (match, id, label) => {
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            return `${id}["${cleanLabel}"]`;
-          });
-
-          // Envolver etiquetas de flechas: -->|Texto| -> -->|"Texto"|
-          str = str.replace(/(-->|---|==>|-.->)\s*\|([^"\n|]+?)\|/g, (match, arrow, label) => {
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            return `${arrow}|"${cleanLabel}"|`;
-          });
 
           return str;
         };
 
         const safeChart = sanitizeMermaidChart(chart);
-        const { svg } = await mermaid.render(id, safeChart);
+        const chartId = 'mermaid_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+
+        // Ejecutar renderizado seguro de Mermaid
+        const { svg } = await mermaid.render(chartId, safeChart);
+
+        // Remover elemento DOM temporal si fue creado por el render de Mermaid en body
+        const tempEl = document.getElementById(chartId);
+        if (tempEl) tempEl.remove();
+
         if (isMounted && ref.current) {
           ref.current.innerHTML = svg;
         }
       } catch (e) {
-        console.error("Mermaid error:", e);
-        const errorElement = document.querySelector(`[id^="dmermaid-"]`);
-        if (errorElement) {
-          errorElement.remove();
-        }
+        console.error("[NMerge Mermaid Error]:", e);
         if (isMounted) {
           setErrorMsg(e?.message || String(e));
           setHasError(true);
@@ -81,24 +77,24 @@ const MermaidChart = ({ chart, theme }) => {
     return () => {
       isMounted = false;
     };
-  }, [chart]);
-  
+  }, [chart, theme]);
+
   if (hasError) {
     return (
       <div className="mermaid-error-fallback" style={{
-        background: '#1e1e1e',
+        background: 'var(--bg-tertiary, #1e1e1e)',
         color: '#f87171',
-        padding: '1rem',
+        padding: '1.2rem',
         borderRadius: '8px',
         border: '1px solid #7f1d1d',
-        margin: '2rem 0',
+        margin: '1.5rem 0',
         fontFamily: 'monospace',
         whiteSpace: 'pre-wrap',
-        overflowX: 'auto'
+        overflowX: 'auto',
+        fontSize: '0.85rem'
       }}>
-        <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', fontWeight: 'bold' }}>⚠️ Diagrama no compatible (Mostrando código fuente):</p>
-        <p style={{ color: '#ffaaaa', marginBottom: '10px' }}>Error: {errorMsg}</p>
-        {chart}
+        <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 'bold' }}>⚠️ Vista de Código Diagrama Mermaid:</p>
+        <pre style={{ margin: 0, color: 'var(--text-primary)', background: 'transparent' }}>{chart}</pre>
       </div>
     );
   }
@@ -109,11 +105,14 @@ const MermaidChart = ({ chart, theme }) => {
       style={{ 
         display: 'flex', 
         justifyContent: 'center', 
+        alignItems: 'center',
         margin: '2rem 0',
-        background: 'var(--bg-glass)',
-        padding: '20px',
+        background: 'var(--bg-secondary)',
+        padding: '24px',
         borderRadius: '12px',
-        border: '1px solid var(--border-light)'
+        border: '1px solid var(--border-color)',
+        overflowX: 'auto',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)'
       }} 
       ref={ref} 
     />
@@ -130,7 +129,7 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
     const fetchDoc = async () => {
       try {
         setLoading(true);
-        // Fallback to 'es' if translation is missing or as base
+        // Fallback a 'es' si no existe la traducción
         const response = await fetch(`/docs/${appLanguage}/${filename}`);
         if (!response.ok) {
           throw new Error('No se pudo cargar el documento.');

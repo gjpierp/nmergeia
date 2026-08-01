@@ -14,7 +14,7 @@ Modificar el código Legacy es peligroso. La solución arquitectónica es el pat
 Adjuntamos un contenedor secundario en la misma red de red (o el mismo Pod en Kubernetes) que comparte un volumen físico.
 
 ```mermaid
-graph LR
+flowchart LR
     subgraph sub_1 [Tarea Docker / Pod Kubernetes]
         Legacy[App Legacy (Contenedor A)] -->|Escribe logs.txt| Volume[(Volumen Compartido)]
         Volume -->|Lee logs.txt| Fluentd[Fluentd / Logstash (Contenedor B)]
@@ -80,7 +80,7 @@ El componente de **Docker** abordado en este módulo representa un pilar crític
 Cuando se procesan diferencias de código y topologías de directorios complejas, **Docker** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo Docker]

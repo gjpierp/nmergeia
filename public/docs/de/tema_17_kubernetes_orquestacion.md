@@ -14,7 +14,7 @@ El plano de control de Kubernetes garantiza que el número de réplicas, las rut
 * **kube-controller-manager:** Corre los bucles de control primarios (DeploymentController, StatefullSetController, NodeController).
 
 ```mermaid
-graph TD
+flowchart TD
     Client[kubectl / CI-CD] -->|"REST API / HTTPS"| APIServer[kube-apiserver]
     APIServer <--> ETCD[(etcd DB)]
     APIServer <--> Scheduler[kube-scheduler]
@@ -132,7 +132,7 @@ El componente de **Arquitectura de Software** abordado en este módulo represent
 Cuando se procesan diferencias de código y topologías de directorios complejas, **Arquitectura de Software** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo Arquitectura de Software]

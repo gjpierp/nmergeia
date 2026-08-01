@@ -22,7 +22,7 @@ Si lo colocas frente a DynamoDB, tu código no cambia, pero las lecturas repetid
 * **Ahorro masivo:** Eliminas el cobro por lectura excesiva a la base de datos principal.
 
 ```mermaid
-graph LR
+flowchart LR
     Lambda[AWS Lambda] -->|GetItem producto-1| DAX[Cluster DAX (Caché RAM)]
     DAX -->|"Si no existe (Cache Miss)"| DB[(DynamoDB Disco)]
     DB -->|Devuelve y Guarda| DAX
@@ -55,7 +55,7 @@ El componente de **AWS Cloud** abordado en este módulo representa un pilar crí
 Cuando se procesan diferencias de código y topologías de directorios complejas, **AWS Cloud** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo AWS Cloud]

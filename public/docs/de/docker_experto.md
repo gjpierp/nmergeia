@@ -12,7 +12,7 @@ Has aprendido a construir y orquestar imágenes hiper-optimizadas. Pero ejecutar
 ### Arquitectura de Control de Recursos
 
 ```mermaid
-graph TD
+flowchart TD
     Kernel[Kernel de Linux] --> CgroupCPU(Control Group: CPU)
     Kernel --> CgroupRAM(Control Group: Memoria)
     
@@ -99,7 +99,7 @@ El componente de **Docker** abordado en este módulo representa un pilar crític
 Cuando se procesan diferencias de código y topologías de directorios complejas, **Docker** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo Docker]

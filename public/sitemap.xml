@@ -132,6 +132,19 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/postgres"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/#temas/oracle</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/oracle"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/oracle"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/#temas/docker</loc>
     <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -169,6 +182,19 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-react"/>
     <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-react"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-react"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/ext-vue</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-vue"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-vue"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-node</loc>

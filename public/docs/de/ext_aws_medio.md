@@ -12,7 +12,7 @@ API Gateway actúa como la puerta principal de tu casa. Expone endpoints HTTP (`
 * **Autenticación en la Puerta:** Puede validar tokens JWT (usando Amazon Cognito o un Autorizador Lambda personalizado) *antes* de siquiera despertar a tu Lambda principal, ahorrando dinero.
 
 ```mermaid
-graph LR
+flowchart LR
     Hacker[Atacante] -->|1M Peticiones| API[API Gateway]
     API -->|"Rechaza el 99% (Throttling)"| /dev/null
     API -->|Peticiones Legítimas| Lambda[Lambda (Salvada)]
@@ -81,7 +81,7 @@ El componente de **AWS Cloud** abordado en este módulo representa un pilar crí
 Cuando se procesan diferencias de código y topologías de directorios complejas, **AWS Cloud** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo AWS Cloud]

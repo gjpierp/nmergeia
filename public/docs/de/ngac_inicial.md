@@ -9,7 +9,7 @@ El RBAC (Role-Based Access Control) tradicional colapsa cuando tienes miles de u
 NGAC (Next Generation Access Control) fue creado por el NIST. Sustituye las "Listas de Permisos" por un **Grafo de Atributos**.
 
 ```mermaid
-graph LR
+flowchart LR
     U(Usuario: Juan) -->|Pertenece| D(Depto: Ventas)
     D -->|Tiene Permiso| P[Acción: Lectura]
     P --> O(Objeto: Reporte 2024)
@@ -26,7 +26,7 @@ El componente de **NGAC Access Control** abordado en este módulo representa un 
 Cuando se procesan diferencias de código y topologías de directorios complejas, **NGAC Access Control** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo NGAC Access Control]
@@ -157,7 +157,7 @@ El componente de **NGAC Access Control** abordado en este módulo representa un 
 Cuando se procesan diferencias de código y topologías de directorios complejas, **NGAC Access Control** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo NGAC Access Control]

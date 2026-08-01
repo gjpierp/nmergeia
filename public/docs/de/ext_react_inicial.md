@@ -7,7 +7,7 @@ Bienvenido al ecosistema moderno de React. Atrás quedaron los días de las Clas
 A diferencia del JavaScript Vanilla (Imperativo), donde le dices al navegador *cómo* hacer cada paso (crear elemento, añadir clase, adjuntar al DOM), en React le dices *qué* quieres que se dibuje, y React se encarga del *cómo*.
 
 ```mermaid
-graph LR
+flowchart LR
     Estado[Estado de la Aplicación] --> ReactEngine[React Virtual DOM]
     ReactEngine -->|Reconciliación Diff| DOM[DOM Real del Navegador]
     DOM --> Usuario((Interacción del Usuario))
@@ -57,7 +57,7 @@ El componente de **React & Web Architecture** abordado en este módulo represent
 Cuando se procesan diferencias de código y topologías de directorios complejas, **React & Web Architecture** interactúa directamente con los subsistemas de almacenamiento local del navegador (vía la File System Access API nativa) y con el motor de comparación basado en el algoritmo Myers LCS (Longest Common Subsequence). Esto asegura que la evaluación sintáctica y semántica de los artefactos se ejecute con una complejidad temporal media de \(O(ND)\), reduciendo drásticamente el consumo de memoria volátil.
 
 ```mermaid
-graph TD
+flowchart TD
     A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
     B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
     C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
