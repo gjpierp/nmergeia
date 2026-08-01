@@ -800,17 +800,21 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
-          <span>&copy; 2026 {t('app_title')}. Desarrollado por <strong>StackUpIa</strong> | {t('app_subtitle')}</span>
-          <span style={{ color: 'var(--border-color)' }}>|</span>
-          <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>{t('nav_privacy') || 'Privacidad'}</a>
-          <a href="#terms" onClick={(e) => { e.preventDefault(); window.location.hash = 'terms'; setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>{t('nav_terms') || 'Términos'}</a>
-          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Sobre Nosotros (EEAT)</a>
-          <a href="#contact" onClick={(e) => { e.preventDefault(); window.location.hash = 'contact'; setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>Contacto</a>
-          <a href="#docs" onClick={(e) => { e.preventDefault(); window.location.hash = 'docs'; setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>{t('nav_docs') || 'Documentación'}</a>
-          <a href="#faq" onClick={(e) => { e.preventDefault(); window.location.hash = 'faq'; setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}>{t('nav_faq') || 'FAQ'}</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <span>&copy; 2026 {t('app_title')}. Desarrollado por <strong>StackUpIA Software Labs</strong></span>
+          <span style={{ color: 'var(--border-color)', opacity: 0.5 }}>|</span>
+          <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_privacy') || 'Privacidad'}</a>
+          <a href="#terms" onClick={(e) => { e.preventDefault(); window.location.hash = 'terms'; setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_terms') || 'Términos'}</a>
+          <a href="#cookie-policy" onClick={(e) => { e.preventDefault(); window.location.hash = 'cookie-policy'; setActiveTab('cookie-policy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Cookies</a>
+          <a href="#legal-notice" onClick={(e) => { e.preventDefault(); window.location.hash = 'legal-notice'; setActiveTab('legal-notice'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Aviso Legal</a>
+          <a href="#eula" onClick={(e) => { e.preventDefault(); window.location.hash = 'eula'; setActiveTab('eula'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>EULA</a>
+          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Sobre Nosotros (EEAT)</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); window.location.hash = 'contact'; setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contacto</a>
+          <a href="#docs" onClick={(e) => { e.preventDefault(); window.location.hash = 'docs'; setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_docs') || 'Biblioteca'}</a>
+          <a href="#faq" onClick={(e) => { e.preventDefault(); window.location.hash = 'faq'; setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_faq') || 'FAQ'}</a>
+          <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary, #38bdf8)', textDecoration: 'none' }}>Sitemap XML</a>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '220px', justifyContent: 'flex-end', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, whiteSpace: 'nowrap' }}>
           <span style={{
             width: '8px',
             height: '8px',

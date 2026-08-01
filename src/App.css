@@ -854,16 +854,20 @@ body {
   overflow: hidden;
 }
 .app-footer {
-  height: 30px;
+  min-height: 40px;
+  height: auto;
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
+  padding: 8px 20px;
   flex-shrink: 0;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-tertiary);
+  flex-wrap: wrap;
+  gap: 10px 15px;
+  box-sizing: border-box;
 }
 
 .diff-screen { max-width: 100% !important; padding: 10px 20px !important; margin: 0 !important; }
