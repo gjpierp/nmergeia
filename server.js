@@ -286,7 +286,7 @@ app.get(['/robots.txt', '/ads.txt', '/filtro.txt'], (req, res) => {
 });
 
 // Serve webmanifest with explicit JSON MIME type and noindex for crawler compatibility
-app.get(['/manifest.webmanifest', '/site.webmanifest', '/*.webmanifest'], (req, res) => {
+app.get(['/manifest.webmanifest', '/site.webmanifest'], (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
     const manifestDist = path.join(__dirname, 'dist', 'manifest.webmanifest');
