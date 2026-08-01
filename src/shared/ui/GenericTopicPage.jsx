@@ -5,24 +5,27 @@ import { MarkdownViewer } from './MarkdownViewer.jsx';
 import { PageHeader } from './PageHeader.jsx';
 import { Breadcrumbs } from './Breadcrumbs.jsx';
 
-export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
-  const [activeTab, setActiveTab] = useState('inicial');
+export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', appLanguage }) => {
+  const [activeTab, setActiveTab] = useState(initialLevel);
   const { t } = useTranslation();
 
   useEffect(() => {
-    setActiveTab('inicial');
+    setActiveTab(initialLevel || 'inicial');
     document.getElementById('generic-topic-container')?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [topicId]);
+  }, [topicId, initialLevel]);
 
   const topicToMenuKey = {
     'postgres': 'MNU_TEMA_POSTGRES',
+    'oracle': 'MNU_ORACLE_GUIDE',
     'docker': 'MNU_TEMA_02',
+    'ngac': 'MNU_NGAC_GUIDE',
     'ext_react': 'MNU_EXT_REACT',
+    'ext_vue': 'MNU_EXT_VUE',
     'ext_node': 'MNU_EXT_NODE',
     'ext_aws': 'MNU_EXT_AWS',
     'ext_pentest': 'MNU_EXT_PENTEST'
   };
-  const translatedTitle = topicToMenuKey[topicId] ? t(topicToMenuKey[topicId]) : title;
+  const translatedTitle = topicToMenuKey[topicId] ? t(topicToMenuKey[topicId], { defaultValue: title }) : title;
 
   const tabs = [
     { id: 'inicial', label: t('TAB_INICIAL', 'Inicial') },
@@ -34,7 +37,7 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
   ];
 
   const filename = `${topicId}_${activeTab}.md`;
-  const currentTab = tabs.find(t => t.id === activeTab);
+  const currentTab = tabs.find(t => t.id === activeTab) || tabs[0];
 
   const breadcrumbsItems = [
     { label: 'Biblioteca Técnica', tabId: 'docs' },
@@ -45,7 +48,7 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
   return (
     <div id="generic-topic-container" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
       <Helmet>
-        <title>NMerge | {translatedTitle}</title>
+        <title>NMerge | {translatedTitle} ({currentTab.label})</title>
       </Helmet>
 
       <div style={{ 
@@ -59,7 +62,7 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
         <Breadcrumbs items={breadcrumbsItems} />
         <PageHeader 
           title={translatedTitle} 
-          subtitle={`${translatedTitle} - Nivel ${currentTab.label}`} 
+          subtitle={`${translatedTitle} - Guía Técnica Profesional (Nivel ${currentTab.label})`} 
         />
         <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '1rem' }}>
           {tabs.map(tab => (
@@ -102,7 +105,7 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
             }}
           >
             <span className="material-symbols-rounded" style={{ marginRight: '8px' }}>arrow_upward</span>
-            Volver al Inicio
+            Volver al Arriba
           </button>
         </div>
       </div>

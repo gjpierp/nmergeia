@@ -491,34 +491,34 @@ function App() {
       );
     }
 
-    // Guías por Niveles
-    if (activeTab === 'postgres-inicial') return <PostgresGuideInitialPage appLanguage={appLanguage} />;
-    if (activeTab === 'postgres-basico') return <PostgresGuideBasicPage appLanguage={appLanguage} />;
-    if (activeTab === 'postgres-medio') return <PostgresGuideMediumPage appLanguage={appLanguage} />;
-    if (activeTab === 'postgres-avanzado') return <PostgresGuideAdvancedPage appLanguage={appLanguage} />;
-    if (activeTab === 'postgres-experto') return <PostgresGuideExpertPage appLanguage={appLanguage} />;
+    // Guías por Niveles (PostgreSQL, Oracle, Docker, NGAC) con Título, Subtítulo y Pestañas de Niveles
+    if (activeTab === 'postgres-inicial') return <GenericTopicPage topicId="postgres" initialLevel="inicial" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'postgres-basico') return <GenericTopicPage topicId="postgres" initialLevel="basico" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'postgres-medio') return <GenericTopicPage topicId="postgres" initialLevel="medio" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'postgres-avanzado') return <GenericTopicPage topicId="postgres" initialLevel="avanzado" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'postgres-experto') return <GenericTopicPage topicId="postgres" initialLevel="experto" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
 
-    if (activeTab === 'oracle-inicial') return <OracleGuideInitialPage appLanguage={appLanguage} />;
-    if (activeTab === 'oracle-basico') return <OracleGuideBasicPage appLanguage={appLanguage} />;
-    if (activeTab === 'oracle-medio') return <OracleGuideMediumPage appLanguage={appLanguage} />;
-    if (activeTab === 'oracle-avanzado') return <OracleGuideAdvancedPage appLanguage={appLanguage} />;
-    if (activeTab === 'oracle-experto') return <OracleGuideExpertPage appLanguage={appLanguage} />;
+    if (activeTab === 'oracle-inicial') return <GenericTopicPage topicId="oracle" initialLevel="inicial" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'oracle-basico') return <GenericTopicPage topicId="oracle" initialLevel="basico" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'oracle-medio') return <GenericTopicPage topicId="oracle" initialLevel="medio" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'oracle-avanzado') return <GenericTopicPage topicId="oracle" initialLevel="avanzado" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'oracle-experto') return <GenericTopicPage topicId="oracle" initialLevel="experto" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
 
-    if (activeTab === 'docker-inicial') return <DockerGuideInitialPage appLanguage={appLanguage} />;
-    if (activeTab === 'docker-basico') return <DockerGuideBasicPage appLanguage={appLanguage} />;
-    if (activeTab === 'docker-medio') return <DockerGuideMediumPage appLanguage={appLanguage} />;
-    if (activeTab === 'docker-avanzado') return <DockerGuideAdvancedPage appLanguage={appLanguage} />;
-    if (activeTab === 'docker-experto') return <DockerGuideExpertPage appLanguage={appLanguage} />;
+    if (activeTab === 'docker-inicial') return <GenericTopicPage topicId="docker" initialLevel="inicial" title="Docker & Contenedores" appLanguage={appLanguage} />;
+    if (activeTab === 'docker-basico') return <GenericTopicPage topicId="docker" initialLevel="basico" title="Docker & Contenedores" appLanguage={appLanguage} />;
+    if (activeTab === 'docker-medio') return <GenericTopicPage topicId="docker" initialLevel="medio" title="Docker & Contenedores" appLanguage={appLanguage} />;
+    if (activeTab === 'docker-avanzado') return <GenericTopicPage topicId="docker" initialLevel="avanzado" title="Docker & Contenedores" appLanguage={appLanguage} />;
+    if (activeTab === 'docker-experto') return <GenericTopicPage topicId="docker" initialLevel="experto" title="Docker & Contenedores" appLanguage={appLanguage} />;
 
-    if (activeTab === 'ngac-inicial') return <NgacGuideInitialPage appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-basico') return <NgacGuideBasicPage appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-medio') return <NgacGuideMediumPage appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-avanzado') return <NgacGuideAdvancedPage appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-experto') return <NgacGuideExpertPage appLanguage={appLanguage} />;
+    if (activeTab === 'ngac-inicial') return <GenericTopicPage topicId="ngac" initialLevel="inicial" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
+    if (activeTab === 'ngac-basico') return <GenericTopicPage topicId="ngac" initialLevel="basico" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
+    if (activeTab === 'ngac-medio') return <GenericTopicPage topicId="ngac" initialLevel="medio" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
+    if (activeTab === 'ngac-avanzado') return <GenericTopicPage topicId="ngac" initialLevel="avanzado" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
+    if (activeTab === 'ngac-experto') return <GenericTopicPage topicId="ngac" initialLevel="experto" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
 
     // Bases de Datos
-    if (activeTab === 'tema-postgres') return <GenericTopicPage topicId="postgres" title="PostgreSQL" appLanguage={appLanguage} />;
-    if (activeTab === 'tema-oracle') return <GenericTopicPage topicId="db_oracle" title="Oracle Database" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-postgres') return <GenericTopicPage topicId="postgres" initialLevel="inicial" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-oracle') return <GenericTopicPage topicId="oracle" initialLevel="inicial" title="Oracle Database Enterprise" appLanguage={appLanguage} />;
     if (activeTab === 'tema-sqlserver') return <GenericTopicPage topicId="db_sqlserver" title="SQL Server" appLanguage={appLanguage} />;
     if (activeTab === 'tema-mysql') return <GenericTopicPage topicId="db_mysql" title="MySQL" appLanguage={appLanguage} />;
     if (activeTab === 'tema-mariadb') return <GenericTopicPage topicId="db_mariadb" title="MariaDB" appLanguage={appLanguage} />;
