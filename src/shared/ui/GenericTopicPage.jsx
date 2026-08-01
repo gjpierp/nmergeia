@@ -52,7 +52,7 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', app
       </Helmet>
 
       <div style={{ 
-        padding: '1.5rem 2rem 0', 
+        padding: '0.75rem 1.5rem 0', 
         background: 'var(--bg-secondary)', 
         borderBottom: '1px solid var(--border-color)',
         position: 'sticky',
@@ -61,10 +61,11 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', app
       }}>
         <Breadcrumbs items={breadcrumbsItems} />
         <PageHeader 
+          topicId={topicId}
           title={translatedTitle} 
           subtitle={`${translatedTitle} - Guía Técnica Profesional (Nivel ${currentTab.label})`} 
         />
-        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '1rem' }}>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '0.6rem' }}>
           {tabs.map(tab => (
             <button
               key={tab.id}

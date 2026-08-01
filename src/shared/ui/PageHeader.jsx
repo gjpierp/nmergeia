@@ -1,20 +1,24 @@
 import { Logo } from './Logo.jsx';
+import { TopicLogo } from './TopicLogo.jsx';
 
-export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction }) => {
+export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId }) => {
   return (
     <div style={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
-      paddingBottom: '15px',
-      marginBottom: '30px',
+      paddingBottom: '8px',
+      marginBottom: '10px',
       borderBottom: '1px solid var(--border-light)',
       boxSizing: 'border-box'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
-        {/* Renderizamos el logo accesible e inquebrantable de NMerge IA */}
-        <Logo height="42px" alt="NMerge IA - StackUpIA Logo" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
+        {topicId ? (
+          <TopicLogo topicId={topicId} size="40px" alt={title} />
+        ) : (
+          <Logo height="38px" alt="NMerge IA - StackUpIA Logo" />
+        )}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <h1 style={{

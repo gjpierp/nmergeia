@@ -27,10 +27,11 @@ export const Breadcrumbs = ({ items = [] }) => {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        fontSize: '0.78rem',
+        gap: '4px',
+        fontSize: '0.7rem',
         color: 'var(--text-tertiary)',
-        marginBottom: '16px',
+        marginBottom: '4px',
+        marginTop: '0px',
         flexWrap: 'wrap',
         fontFamily: '"Outfit", sans-serif'
       }}
