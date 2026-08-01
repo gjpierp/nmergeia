@@ -807,31 +807,40 @@ function App() {
       </div>
 
       <footer className="app-footer">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <span>&copy; 2026 {t('app_title')}. Desarrollado por <strong>StackUpIA Software Labs</strong></span>
-          <span style={{ color: 'var(--border-color)', opacity: 0.5 }}>|</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.65rem' }}>
+          <span>&copy; 2026 {t('app_title')}. StackUpIA Software Labs</span>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_privacy') || 'Privacidad'}</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#terms" onClick={(e) => { e.preventDefault(); window.location.hash = 'terms'; setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_terms') || 'Términos'}</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#cookie-policy" onClick={(e) => { e.preventDefault(); window.location.hash = 'cookie-policy'; setActiveTab('cookie-policy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Cookies</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#legal-notice" onClick={(e) => { e.preventDefault(); window.location.hash = 'legal-notice'; setActiveTab('legal-notice'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Aviso Legal</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#eula" onClick={(e) => { e.preventDefault(); window.location.hash = 'eula'; setActiveTab('eula'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>EULA</a>
-          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Sobre Nosotros (EEAT)</a>
+          <span style={{ opacity: 0.4 }}>•</span>
+          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Sobre Nosotros</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#contact" onClick={(e) => { e.preventDefault(); window.location.hash = 'contact'; setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contacto</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#docs" onClick={(e) => { e.preventDefault(); window.location.hash = 'docs'; setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_docs') || 'Biblioteca'}</a>
+          <span style={{ opacity: 0.4 }}>•</span>
           <a href="#faq" onClick={(e) => { e.preventDefault(); window.location.hash = 'faq'; setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_faq') || 'FAQ'}</a>
-          <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary, #38bdf8)', textDecoration: 'none' }}>Sitemap XML</a>
+          <span style={{ opacity: 0.4 }}>•</span>
+          <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary, #38bdf8)', textDecoration: 'none', fontWeight: 600 }}>Sitemap XML</a>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, whiteSpace: 'nowrap', fontSize: '0.65rem' }}>
           <span style={{
-            width: '8px',
-            height: '8px',
+            width: '7px',
+            height: '7px',
             borderRadius: '50%',
             backgroundColor: isProcessing ? '#f59e0b' : '#10b981',
-            boxShadow: isProcessing ? '0 0 8px rgba(245, 158, 11, 0.8)' : '0 0 8px rgba(16, 185, 129, 0.6)',
+            boxShadow: isProcessing ? '0 0 6px rgba(245, 158, 11, 0.8)' : '0 0 6px rgba(16, 185, 129, 0.6)',
             display: 'inline-block',
             flexShrink: 0
           }}></span>
-          <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontVariantNumeric: 'tabular-nums', opacity: 0.9 }}>
             {isProcessing ? 'En proceso' : 'Listo'}
           </span>
         </div>
