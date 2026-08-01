@@ -705,7 +705,14 @@ function App() {
           </button>
 
           <h1 style={{ paddingLeft: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src={appIcon} alt="NMerge Icon" style={{ height: '22px', width: '22px', verticalAlign: 'middle', borderRadius: '4px' }} /> 
+            <img 
+              src={appIcon} 
+              alt="NMerge IA Icon" 
+              style={{ height: '22px', width: '22px', verticalAlign: 'middle', borderRadius: '4px', objectFit: 'contain' }} 
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            /> 
             {t('app_title')}
           </h1>
         </div>
