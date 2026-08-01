@@ -1,14 +1,14 @@
 User-agent: *
 Allow: /
-<<<<<<< HEAD
-=======
+Allow: /sitemap.xml
 Allow: /ads.txt
-Allow: /docs
-Allow: /privacy
-Allow: /terms
+Disallow: /manifest.webmanifest
+Disallow: /*.webmanifest
+Disallow: /sw.js
+Disallow: /registerSW.js
+Disallow: /workbox-*.js
 
 User-agent: Mediapartners-Google
 Allow: /
->>>>>>> feature/oracle-docs
 
 Sitemap: https://nmergeia.com/sitemap.xml
