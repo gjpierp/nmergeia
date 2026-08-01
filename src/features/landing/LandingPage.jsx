@@ -355,13 +355,13 @@ export const LandingPage = () => {
 
             {/* Group 2 */}
             <div style={{ background: 'var(--bg-tertiary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '12px', color: 'var(--accent-secondary)' }}>📚 Biblioteca Técnica & Guías</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '12px', color: 'var(--accent-secondary)' }}>📚 Biblioteca Técnica & Guías por Niveles</h3>
               <ul style={{ paddingLeft: '20px', margin: 0 }}>
                 <li><a href="/docs" onClick={(e) => handleNav('docs', '/docs', e)} style={{ color: 'var(--accent-primary)' }}>Documentación Completa</a></li>
-                <li><a href="/temas/postgres" onClick={(e) => handleNav('docs', '/temas/postgres', e)} style={{ color: 'var(--accent-primary)' }}>Guía de Optimización PostgreSQL</a></li>
-                <li><a href="/temas/oracle" onClick={(e) => handleNav('docs', '/temas/oracle', e)} style={{ color: 'var(--accent-primary)' }}>Guía de Oracle Database Enterprise</a></li>
-                <li><a href="/temas/docker" onClick={(e) => handleNav('docs', '/temas/docker', e)} style={{ color: 'var(--accent-primary)' }}>Docker y Multi-Stage Builds</a></li>
-                <li><a href="/temas/ngac" onClick={(e) => handleNav('docs', '/temas/ngac', e)} style={{ color: 'var(--accent-primary)' }}>Gobernanza Sentinel-NGAC</a></li>
+                <li><a href="/guias/postgres/inicial" onClick={(e) => handleNav('postgres-inicial', '/guias/postgres/inicial', e)} style={{ color: 'var(--accent-primary)' }}>Guía de PostgreSQL (Inicial - Maestro)</a></li>
+                <li><a href="/guias/oracle/inicial" onClick={(e) => handleNav('oracle-inicial', '/guias/oracle/inicial', e)} style={{ color: 'var(--accent-primary)' }}>Guía de Oracle DB (Inicial - Maestro)</a></li>
+                <li><a href="/guias/docker/inicial" onClick={(e) => handleNav('docker-inicial', '/guias/docker/inicial', e)} style={{ color: 'var(--accent-primary)' }}>Docker y Contenedores (Inicial - Maestro)</a></li>
+                <li><a href="/guias/ngac/inicial" onClick={(e) => handleNav('ngac-inicial', '/guias/ngac/inicial', e)} style={{ color: 'var(--accent-primary)' }}>Gobernanza Sentinel-NGAC (Inicial - Maestro)</a></li>
               </ul>
             </div>
 
@@ -369,11 +369,11 @@ export const LandingPage = () => {
             <div style={{ background: 'var(--bg-tertiary)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '12px', color: 'var(--accent-secondary)' }}>💻 Especialidades de Desarrollo</h3>
               <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                <li><a href="/temas/ext-react" onClick={(e) => handleNav('docs', '/temas/ext-react', e)} style={{ color: 'var(--accent-primary)' }}>React Avanzado & Profiling</a></li>
-                <li><a href="/temas/ext-vue" onClick={(e) => handleNav('docs', '/temas/ext-vue', e)} style={{ color: 'var(--accent-primary)' }}>Vue.js Ecosystem & Pinia</a></li>
-                <li><a href="/temas/ext-node" onClick={(e) => handleNav('docs', '/temas/ext-node', e)} style={{ color: 'var(--accent-primary)' }}>Node.js Enterprise Architecture</a></li>
-                <li><a href="/temas/ext-aws" onClick={(e) => handleNav('docs', '/temas/ext-aws', e)} style={{ color: 'var(--accent-primary)' }}>AWS Serverless & Lambda</a></li>
-                <li><a href="/temas/ext-pentest" onClick={(e) => handleNav('docs', '/temas/ext-pentest', e)} style={{ color: 'var(--accent-primary)' }}>Pentesting Web & OWASP Top 10</a></li>
+                <li><a href="/temas/ext-react" onClick={(e) => handleNav('ext-react', '/temas/ext-react', e)} style={{ color: 'var(--accent-primary)' }}>React Avanzado & Profiling</a></li>
+                <li><a href="/temas/ext-vue" onClick={(e) => handleNav('ext-vue', '/temas/ext-vue', e)} style={{ color: 'var(--accent-primary)' }}>Vue.js Ecosystem & Pinia</a></li>
+                <li><a href="/temas/ext-node" onClick={(e) => handleNav('ext-node', '/temas/ext-node', e)} style={{ color: 'var(--accent-primary)' }}>Node.js Enterprise Architecture</a></li>
+                <li><a href="/temas/ext-aws" onClick={(e) => handleNav('ext-aws', '/temas/ext-aws', e)} style={{ color: 'var(--accent-primary)' }}>AWS Serverless & Lambda</a></li>
+                <li><a href="/temas/ext-pentest" onClick={(e) => handleNav('ext-pentest', '/temas/ext-pentest', e)} style={{ color: 'var(--accent-primary)' }}>Pentesting Web & OWASP Top 10</a></li>
               </ul>
             </div>
 
