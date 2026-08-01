@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const ContactPage = () => {
   const { setActiveTab, addToast } = useAppStore();
-  const [lang, setLang] = useState('es');
+  const { i18n } = useTranslation();
+  const isEn = i18n?.language?.startsWith('en');
   const [formData, setFormData] = useState({ name: '', email: '', subject: 'soporte', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      addToast(lang === 'es' ? 'Por favor complete todos los campos requeridos.' : 'Please fill in all required fields.', 'error');
+      addToast(isEn ? 'Please fill in all required fields.' : 'Por favor complete todos los campos requeridos.', 'error');
       return;
     }
     setSubmitted(true);
-    addToast(lang === 'es' ? 'Mensaje enviado con éxito. Le responderemos en menos de 24h.' : 'Message sent successfully. We will reply within 24h.', 'success');
+    addToast(isEn ? 'Message sent successfully. We will reply within 24h.' : 'Mensaje enviado con éxito. Le responderemos en menos de 24h.', 'success');
   };
 
   return (
@@ -35,34 +38,18 @@ export const ContactPage = () => {
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Contacto & Soporte' }]} />
         
-        {/* Header & Language Toggle */}
+        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <Logo height="42px" alt="NMerge IA - Logo de Contacto" />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {lang === 'es' ? 'Contacto & Soporte Técnico' : 'Contact & Technical Support'}
+                {isEn ? 'Contact & Technical Support' : 'Contacto & Soporte Técnico'}
               </h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {lang === 'es' ? 'Atención al usuario, alianzas corporativas y soporte' : 'User support, corporate inquiries, and feedback'}
+                {isEn ? 'User support, corporate inquiries, and feedback' : 'Atención al usuario, alianzas corporativas y soporte'}
               </span>
             </div>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button 
-              className={`btn ${lang === 'es' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('es')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              Español
-            </button>
-            <button 
-              className={`btn ${lang === 'en' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('en')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              English
-            </button>
           </div>
         </div>
 

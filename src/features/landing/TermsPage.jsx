@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
-
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const TermsPage = () => {
   const { setActiveTab } = useAppStore();
-  const [lang, setLang] = useState('es');
+  const { i18n } = useTranslation();
+  const isEn = i18n?.language?.startsWith('en');
 
   return (
     <div style={{
@@ -25,38 +26,22 @@ export const TermsPage = () => {
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Términos y Condiciones' }]} />
         
-        {/* Header & Language Toggle */}
+        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <Logo height="40px" alt="NMerge IA - Logo de Términos y Condiciones" />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {lang === 'es' ? 'Términos y Condiciones de Uso' : 'Terms and Conditions of Service'}
+                {isEn ? 'Terms and Conditions of Service' : 'Términos y Condiciones de Uso'}
               </h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {lang === 'es' ? 'Última revisión: Agosto 2026' : 'Last revised: August 2026'}
+                {isEn ? 'Last revised: August 2026' : 'Última revisión: Agosto 2026'}
               </span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button 
-              className={`btn ${lang === 'es' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('es')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              Español
-            </button>
-            <button 
-              className={`btn ${lang === 'en' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('en')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              English
-            </button>
-          </div>
         </div>
 
-        {lang === 'es' ? (
+        {!isEn ? (
           <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>
             <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>1. Aceptación de las Condiciones de Servicio</h2>
             <p>

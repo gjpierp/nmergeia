@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
+import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
-
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const AboutPage = () => {
   const { setActiveTab } = useAppStore();
-  const [lang, setLang] = useState('es');
+  const { i18n } = useTranslation();
+  const isEn = i18n?.language?.startsWith('en');
 
   return (
     <div style={{
@@ -25,38 +26,22 @@ export const AboutPage = () => {
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)' }]} />
         
-        {/* Header & Language Toggle */}
+        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <Logo height="42px" alt="NMerge IA - Logo Sobre Nosotros" />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {lang === 'es' ? 'Sobre Nosotros (EEAT) & Arquitectura' : 'About Us (EEAT) & Architecture'}
+                {isEn ? 'About Us (EEAT) & Architecture' : 'Sobre Nosotros (EEAT) & Arquitectura'}
               </h1>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {lang === 'es' ? 'Conozca al equipo detrás de NMerge IA y nuestra misión' : 'Meet the engineering team behind NMerge IA and our mission'}
+                {isEn ? 'Meet the engineering team behind NMerge IA and our mission' : 'Conozca al equipo detrás de NMerge IA y nuestra misión'}
               </span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button 
-              className={`btn ${lang === 'es' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('es')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              Español
-            </button>
-            <button 
-              className={`btn ${lang === 'en' ? 'primary-btn' : 'secondary-btn'}`} 
-              onClick={() => setLang('en')}
-              style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-            >
-              English
-            </button>
-          </div>
         </div>
 
-        {lang === 'es' ? (
+        {!isEn ? (
           <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>
             <h2 style={{ fontSize: '1.4rem', color: '#10b981', marginTop: 0 }}>1. Nuestra Misión y Visión Tecnológica</h2>
             <p>
