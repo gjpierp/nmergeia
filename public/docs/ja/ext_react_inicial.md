@@ -8,10 +8,10 @@ A diferencia del JavaScript Vanilla (Imperativo), donde le dices al navegador *c
 
 ```mermaid
 flowchart LR
-    Estado[Estado de la Aplicación] --> ReactEngine[React Virtual DOM]
-    ReactEngine -->|Reconciliación Diff| DOM[DOM Real del Navegador]
-    DOM --> Usuario((Interacción del Usuario))
-    Usuario -->|Dispara Evento| Estado
+Estado["Estado de la Aplicación"] --> ReactEngine["React Virtual DOM"]
+ReactEngine -->|Reconciliación Diff| DOM["DOM Real del Navegador"]
+DOM --> Usuario((Interacción del Usuario))
+Usuario -->|Dispara Evento| Estado
 ```
 
 ## 2. Componentes Funcionales (El Estándar)
@@ -58,10 +58,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo React & Web Architecture"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

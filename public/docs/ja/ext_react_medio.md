@@ -6,13 +6,12 @@ A medida que tu árbol de componentes crece, pasar un estado desde un componente
 
 ```mermaid
 flowchart TD
-    App[App.jsx (Tiene theme=dark)] --> Header[Header.jsx]
-    Header --> Nav[Nav.jsx]
-    Nav --> Button[ThemeButton.jsx (Necesita theme)]
-    
-    App -.->|Pasa theme pero no lo usa| Header
-    Header -.->|Pasa theme pero no lo usa| Nav
-    Nav -.->|Finalmente lo usa| Button
+App["App.jsx (Tiene theme=dark)"] --> Header["Header.jsx"]
+Header --> Nav["Nav.jsx"]
+Nav --> Button["ThemeButton.jsx (Necesita theme)"]
+App -.->|Pasa theme pero no lo usa| Header
+Header -.->|Pasa theme pero no lo usa| Nav
+Nav -.->|Finalmente lo usa| Button
 ```
 El `Header` y el `Nav` se ensucian con propiedades que no les importan, violando el principio de encapsulamiento.
 
@@ -99,10 +98,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo React & Web Architecture"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

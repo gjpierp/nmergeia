@@ -12,10 +12,9 @@ La solución obligatoria en producción es colocar un **Connection Pooler** dela
 
 ```mermaid
 flowchart LR
-    API1[Lambda / Node.js] -->|Miles de conexiones ligeras| PgBouncer[PgBouncer]
-    API2[Django / Python] -->|Miles de conexiones ligeras| PgBouncer
-    
-    PgBouncer -->|Reutiliza 100 conexiones pesadas| DB[(PostgreSQL Master)]
+API1["Lambda / Node.js"] -->|Miles de conexiones ligeras| PgBouncer["PgBouncer"]
+API2["Django / Python"] -->|Miles de conexiones ligeras| PgBouncer
+PgBouncer -->|Reutiliza 100 conexiones pesadas| DB["(PostgreSQL Master)"]
 ```
 
 PgBouncer mantiene un grupo pequeño de conexiones activas con Postgres. Cuando una API pide hacer una consulta, PgBouncer le presta una conexión, ejecuta la consulta y la devuelve al pool inmediatamente (*Transaction Pooling*). Esto reduce la carga del CPU de Postgres a casi cero en gestión de conexiones.
@@ -73,10 +72,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

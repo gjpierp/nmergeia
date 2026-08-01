@@ -7,10 +7,10 @@ Vue se llama 'progresivo' porque puedes usarlo para renderizar un solo component
 
 ```mermaid
 flowchart LR
-    Estado[Estado Reactivo ref/reactive] --> VueEngine[Vue Compiler & Virtual DOM]
-    VueEngine -->|Actualización Quirúrgica| DOM[DOM Real]
-    DOM --> Usuario((Interacción))
-    Usuario -->|Mutación Directa| Estado
+Estado["Estado Reactivo ref/reactive"] --> VueEngine["Vue Compiler & Virtual DOM"]
+VueEngine -->|Actualización Quirúrgica| DOM["DOM Real"]
+DOM --> Usuario((Interacción))
+Usuario -->|Mutación Directa| Estado
 ```
 
 ## 2. Options API vs Composition API
@@ -44,10 +44,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Vue.js & Frontend Engines]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Vue.js & Frontend Engines"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)
@@ -175,10 +175,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Vue.js & Frontend Engines]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Vue.js & Frontend Engines"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

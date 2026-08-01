@@ -10,9 +10,9 @@ NGAC (Next Generation Access Control) fue creado por el NIST. Sustituye las "Lis
 
 ```mermaid
 flowchart LR
-    U(Usuario: Juan) -->|Pertenece| D(Depto: Ventas)
-    D -->|Tiene Permiso| P[Acción: Lectura]
-    P --> O(Objeto: Reporte 2024)
+U(Usuario: Juan) -->|Pertenece| D(Depto: Ventas)
+D -->|Tiene Permiso| P["Acción: Lectura"]
+P --> O(Objeto: Reporte 2024)
 ```
 
 
@@ -27,10 +27,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo NGAC Access Control]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo NGAC Access Control"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)
@@ -158,10 +158,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo NGAC Access Control]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo NGAC Access Control"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

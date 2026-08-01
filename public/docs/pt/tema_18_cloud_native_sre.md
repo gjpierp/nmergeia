@@ -27,8 +27,8 @@ Las aplicaciones Cloud Native siguen la metodología de los 12 Factores para gar
 
 ```mermaid
 flowchart LR
-    IaaS[IaaS: VMs / EC2] -->|Abstracción| PaaS[PaaS / Containers K8s]
-    PaaS -->|Abstracción Total| Serverless[Serverless: AWS Lambda / Fargate]
+IaaS["IaaS: VMs / EC2"] -->|Abstracción| PaaS["PaaS / Containers K8s"]
+PaaS -->|Abstracción Total| Serverless["Serverless: AWS Lambda / Fargate"]
 ```
 
 * **Serverless (FaaS):** Modelo basado en eventos de ejecución efímera. Auto-escala de $0$ a miles de instancias bajo demanda y cobra únicamente por los milisegundos reales de cómputo consumidos.
@@ -72,9 +72,9 @@ FEATURE: Gobierno de Despliegues por Error Budget
 
 ```mermaid
 flowchart TD
-    Logs[Logs Estructurados JSON] --> Observability[Observabilidad Total]
-    Metrics[Métricas PromQL / Grafana] --> Observability
-    Traces[Distributed Traces OpenTelemetry] --> Observability
+Logs["Logs Estructurados JSON"] --> Observability["Observabilidad Total"]
+Metrics["Métricas PromQL / Grafana"] --> Observability
+Traces["Distributed Traces OpenTelemetry"] --> Observability
 ```
 
 1. **Logs (Registros):** Eventos discretos codificados en JSON estructurado para indexación en ELK o Loki.
@@ -93,10 +93,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Arquitectura de Software]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Arquitectura de Software"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

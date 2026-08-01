@@ -10,11 +10,11 @@ Las subconsultas anidadas pueden convertirse rápidamente en un infierno de mant
 
 ```mermaid
 flowchart TD
-    A[Consulta WITH cte_sales AS] -->|Filtra ventas del mes| B(Tabla Temporal en Memoria)
-    C[Consulta WITH cte_top_users AS] -->|Filtra usuarios VIP| D(Tabla Temporal en Memoria)
-    B --> E{Consulta Principal SELECT}
-    D --> E
-    E --> F[Resultado Final Consolidado]
+A["Consulta WITH cte_sales AS"] -->|Filtra ventas del mes| B(Tabla Temporal en Memoria)
+C["Consulta WITH cte_top_users AS"] -->|Filtra usuarios VIP| D(Tabla Temporal en Memoria)
+B --> E{Consulta Principal SELECT}
+D --> E
+E --> F["Resultado Final Consolidado"]
 ```
 
 ### Ejemplo Práctico
@@ -67,17 +67,16 @@ Cuando actualizas una fila en Postgres, el motor **no sobreescribe** los datos e
 
 ```mermaid
 sequenceDiagram
-    participant UserA as Analista (Lectura)
-    participant DB as PostgreSQL (MVCC)
-    participant UserB as Sistema (Escritura)
-
-    UserA->>DB: Inicia Transacción SELECT
-    DB-->>UserA: Retorna Fila v1
-    UserB->>DB: Inicia Transacción UPDATE
-    DB->>DB: Crea Fila v2 (Oculta a UserA)
-    DB-->>UserB: Commit OK
-    UserA->>DB: Continúa leyendo...
-    DB-->>UserA: Sigue viendo Fila v1 (Consistencia de lectura)
+participant UserA as Analista (Lectura)
+participant DB as PostgreSQL (MVCC)
+participant UserB as Sistema (Escritura)
+UserA->>DB: Inicia Transacción SELECT
+DB-->>UserA: Retorna Fila v1
+UserB->>DB: Inicia Transacción UPDATE
+DB->>DB: Crea Fila v2 (Oculta a UserA)
+DB-->>UserB: Commit OK
+UserA->>DB: Continúa leyendo...
+DB-->>UserA: Sigue viendo Fila v1 (Consistencia de lectura)
 ```
 
 ### Transacciones Explícitas
@@ -119,10 +118,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

@@ -13,14 +13,12 @@ Has aprendido a construir y orquestar imágenes hiper-optimizadas. Pero ejecutar
 
 ```mermaid
 flowchart TD
-    Kernel[Kernel de Linux] --> CgroupCPU(Control Group: CPU)
-    Kernel --> CgroupRAM(Control Group: Memoria)
-    
-    CgroupCPU -.->|Limita| C1[Contenedor API]
-    CgroupCPU -.->|Garantiza| C2[Contenedor DB]
-    
-    CgroupRAM -.->|Hard Limit 512MB| C1
-    CgroupRAM -.->|Hard Limit 4GB| C2
+Kernel["Kernel de Linux"] --> CgroupCPU(Control Group: CPU)
+Kernel --> CgroupRAM(Control Group: Memoria)
+CgroupCPU -.->|Limita| C1["Contenedor API"]
+CgroupCPU -.->|Garantiza| C2["Contenedor DB"]
+CgroupRAM -.->|Hard Limit 512MB| C1
+CgroupRAM -.->|Hard Limit 4GB| C2
 ```
 
 ## 2. Implementando Límites Duros (Hard Limits)
@@ -100,10 +98,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

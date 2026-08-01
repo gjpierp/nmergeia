@@ -15,12 +15,12 @@ El plano de control de Kubernetes garantiza que el número de réplicas, las rut
 
 ```mermaid
 flowchart TD
-    Client[kubectl / CI-CD] -->|"REST API / HTTPS"| APIServer[kube-apiserver]
-    APIServer <--> ETCD[(etcd DB)]
-    APIServer <--> Scheduler[kube-scheduler]
-    APIServer <--> Controller[kube-controller-manager]
-    APIServer <--> Kubelet1[Worker Node 1: Kubelet + Kube-Proxy]
-    APIServer <--> Kubelet2[Worker Node 2: Kubelet + Kube-Proxy]
+Client["kubectl / CI-CD"] -->|"REST API / HTTPS"| APIServer["kube-apiserver"]
+APIServer <--> ETCD["(etcd DB)"]
+APIServer <--> Scheduler["kube-scheduler"]
+APIServer <--> Controller["kube-controller-manager"]
+APIServer <--> Kubelet1["Worker Node 1: Kubelet + Kube-Proxy"]
+APIServer <--> Kubelet2["Worker Node 2: Kubelet + Kube-Proxy"]
 ```
 
 ---
@@ -133,10 +133,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Arquitectura de Software]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Arquitectura de Software"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

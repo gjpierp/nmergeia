@@ -10,16 +10,14 @@ En la arquitectura Enterprise, pasamos a un modelo **Asíncrono y Dirigido por E
 
 ```mermaid
 flowchart TD
-    API[API Gateway] --> LambdaAuth[Lambda Crear Usuario]
-    LambdaAuth -->|Publica Evento UsuarioCreado| Broker{Bus de Eventos}
-    LambdaAuth -.->|Responde INMEDIATO 201| Usuario
-    
-    Broker -->|"Notifica (Fan-Out)"| Queue1[Cola SQS (Emails)]
-    Broker -->|"Notifica (Fan-Out)"| Queue2[Cola SQS (Pagos)]
-    Broker -->|"Notifica (Fan-Out)"| Queue3[Cola SQS (Reportes)]
-    
-    Queue1 --> LambdaEmail[Lambda Enviar Correo]
-    Queue2 --> LambdaPago[Lambda Procesar Pago]
+API["API Gateway"] --> LambdaAuth["Lambda Crear Usuario"]
+LambdaAuth -->|Publica Evento UsuarioCreado| Broker{Bus de Eventos}
+LambdaAuth -.->|Responde INMEDIATO 201| Usuario
+Broker -->|"Notifica (Fan-Out)"| Queue1["Cola SQS (Emails)"]
+Broker -->|"Notifica (Fan-Out)"| Queue2["Cola SQS (Pagos)"]
+Broker -->|"Notifica (Fan-Out)"| Queue3["Cola SQS (Reportes)"]
+Queue1 --> LambdaEmail["Lambda Enviar Correo"]
+Queue2 --> LambdaPago["Lambda Procesar Pago"]
 ```
 
 ### AWS SNS (Simple Notification Service)
@@ -57,10 +55,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo AWS Cloud]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo AWS Cloud"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

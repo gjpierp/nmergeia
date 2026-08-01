@@ -10,26 +10,22 @@ A diferencia de motores como MySQL (que es multi-hilo), PostgreSQL utiliza una a
 
 ```mermaid
 flowchart TD
-    Client[Cliente / Aplicacion] -->|"Conexion TCP/IP"| Postmaster[Proceso Postmaster]
-    Postmaster -->|"Fork"| Backend[Proceso Backend]
-    Client <-->|"Consultas SQL"| Backend
-    
-    subgraph sub_1 [Memoria Compartida (Shared Memory)]
-        BufferCache[Shared Buffer Cache]
-        WALBuffer[WAL Buffers]
-    end
-    
-    Backend <--> BufferCache
-    
-    subgraph sub_2 [Procesos de Fondo]
-        Writer[Background Writer]
-        WALWriter[WAL Writer]
-        Autovacuum[Autovacuum Launcher]
-        Checkpointer[Checkpointer]
-    end
-    
-    BufferCache --- Writer
-    Writer --> Disco[(Almacenamiento en Disco)]
+Client["Cliente / Aplicacion"] -->|"Conexion TCP/IP"| Postmaster["Proceso Postmaster"]
+Postmaster -->|"Fork"| Backend["Proceso Backend"]
+Client <-->|"Consultas SQL"| Backend
+subgraph sub_1 ["Memoria Compartida (Shared Memory)"]
+BufferCache["Shared Buffer Cache"]
+WALBuffer["WAL Buffers"]
+end
+Backend <--> BufferCache
+subgraph sub_2 ["Procesos de Fondo"]
+Writer["Background Writer"]
+WALWriter["WAL Writer"]
+Autovacuum["Autovacuum Launcher"]
+Checkpointer["Checkpointer"]
+end
+BufferCache --- Writer
+Writer --> Disco["(Almacenamiento en Disco)"]
 ```
 
 *Nota del arquitecto: Esta arquitectura protege a la base de datos de caídas totales; si un proceso backend colapsa por un error grave de memoria, los demás procesos y la instancia en sí continúan funcionando.*
@@ -104,10 +100,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

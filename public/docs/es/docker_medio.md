@@ -10,17 +10,16 @@ En lugar de teclear comandos imperativos, definimos el estado final deseado de n
 
 ```mermaid
 flowchart TD
-    subgraph sub_1 [Red de Docker Compose (app-network)]
-        React[Frontend - Puerto 80]
-        API[Backend API Node.js - Puerto 3000]
-        DB[(PostgreSQL - Puerto 5432)]
-        Caché[(Redis - Puerto 6379)]
-    end
-    
-    Usuario((Navegador)) --> React
-    React --> API
-    API --> DB
-    API --> Caché
+subgraph sub_1 ["Red de Docker Compose (app-network)"]
+React["Frontend - Puerto 80"]
+API["Backend API Node.js - Puerto 3000"]
+DB["(PostgreSQL - Puerto 5432)"]
+Caché[(Redis - Puerto 6379)]
+end
+Usuario((Navegador)) --> React
+React --> API
+API --> DB
+API --> Caché
 ```
 
 **Atención a la regla de Redes:** Dentro de una red de Docker Compose, los contenedores no se comunican usando `localhost`. Se comunican usando **el nombre del servicio** como dominio de DNS.
@@ -112,10 +111,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

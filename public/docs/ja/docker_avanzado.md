@@ -14,19 +14,17 @@ Si construyes la imagen en un solo paso, todos esos archivos inútiles para prod
 
 ```mermaid
 flowchart LR
-    subgraph sub_1 [Stage 1: Build (Constructor)]
-        A[Imagen Base Node.js 18] --> B(Instalar NPM Packages)
-        B --> C(Copiar Código Fuente)
-        C --> D(Ejecutar npm run build)
-        D --> E{Genera Carpeta /dist}
-    end
-    
-    subgraph sub_2 [Stage 2: Production (Final)]
-        F[Imagen Base NGINX Alpine] --> G(Copiar /dist desde Stage 1)
-        G --> H[Imagen Final de Producción]
-    end
-    
-    E -.->|Transferencia Quirúrgica| G
+subgraph sub_1 ["Stage 1: Build (Constructor)"]
+A["Imagen Base Node.js 18"] --> B(Instalar NPM Packages)
+B --> C(Copiar Código Fuente)
+C --> D(Ejecutar npm run build)
+D --> E{Genera Carpeta /dist}
+end
+subgraph sub_2 ["Stage 2: Production (Final)"]
+F["Imagen Base NGINX Alpine"] --> G(Copiar /dist desde Stage 1)
+G --> H["Imagen Final de Producción"]
+end
+E -.->|Transferencia Quirúrgica| G
 ```
 
 ## 2. Escribiendo un Multi-Stage Dockerfile (Ejemplo React/Vue)
@@ -109,10 +107,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

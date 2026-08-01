@@ -23,10 +23,10 @@ Si lo colocas frente a DynamoDB, tu código no cambia, pero las lecturas repetid
 
 ```mermaid
 flowchart LR
-    Lambda[AWS Lambda] -->|GetItem producto-1| DAX[Cluster DAX (Caché RAM)]
-    DAX -->|"Si no existe (Cache Miss)"| DB[(DynamoDB Disco)]
-    DB -->|Devuelve y Guarda| DAX
-    DAX -->|"Respuesta Ultra-Rápida (0.2ms)"| Lambda
+Lambda["AWS Lambda"] -->|GetItem producto-1| DAX["Cluster DAX (Caché RAM)"]
+DAX -->|"Si no existe (Cache Miss)"| DB["(DynamoDB Disco)"]
+DB -->|Devuelve y Guarda| DAX
+DAX -->|"Respuesta Ultra-Rápida (0.2ms)"| Lambda
 ```
 
 ## 3. Optimizando el Runtime (Node.js vs Rust)
@@ -56,10 +56,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo AWS Cloud]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo AWS Cloud"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

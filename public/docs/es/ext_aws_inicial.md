@@ -8,15 +8,14 @@ Serverless (Sin Servidor) no significa que los servidores mágicamente desaparec
 
 ```mermaid
 flowchart LR
-    Usuario[Usuario] -->|Request HTTP| API[API Gateway]
-    API -->|Desencadena| Lambda[AWS Lambda (Código)]
-    Lambda -->|Consulta| DB[(DynamoDB)]
-    
-    subgraph sub_1 ["No gestionas Sistema Operativo, ni Parches, ni RAM"]
-        API
-        Lambda
-        DB
-    end
+Usuario["Usuario"] -->|Request HTTP| API["API Gateway"]
+API -->|Desencadena| Lambda["AWS Lambda (Código)"]
+Lambda -->|Consulta| DB["(DynamoDB)"]
+subgraph sub_1 ["'No gestionas Sistema Operativo, ni Parches, ni RAM'"]
+API
+Lambda
+DB
+end
 ```
 
 ### Ventajas Radicales
@@ -66,10 +65,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo AWS Cloud]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo AWS Cloud"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

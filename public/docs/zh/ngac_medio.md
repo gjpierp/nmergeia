@@ -4,10 +4,10 @@ En una arquitectura Zero-Trust, separamos la ejecución de la decisión.
 
 ```mermaid
 flowchart TD
-    A[Usuario Web] --> B(API Gateway / PEP)
-    B -->|Solicita Permiso| C{Motor NGAC / PDP}
-    C -->|"Allow/Deny"| B
-    B -->|Si es Allow| D[Microservicio de BD]
+A["Usuario Web"] --> B(API Gateway / PEP)
+B -->|Solicita Permiso| C{Motor NGAC / PDP}
+C -->|"Allow/Deny"| B
+B -->|Si es Allow| D["Microservicio de BD"]
 ```
 
 * **PEP (Policy Enforcement Point):** El proxy que detiene el tráfico.
@@ -25,10 +25,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo NGAC Access Control]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo NGAC Access Control"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)
@@ -156,10 +156,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo NGAC Access Control]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo NGAC Access Control"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

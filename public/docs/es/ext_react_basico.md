@@ -36,18 +36,17 @@ Las funciones puras no deben tocar el "mundo exterior" (hacer peticiones HTTP, s
 
 ```mermaid
 sequenceDiagram
-    participant React as React (Componente)
-    participant DOM as Navegador (DOM)
-    participant Effect as useEffect
-    participant API as Backend (Fetch)
-
-    React->>DOM: 1. Dibuja el estado inicial (Vacío)
-    DOM-->>React: Pantalla visible
-    React->>Effect: 2. React ejecuta el Effect después del render
-    Effect->>API: 3. Hace petición HTTP (Fetch)
-    API-->>Effect: 4. Devuelve los Datos
-    Effect->>React: 5. setEstado(datos)
-    React->>DOM: 6. Re-renderiza con la nueva información
+participant React as React (Componente)
+participant DOM as Navegador (DOM)
+participant Effect as useEffect
+participant API as Backend (Fetch)
+React->>DOM: 1. Dibuja el estado inicial (Vacío)
+DOM-->>React: Pantalla visible
+React->>Effect: 2. React ejecuta el Effect después del render
+Effect->>API: 3. Hace petición HTTP (Fetch)
+API-->>Effect: 4. Devuelve los Datos
+Effect->>React: 5. setEstado(datos)
+React->>DOM: 6. Re-renderiza con la nueva información
 ```
 
 ### La Matriz de Dependencias
@@ -82,10 +81,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo React & Web Architecture"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

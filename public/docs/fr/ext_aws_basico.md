@@ -45,20 +45,18 @@ A este proceso se le llama **Cold Start**. Puede demorar desde 300 milisegundos 
 
 ```mermaid
 sequenceDiagram
-    participant Usuario
-    participant AWS as AWS Infra
-    participant Lambda as Tu Código
-
-    Note over AWS: Lambda Suspendida (Frío)
-    Usuario->>AWS: 1. Invocación
-    AWS->>AWS: 2. Cold Start (1500ms) - Asignando Recursos
-    AWS->>Lambda: 3. Ejecuta Handler
-    Lambda-->>Usuario: 4. Respuesta (Total: 1600ms)
-
-    Note over AWS: Lambda Activa (Caliente)
-    Usuario->>AWS: 5. Nueva Invocación inmediata
-    AWS->>Lambda: 6. Ejecuta Handler directo
-    Lambda-->>Usuario: 7. Respuesta (Total: 50ms)
+participant Usuario
+participant AWS as AWS Infra
+participant Lambda as Tu Código
+Note over AWS: Lambda Suspendida (Frío)
+Usuario->>AWS: 1. Invocación
+AWS->>AWS: 2. Cold Start (1500ms) - Asignando Recursos
+AWS->>Lambda: 3. Ejecuta Handler
+Lambda-->>Usuario: 4. Respuesta (Total: 1600ms)
+Note over AWS: Lambda Activa (Caliente)
+Usuario->>AWS: 5. Nueva Invocación inmediata
+AWS->>Lambda: 6. Ejecuta Handler directo
+Lambda-->>Usuario: 7. Respuesta (Total: 50ms)
 ```
 
 ### Estrategias de Mitigación Básicas
@@ -93,10 +91,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo AWS Cloud]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo AWS Cloud"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

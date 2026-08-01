@@ -10,13 +10,13 @@ Un `Dockerfile` es un archivo de texto plano (sin extensión) que contiene una s
 
 ```mermaid
 stateDiagram-v2
-    [*] --> EscribirCodigo: Escribes tu App (Node/Python)
-    EscribirCodigo --> CrearDockerfile: Defines las instrucciones
-    CrearDockerfile --> DockerBuild: Ejecutas docker build
-    DockerBuild --> ImagenInmutable: Se genera una Imagen Local
-    ImagenInmutable --> DockerPush: Envías a Docker Hub / ECR
-    ImagenInmutable --> DockerRun: Creas el Contenedor
-    DockerRun --> [*]
+[*] --> EscribirCodigo: Escribes tu App (Node/Python)
+EscribirCodigo --> CrearDockerfile: Defines las instrucciones
+CrearDockerfile --> DockerBuild: Ejecutas docker build
+DockerBuild --> ImagenInmutable: Se genera una Imagen Local
+ImagenInmutable --> DockerPush: Envías a Docker Hub / ECR
+ImagenInmutable --> DockerRun: Creas el Contenedor
+DockerRun --> [*]
 ```
 
 ## 2. Construyendo una App Web (Node.js)
@@ -106,10 +106,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

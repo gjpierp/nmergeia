@@ -10,20 +10,18 @@ El patrón maestro es el **Cache-Aside Pattern**:
 
 ```mermaid
 sequenceDiagram
-    participant App as API Node.js
-    participant Redis as Redis Cache
-    participant DB as Postgres
-
-    App->>Redis: 1. GET usuarios_top_10
-    Redis-->>App: (Cache Miss) Null
-    App->>DB: 2. SELECT * FROM usuarios ORDER BY puntos DESC LIMIT 10
-    DB-->>App: Resultado (Demoró 300ms)
-    App->>Redis: 3. SET usuarios_top_10 (Resultado) EXPIRE 5min
-    App-->>Cliente: Respuesta enviada
-
-    Note over App, Redis: Siguiente petición idéntica
-    App->>Redis: 1. GET usuarios_top_10
-    Redis-->>App: (Cache Hit) Resultado Inmediato (1ms)
+participant App as API Node.js
+participant Redis as Redis Cache
+participant DB as Postgres
+App->>Redis: 1. GET usuarios_top_10
+Redis-->>App: (Cache Miss) Null
+App->>DB: 2. SELECT * FROM usuarios ORDER BY puntos DESC LIMIT 10
+DB-->>App: Resultado (Demoró 300ms)
+App->>Redis: 3. SET usuarios_top_10 (Resultado) EXPIRE 5min
+App-->>Cliente: Respuesta enviada
+Note over App, Redis: Siguiente petición idéntica
+App->>Redis: 1. GET usuarios_top_10
+Redis-->>App: (Cache Hit) Resultado Inmediato (1ms)
 ```
 
 ## 2. Event-Driven Architecture (Microservicios)
@@ -73,10 +71,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Node.js Enterprise]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Node.js Enterprise"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

@@ -13,9 +13,9 @@ API Gateway actúa como la puerta principal de tu casa. Expone endpoints HTTP (`
 
 ```mermaid
 flowchart LR
-    Hacker[Atacante] -->|1M Peticiones| API[API Gateway]
-    API -->|"Rechaza el 99% (Throttling)"| /dev/null
-    API -->|Peticiones Legítimas| Lambda[Lambda (Salvada)]
+Hacker["Atacante"] -->|1M Peticiones| API["API Gateway"]
+API -->|"Rechaza el 99% (Throttling)"| /dev/null
+API -->|Peticiones Legítimas| Lambda["Lambda (Salvada)"]
 ```
 
 ## 2. Amazon DynamoDB: Base de Datos Serverless
@@ -82,10 +82,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo AWS Cloud]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo AWS Cloud"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

@@ -15,12 +15,11 @@ Adjuntamos un contenedor secundario en la misma red de red (o el mismo Pod en Ku
 
 ```mermaid
 flowchart LR
-    subgraph sub_1 [Tarea Docker / Pod Kubernetes]
-        Legacy[App Legacy (Contenedor A)] -->|Escribe logs.txt| Volume[(Volumen Compartido)]
-        Volume -->|Lee logs.txt| Fluentd[Fluentd / Logstash (Contenedor B)]
-    end
-    
-    Fluentd -->|Streaming Asíncrono HTTP| Cloud(ElasticSearch / Datadog)
+subgraph sub_1 ["Tarea Docker / Pod Kubernetes"]
+Legacy["App Legacy (Contenedor A)"] -->|Escribe logs.txt| Volume["(Volumen Compartido)"]
+Volume -->|Lee logs.txt| Fluentd["Fluentd / Logstash (Contenedor B)"]
+end
+Fluentd -->|Streaming Asíncrono HTTP| Cloud(ElasticSearch / Datadog)
 ```
 
 En este patrón, el contenedor Legacy no tiene idea de que está siendo monitoreado. El contenedor Fluentd (el Sidecar) captura el archivo, lo transforma y lo envía a la nube. Hemos modernizado la observabilidad sin tocar una sola línea de código fuente antiguo.
@@ -81,10 +80,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

@@ -10,14 +10,12 @@ Zustand y Redux son perfectos para UI (Si un panel está abierto, el tema actual
 
 ```mermaid
 flowchart TD
-    React[Componente UI] -->|Pide Datos posts| QueryClient[React Query Cache]
-    QueryClient -->|Verifica Caché| CacheHit{Datos Frescos}
-    
-    CacheHit -->|"Sí (Stale Time no caducado)"| React
-    CacheHit -->|"No (Stale / Vacío)"| API[Backend API]
-    
-    API -->|Respuesta HTTP| QueryClient
-    QueryClient -->|Guarda en Caché y Notifica| React
+React["Componente UI"] -->|Pide Datos posts| QueryClient["React Query Cache"]
+QueryClient -->|Verifica Caché| CacheHit{Datos Frescos}
+CacheHit -->|"Sí (Stale Time no caducado)"| React
+CacheHit -->|"No (Stale / Vacío)"| API["Backend API"]
+API -->|Respuesta HTTP| QueryClient
+QueryClient -->|Guarda en Caché y Notifica| React
 ```
 
 ## 2. Eliminando el useEffect para siempre
@@ -105,10 +103,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo React & Web Architecture"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

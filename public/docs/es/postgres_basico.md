@@ -8,16 +8,14 @@ Un error muy común entre desarrolladores que migran desde MySQL es usar la base
 
 ```mermaid
 flowchart LR
-    Instancia[Instancia PostgreSQL] --> DB1[(Base de Datos A)]
-    Instancia --> DB2[(Base de Datos B)]
-    
-    DB1 --> Public[Esquema public]
-    DB1 --> Auth[Esquema auth]
-    DB1 --> Sales[Esquema sales]
-    
-    Public --> T1(Tabla Users)
-    Auth --> T2(Tabla Roles)
-    Sales --> T3(Tabla Invoices)
+Instancia["Instancia PostgreSQL"] --> DB1["(Base de Datos A)"]
+Instancia --> DB2["(Base de Datos B)"]
+DB1 --> Public["Esquema public"]
+DB1 --> Auth["Esquema auth"]
+DB1 --> Sales["Esquema sales"]
+Public --> T1(Tabla Users)
+Auth --> T2(Tabla Roles)
+Sales --> T3(Tabla Invoices)
 ```
 
 Por defecto, todas las tablas se crean en el esquema `public`. **Buena Práctica:** Si estás construyendo una arquitectura monolítica o de microservicios con una sola BD, divide tus dominios de negocio usando esquemas.
@@ -108,10 +106,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

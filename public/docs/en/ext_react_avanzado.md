@@ -13,14 +13,13 @@ Atrás quedó el código repetitivo de Redux clásico (Actions, Reducers, Types)
 
 ```mermaid
 flowchart LR
-    subgraph sub_1 [Zustand Store]
-        Estado[(Estado Global)]
-        Acciones[Mutadores (Setters)]
-    end
-    
-    ComponenteA[Componente A (Lee Nombre)] -->|Selector Selectivo| Estado
-    ComponenteB[Componente B (Cambia Edad)] -->|Invoca| Acciones
-    Acciones -->|Muta de forma inmutable| Estado
+subgraph sub_1 ["Zustand Store"]
+Estado["(Estado Global)"]
+Acciones["Mutadores (Setters)"]
+end
+ComponenteA["Componente A (Lee Nombre)"] -->|Selector Selectivo| Estado
+ComponenteB["Componente B (Cambia Edad)"] -->|Invoca| Acciones
+Acciones -->|Muta de forma inmutable| Estado
 ```
 
 ## 2. Implementación de una Store en Zustand
@@ -104,10 +103,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo React & Web Architecture]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo React & Web Architecture"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

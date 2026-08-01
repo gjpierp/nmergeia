@@ -11,18 +11,15 @@ Se dice comúnmente que Node.js es "Single Threaded" (de un solo hilo). Esto es 
 
 ```mermaid
 flowchart TD
-    Cliente[Cliente HTTP] -->|Petición| MainThread[Main Thread (V8)]
-    MainThread -->|Es código JS puro| Ejecucion[Se ejecuta al instante]
-    MainThread -->|"Es lectura de Archivo/DB"| EventLoop[Event Loop]
-    
-    EventLoop -->|Delega| Libuv[libuv Thread Pool (C++)]
-    Libuv -->|Hilo 1| Disco[(Sistema de Archivos)]
-    Libuv -->|Hilo 2| DB[(Base de Datos)]
-    
-    Disco -->|Termina| CallbackQueue[Cola de Callbacks]
-    DB -->|Termina| CallbackQueue
-    
-    CallbackQueue -->|Devuelve al hilo principal| MainThread
+Cliente["Cliente HTTP"] -->|Petición| MainThread["Main Thread (V8)"]
+MainThread -->|Es código JS puro| Ejecucion["Se ejecuta al instante"]
+MainThread -->|"Es lectura de Archivo/DB"| EventLoop["Event Loop"]
+EventLoop -->|Delega| Libuv["libuv Thread Pool (C++)"]
+Libuv -->|Hilo 1| Disco["(Sistema de Archivos)"]
+Libuv -->|Hilo 2| DB["(Base de Datos)"]
+Disco -->|Termina| CallbackQueue["Cola de Callbacks"]
+DB -->|Termina| CallbackQueue
+CallbackQueue -->|Devuelve al hilo principal| MainThread
 ```
 
 ## 2. Bloqueando el Event Loop (El Pecado Capital)
@@ -65,10 +62,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Node.js Enterprise]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Node.js Enterprise"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

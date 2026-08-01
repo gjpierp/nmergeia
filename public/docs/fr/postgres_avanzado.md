@@ -39,14 +39,14 @@ El proceso `Autovacuum` es el encargado de limpiar esto.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> OperacionDML: UPDATE / DELETE
-    OperacionDML --> DeadTuples: Genera Filas Obsoletas
-    DeadTuples --> Threshold: Supera el límite de autovacuum_vacuum_scale_factor
-    Threshold -->|No| Espera
-    Threshold -->|Sí| AutovacuumWorker: Despierta Proceso
-    AutovacuumWorker --> FreeSpaceMap: Marca el espacio como reutilizable (FSM)
-    FreeSpaceMap --> VisibilityMap: Actualiza Mapa de Visibilidad
-    VisibilityMap --> [*]: Espacio listo para nuevos INSERTs
+[*] --> OperacionDML: UPDATE / DELETE
+OperacionDML --> DeadTuples: Genera Filas Obsoletas
+DeadTuples --> Threshold: Supera el límite de autovacuum_vacuum_scale_factor
+Threshold -->|No| Espera
+Threshold -->|Sí| AutovacuumWorker: Despierta Proceso
+AutovacuumWorker --> FreeSpaceMap: Marca el espacio como reutilizable (FSM)
+FreeSpaceMap --> VisibilityMap: Actualiza Mapa de Visibilidad
+VisibilityMap --> [*]: Espacio listo para nuevos INSERTs
 ```
 
 **Tuning Crítico para Tablas Grandes:**
@@ -71,10 +71,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

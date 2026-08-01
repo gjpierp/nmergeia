@@ -33,24 +33,21 @@ Para escalar lecturas o garantizar Alta Disponibilidad (HA), necesitas réplicas
 
 ```mermaid
 flowchart TD
-    subgraph primary_node [Master Node Primary]
-        P[PostgreSQL Primary]
-        WAL[WAL Logs]
-    end
-    
-    subgraph standby_node [Read Replicas Standby]
-        S1[Replica Física 1]
-        S2[Replica Física 2]
-    end
-    
-    subgraph analytics_node [Logical Replica Analytics]
-        L1[Data Warehouse / Redshift]
-    end
-
-    P -->|"WAL Streaming (Binario)"| WAL
-    WAL -->|"Replicacion Fisica asincrona"| S1
-    WAL -->|"Replicacion Fisica asincrona"| S2
-    P -->|"Decodificacion Logica (Pub-Sub)"| L1
+subgraph primary_node ["Master Node Primary"]
+P["PostgreSQL Primary"]
+WAL["WAL Logs"]
+end
+subgraph standby_node ["Read Replicas Standby"]
+S1["Replica Física 1"]
+S2["Replica Física 2"]
+end
+subgraph analytics_node ["Logical Replica Analytics"]
+L1["Data Warehouse / Redshift"]
+end
+P -->|"WAL Streaming (Binario)"| WAL
+WAL -->|"Replicacion Fisica asincrona"| S1
+WAL -->|"Replicacion Fisica asincrona"| S2
+P -->|"Decodificacion Logica (Pub-Sub)"| L1
 ```
 
 ### Replicación Física (Streaming Replication)
@@ -83,10 +80,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo PostgreSQL]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo PostgreSQL"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

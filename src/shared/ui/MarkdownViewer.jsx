@@ -45,6 +45,27 @@ const MermaidChart = ({ chart, theme }) => {
           // Normalizar 'graph' -> 'flowchart'
           str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
 
+          // Envolver etiquetas de subgraphs: subgraph sub_1 [Label (Info)] -> subgraph sub_1 ["Label (Info)"]
+          let subCount = 0;
+          str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
+            subCount++;
+            const subId = id ? id.trim() : `sub_${subCount}`;
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            return `subgraph ${subId} ["${cleanLabel}"]`;
+          });
+
+          // Envolver etiquetas de nodos: Node[Label / Info] -> Node["Label / Info"]
+          str = str.replace(/([a-zA-Z0-9_-]+)\[([^"\n][^\]]*?)\]/g, (match, id, label) => {
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            return `${id}["${cleanLabel}"]`;
+          });
+
+          // Envolver etiquetas de BD: Node[(Label)] -> Node[("Label")]
+          str = str.replace(/([a-zA-Z0-9_-]+)\[\((.*?)\)\]/g, (match, id, label) => {
+            const cleanLabel = label.replace(/"/g, "'").trim();
+            return `${id}[("${cleanLabel}")]`;
+          });
+
           return str;
         };
 

@@ -10,18 +10,17 @@ Para entender Docker, primero debemos entender qué problema resuelve frente a l
 
 ```mermaid
 flowchart TD
-    subgraph sub_1 [Máquina Virtual Tradicional]
-        HW1[Servidor Físico / Hardware] --> Hyper[Hypervisor (VMware / Hyper-V)]
-        Hyper --> VM1[VM 1: SO Invitado Completo + App A]
-        Hyper --> VM2[VM 2: SO Invitado Completo + App B]
-    end
-
-    subgraph sub_2 [Contenedores Docker]
-        HW2[Servidor Físico / Hardware] --> SO[Sistema Operativo Host]
-        SO --> Engine[Docker Engine]
-        Engine --> C1[Contenedor: Binarios/Librerías + App A]
-        Engine --> C2[Contenedor: Binarios/Librerías + App B]
-    end
+subgraph sub_1 ["Máquina Virtual Tradicional"]
+HW1["Servidor Físico / Hardware"] --> Hyper["Hypervisor (VMware / Hyper-V)"]
+Hyper --> VM1["VM 1: SO Invitado Completo + App A"]
+Hyper --> VM2["VM 2: SO Invitado Completo + App B"]
+end
+subgraph sub_2 ["Contenedores Docker"]
+HW2["Servidor Físico / Hardware"] --> SO["Sistema Operativo Host"]
+SO --> Engine["Docker Engine"]
+Engine --> C1["Contenedor: Binarios/Librerías + App A"]
+Engine --> C2["Contenedor: Binarios/Librerías + App B"]
+end
 ```
 
 **La diferencia fundamental:** Una Máquina Virtual virtualiza todo el *Hardware*, instalando un Sistema Operativo (SO) completo (que pesa gigabytes y toma minutos en arrancar). Docker virtualiza el *Sistema Operativo* utilizando namespaces y cgroups del kernel de Linux. Los contenedores comparten el mismo Kernel, lo que los hace pesar megabytes y arrancar en milisegundos.
@@ -71,10 +70,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Docker]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Docker"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)

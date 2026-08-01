@@ -8,14 +8,13 @@ Debes separar responsabilidades. La capa de rutas solo enruta, el controlador ex
 
 ```mermaid
 flowchart LR
-    Cliente[Cliente / React] -->|Petición HTTP| Routes[Rutas (Router)]
-    Routes -->|Delega| Controller[Controlador]
-    Controller -->|Extrae req.body| Service[Capa de Servicio]
-    Service -->|Consulta| DB[(Base de Datos)]
-    
-    DB --> Service
-    Service -->|Resultado Puro| Controller
-    Controller -->|"res.status(200)"| Cliente
+Cliente["Cliente / React"] -->|Petición HTTP| Routes["Rutas (Router)"]
+Routes -->|Delega| Controller["Controlador"]
+Controller -->|Extrae req.body| Service["Capa de Servicio"]
+Service -->|Consulta| DB["(Base de Datos)"]
+DB --> Service
+Service -->|Resultado Puro| Controller
+Controller -->|"res.status(200)"| Cliente
 ```
 
 ## 2. El Corazón de Express: Los Middlewares
@@ -86,10 +85,10 @@ Cuando se procesan diferencias de código y topologías de directorios complejas
 
 ```mermaid
 flowchart TD
-    A[Cliente NMerge IA / Browser Local] -->|Inspección Local-First| B[Motor Myers LCS & Worker]
-    B -->|Grafo de Atributos| C[Gobernanza Sentinel-NGAC]
-    C -->|Verificación de Políticas| D[Módulo Node.js Enterprise]
-    D -->|Fusión Semántica| E[Resultado Prístino de Código]
+A["Cliente NMerge IA / Browser Local"] -->|Inspección Local-First| B["Motor Myers LCS & Worker"]
+B -->|Grafo de Atributos| C["Gobernanza Sentinel-NGAC"]
+C -->|Verificación de Políticas| D["Módulo Node.js Enterprise"]
+D -->|Fusión Semántica| E["Resultado Prístino de Código"]
 ```
 
 ### 1.2 Invariantes de Seguridad y Principio de Cero Confianza (Zero-Trust)
