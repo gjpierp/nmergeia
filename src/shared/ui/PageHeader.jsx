@@ -1,4 +1,4 @@
-import logo from '../../assets/logo.png';
+import { Logo } from './Logo.jsx';
 
 export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction }) => {
   return (
@@ -13,8 +13,8 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction }) =>
       boxSizing: 'border-box'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px', textAlign: 'left' }}>
-        {/* Renderizamos siempre el logo de la aplicación para estandarizar */}
-        <img src={logo} alt="Logo" style={{ height: '40px' }} />
+        {/* Renderizamos el logo accesible e inquebrantable de NMerge IA */}
+        <Logo height="42px" alt="NMerge IA - StackUpIA Logo" />
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <h1 style={{

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
-import logo from '../../assets/logo.png';
+import { Logo } from '../../shared/ui/Logo.jsx';
 
 export const ContactPage = () => {
   const { setActiveTab, addToast } = useAppStore();
@@ -37,7 +37,7 @@ export const ContactPage = () => {
         {/* Header & Language Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <img src={logo} alt="NMerge IA Logo" style={{ height: '42px' }} />
+            <Logo height="42px" alt="NMerge IA - Logo de Contacto" />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
                 {lang === 'es' ? 'Contacto & Soporte Técnico' : 'Contact & Technical Support'}

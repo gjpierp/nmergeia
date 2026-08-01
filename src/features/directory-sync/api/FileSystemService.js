@@ -43,16 +43,20 @@ const IGNORED_PATHS = [
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
-export const verifyPermission = async (fileHandle) => {
+export const verifyPermission = async (fileHandle, userTriggered = false) => {
   try {
-    // Primero verificamos si ya tenemos permiso
-    if ((await fileHandle.queryPermission({ mode: 'readwrite' })) === 'granted') return true;
-    // No solicitamos permiso al usuario para evitar el cuadro de diálogo nativo
-    // Intentamos solicitar permiso de forma silenciosa (puede lanzar el mismo diálogo del navegador)
-    // pero evitamos mostrar nuestro propio mensaje.
-    if ((await fileHandle.requestPermission({ mode: 'readwrite' })) === 'granted') return true;
+    if (!fileHandle || typeof fileHandle.queryPermission !== 'function') return true;
+    // 1. Verificación silenciosa sin abrir diálogos ni popups del navegador
+    const current = await fileHandle.queryPermission({ mode: 'readwrite' });
+    if (current === 'granted') return true;
+
+    // 2. Solo solicitar permiso interactivo si fue detonado por un gesto directo de clic del usuario
+    if (userTriggered && typeof fileHandle.requestPermission === 'function') {
+      const requested = await fileHandle.requestPermission({ mode: 'readwrite' });
+      if (requested === 'granted') return true;
+    }
   } catch (e) {
-    console.warn("Permiso denegado o expirado el gesto del usuario:", e);
+    console.warn("Permiso denegado o no otorgado por el navegador:", e);
   }
   return false;
 };

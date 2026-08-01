@@ -23,23 +23,24 @@ describe('FileSystemService', () => {
         expect(mockHandle.requestPermission).not.toHaveBeenCalled();
     });
 
-    it('verifyPermission should return true if requestPermission grants', async () => {
+    it('verifyPermission should return true if requestPermission grants on userTriggered', async () => {
         const mockHandle = {
             queryPermission: vi.fn().mockResolvedValue('prompt'),
             requestPermission: vi.fn().mockResolvedValue('granted')
         };
-        const result = await FileSystemService.verifyPermission(mockHandle);
+        const result = await FileSystemService.verifyPermission(mockHandle, true);
         expect(result).toBe(true);
         expect(mockHandle.requestPermission).toHaveBeenCalledWith({ mode: 'readwrite' });
     });
 
-    it('verifyPermission should return false if both deny', async () => {
+    it('verifyPermission should return false if queryPermission is prompt and userTriggered is false (silent mode)', async () => {
         const mockHandle = {
-            queryPermission: vi.fn().mockResolvedValue('denied'),
-            requestPermission: vi.fn().mockResolvedValue('denied')
+            queryPermission: vi.fn().mockResolvedValue('prompt'),
+            requestPermission: vi.fn()
         };
-        const result = await FileSystemService.verifyPermission(mockHandle);
+        const result = await FileSystemService.verifyPermission(mockHandle, false);
         expect(result).toBe(false);
+        expect(mockHandle.requestPermission).not.toHaveBeenCalled();
     });
 
     it('getFilesFromHandle should process a file list properly', async () => {

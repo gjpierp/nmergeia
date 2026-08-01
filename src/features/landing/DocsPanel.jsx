@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
-import logo from '../../assets/logo.png';
+import { Logo } from '../../shared/ui/Logo.jsx';
 import { AppAdInjectedContent } from '../../app/core/components/AppAdInjectedContent.jsx';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 

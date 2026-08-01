@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
-import logo from '../../assets/logo.png';
+import { Logo } from '../../shared/ui/Logo.jsx';
 
 export const TermsPage = () => {
   const { setActiveTab } = useAppStore();
@@ -25,7 +25,7 @@ export const TermsPage = () => {
         {/* Header & Language Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <img src={logo} alt="Logo" style={{ height: '40px' }} />
+            <Logo height="40px" alt="NMerge IA - Logo de Términos y Condiciones" />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
                 {lang === 'es' ? 'Términos y Condiciones de Uso' : 'Terms and Conditions of Service'}

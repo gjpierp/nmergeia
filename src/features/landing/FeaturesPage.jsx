@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/logo.png';
+import { Logo } from '../../shared/ui/Logo.jsx';
 
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 

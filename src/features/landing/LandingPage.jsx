@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/logo.png';
+import { Logo } from '../../shared/ui/Logo.jsx';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -53,7 +53,7 @@ export const LandingPage = () => {
       {/* Hero Section */}
       <div style={{ maxWidth: '800px', margin: '0 auto 50px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ marginBottom: '20px' }}>
-          <img src={logo} alt="StackUpIA Logo" style={{ height: '95px', filter: 'drop-shadow(0 4px 20px rgba(16, 185, 129, 0.15))' }} />
+          <Logo height="95px" alt="NMerge IA - StackUpIA Logo Principal" />
         </div>
         
         <div style={{
