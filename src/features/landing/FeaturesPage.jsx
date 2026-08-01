@@ -2,8 +2,8 @@ import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
-
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const FeaturesPage = () => {
   const { t } = useTranslation();
@@ -24,7 +24,8 @@ export const FeaturesPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
-        <PageHeader title="Funcionalidades Clave" />
+        <Breadcrumbs items={[{ label: 'Características Principales' }]} />
+        <PageHeader title="Funcionalidades Clave y Capacidades Técnicas" subtitle="Herramienta Profesional de Comparación NMerge IA para Desarrolladores y Equipos DevOps" />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '25px', marginBottom: '40px' }}>
           {/* Feature 1 */}

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { MarkdownViewer } from './MarkdownViewer.jsx';
 import { PageHeader } from './PageHeader.jsx';
+import { Breadcrumbs } from './Breadcrumbs.jsx';
 
 export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
   const [activeTab, setActiveTab] = useState('inicial');
@@ -35,6 +36,12 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
   const filename = `${topicId}_${activeTab}.md`;
   const currentTab = tabs.find(t => t.id === activeTab);
 
+  const breadcrumbsItems = [
+    { label: 'Biblioteca Técnica', tabId: 'docs' },
+    { label: translatedTitle, tabId: `temas/${topicId}` },
+    { label: `Nivel ${currentTab.label}` }
+  ];
+
   return (
     <div id="generic-topic-container" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
       <Helmet>
@@ -49,6 +56,7 @@ export const GenericTopicPage = ({ topicId, title, appLanguage }) => {
         top: 0,
         zIndex: 10
       }}>
+        <Breadcrumbs items={breadcrumbsItems} />
         <PageHeader 
           title={translatedTitle} 
           subtitle={`${translatedTitle} - Nivel ${currentTab.label}`} 

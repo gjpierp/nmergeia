@@ -18,7 +18,15 @@ export const useAppStore = create((set) => ({
   addToast: (message, type = 'success') => set((state) => ({ toasts: [...state.toasts, { id: Date.now() + Math.random(), message, type }] })),
   removeToast: (id) => set((state) => ({ toasts: state.toasts.filter(t => t.id !== id) })),
 
-  activeTab: import.meta.env.VITE_IS_DESKTOP === 'true' ? 'main' : 'landing',
+  activeTab: (() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const path = window.location.pathname.replace('/', '').toLowerCase();
+      const target = hash || path;
+      if (target && target !== 'index.html') return target;
+    }
+    return import.meta.env.VITE_IS_DESKTOP === 'true' ? 'main' : 'landing';
+  })(),
   setActiveTab: (val) => setVal(set, 'activeTab', val),
 
   appTheme: typeof window !== 'undefined'

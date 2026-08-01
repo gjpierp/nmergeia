@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { Logo } from '../../shared/ui/Logo.jsx';
 
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+
 export const PrivacyPage = () => {
   const { setActiveTab } = useAppStore();
   const [lang, setLang] = useState('es');
@@ -21,6 +23,7 @@ export const PrivacyPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+        <Breadcrumbs items={[{ label: 'Política de Privacidad' }]} />
         
         {/* Header & Language Selector */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>

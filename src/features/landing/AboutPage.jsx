@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { Logo } from '../../shared/ui/Logo.jsx';
 
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+
 export const AboutPage = () => {
   const { setActiveTab } = useAppStore();
   const [lang, setLang] = useState('es');
@@ -21,6 +23,7 @@ export const AboutPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+        <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)' }]} />
         
         {/* Header & Language Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
