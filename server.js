@@ -285,9 +285,10 @@ app.get(['/robots.txt', '/ads.txt', '/filtro.txt'], (req, res) => {
     return res.status(404).send(`${fileName} not found`);
 });
 
-// Serve webmanifest with explicit JSON MIME type for crawler compatibility
+// Serve webmanifest with explicit JSON MIME type and noindex for crawler compatibility
 app.get(['/manifest.webmanifest', '/site.webmanifest'], (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     const manifestDist = path.join(__dirname, 'dist', 'manifest.webmanifest');
     const manifestPublic = path.join(__dirname, 'public', 'manifest.webmanifest');
     if (fs.existsSync(manifestDist)) {
@@ -303,6 +304,7 @@ app.use(express.static(path.join(__dirname, 'dist'), {
     setHeaders: (res, filePath) => {
         if (filePath.endsWith('.webmanifest')) {
             res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+            res.setHeader('X-Robots-Tag', 'noindex, nofollow');
         }
     }
 }));
