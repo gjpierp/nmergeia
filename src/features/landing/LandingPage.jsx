@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -38,6 +39,9 @@ export const LandingPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto', textAlign: 'left', marginBottom: '15px' }}>
+        <Breadcrumbs items={[{ label: 'Inicio' }]} />
+      </div>
       <Helmet>
         <title>{t('app_title')} | Local-First Diff & AI Merge Tool</title>
         <meta name="description" content="StackUpIA es la herramienta número 1 para comparación de directorios y fusión semántica con IA. Local-First, segura, rápida y con soporte de traducción a 7 idiomas." />

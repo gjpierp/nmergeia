@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { PageHeader } from '../../shared/ui/PageHeader.jsx';
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 const faqData = {
   es: [
@@ -167,6 +166,7 @@ export const FaqPage = ({ appLanguage }) => {
       overflowY: 'auto'
     }}>
       {/* Header Estandarizado */}
+      <Breadcrumbs items={[{ label: lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'FAQ' }]} />
       <PageHeader 
         icon="help"
         title={lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'Frequently Asked Questions'}

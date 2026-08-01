@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppStore } from '../../app/useAppStore.js';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
+import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 
 export const PricingPage = () => {
   const { setActiveTab } = useAppStore();
@@ -19,7 +20,8 @@ export const PricingPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+        <Breadcrumbs items={[{ label: 'Planes y Precios' }]} />
         <PageHeader title="Planes y Precios" />
         <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '1rem', maxWidth: '600px', margin: '0 auto 40px auto' }}>
           Elige el plan ideal para optimizar tu flujo de trabajo. Todas las comparaciones se ejecutan 100% de forma local en tu máquina.
