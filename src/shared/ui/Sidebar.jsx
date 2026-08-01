@@ -67,7 +67,8 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
       {
         id: 119, code: 'SUB_TEMAS_BD', label: 'Base de Datos & Optimización', icon: 'storage', node_type: 'CONTAINER',
         children: [
-          { id: 120, code: 'MNU_TEMA_01', label: 'PostgreSQL', path: '/temas/tema-postgres', icon: 'speed', node_type: 'OBJECT' }
+          { id: 120, code: 'MNU_TEMA_01', label: 'PostgreSQL', path: '/temas/tema-postgres', icon: 'speed', node_type: 'OBJECT' },
+          { id: 121, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Enterprise', path: '/temas/tema-oracle', icon: 'storage', node_type: 'OBJECT' }
         ]
       },
       {
@@ -79,7 +80,8 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
       {
         id: 400, code: 'SUB_EXT_FRONT', label: 'Frontend Moderno', icon: 'web', node_type: 'CONTAINER',
         children: [
-          { id: 401, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', node_type: 'OBJECT' }
+          { id: 401, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', node_type: 'OBJECT' },
+          { id: 408, code: 'MNU_EXT_VUE', label: 'Vue.js Ecosystem', path: '/temas/ext-vue', icon: 'code', node_type: 'OBJECT' }
         ]
       },
       {

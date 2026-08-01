@@ -24,12 +24,14 @@ export const MENU_TREE = [
     id: 120, code: 'CAT_NMERGEIA_GUIAS', label: 'Biblioteca Técnica & Especialidades', icon: 'school',
     children: [
       { id: 121, code: 'MNU_POSTGRES_GUIDE', label: 'PostgreSQL (Guía Completa & Niveles)', path: '/temas/postgres', icon: 'storage', priority: '0.8', changefreq: 'weekly' },
+      { id: 122, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Database Enterprise', path: '/temas/oracle', icon: 'database', priority: '0.8', changefreq: 'weekly' },
       { id: 130, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores (Guía Completa & Niveles)', path: '/temas/docker', icon: 'cloud', priority: '0.8', changefreq: 'weekly' },
       { id: 140, code: 'MNU_NGAC_GUIDE', label: 'Control de Acceso NGAC (Guía Completa & Niveles)', path: '/temas/ngac', icon: 'security', priority: '0.8', changefreq: 'weekly' },
       { id: 151, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', priority: '0.7', changefreq: 'monthly' },
-      { id: 152, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', priority: '0.7', changefreq: 'monthly' },
-      { id: 153, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', priority: '0.7', changefreq: 'monthly' },
-      { id: 154, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', priority: '0.7', changefreq: 'monthly' }
+      { id: 152, code: 'MNU_EXT_VUE', label: 'Vue.js Ecosystem', path: '/temas/ext-vue', icon: 'code', priority: '0.7', changefreq: 'monthly' },
+      { id: 153, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', priority: '0.7', changefreq: 'monthly' },
+      { id: 154, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', priority: '0.7', changefreq: 'monthly' },
+      { id: 155, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', priority: '0.7', changefreq: 'monthly' }
     ]
   },
   {
