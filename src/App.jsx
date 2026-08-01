@@ -235,6 +235,11 @@ const tabToMenuCode = {
 };
 
 const NgacGuard = ({ tab, children }) => {
+  // En desarrollo o entorno local, deshabilitar lista blanca y restricciones de Sentinel
+  if (import.meta.env.DEV || process.env.NODE_ENV !== 'production') {
+    return children;
+  }
+
   const allowedMenus = useAppStore(s => s.allowedMenus);
   
   // En la aplicación ejecutable desktop, permitir siempre las funciones core del comparador

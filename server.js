@@ -14,12 +14,14 @@ app.use(cors());
 app.use(express.json());
 
 import rateLimit from 'express-rate-limit';
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Límite de 100 peticiones por IP
-  message: 'Demasiadas peticiones desde esta IP, por favor inténtalo de nuevo después de 15 minutos'
-});
-app.use('/api/', limiter);
+if (process.env.NODE_ENV === 'production') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Límite de 100 peticiones por IP
+    message: 'Demasiadas peticiones desde esta IP, por favor inténtalo de nuevo después de 15 minutos'
+  });
+  app.use('/api/', limiter);
+}
 
 // Zod schemas (inline para evitar errores de import dinámico si no está compilado)
 import { z } from 'zod';
