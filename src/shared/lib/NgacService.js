@@ -469,12 +469,7 @@ export const NgacService = {
       }).catch(() => {});
 
       const topics = [
-        'Postgres', 'Oracle', 'Mongo', 'Redis', 'SqlServer', 'Docker', 'Git', 'Terraform', 'Kubernetes', 'Cloud', 'Arquitectura', 'Requerimientos', 'CleanCode', 'Patrones', 'Qa', 'Devsecops', 'Auth', 'Cripto', 'Owasp', 'Ia', 'Ml', 'Nlp', 'Bi', 'Dwh',
-        'ExtReact', 'ExtVue', 'ExtAngular', 'ExtSvelte', 'ExtWasm',
-        'ExtNode', 'ExtSpring', 'ExtDjango', 'ExtFastapi', 'ExtGraphql',
-        'ExtAws', 'ExtAzure', 'ExtGcp', 'ExtCicd', 'ExtObs',
-        'ExtPentest', 'ExtMalware', 'ExtCripto', 'ExtHarden', 'ExtZerot',
-        'ExtPrompt', 'ExtFinetune', 'ExtDatalake', 'ExtKafka', 'ExtSpark'
+        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest'
       ];
       const allOptions = ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', 'Terminal', 'AdSenseAdmin', ...topics];
       for (const opt of allOptions) {
@@ -502,7 +497,7 @@ export const NgacService = {
       }
 
       const topicsGuest = [
-        'Postgres', 'Docker', 'Git', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest'
+        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest'
       ];
       const guestOptions = ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', ...topicsGuest];
       for (const opt of guestOptions) {
