@@ -29,7 +29,7 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
 
   const translatedTitle = topicToMenuKey[topicId] ? t(topicToMenuKey[topicId], { defaultValue: title }) : title;
 
-  // Pestañas dinámicas según el tema
+  // Pestañas estandarizadas estrictas de 6 Niveles para todas las Guías Multinivel
   let tabs = [];
   if (!singleFile) {
     tabs = [
@@ -40,16 +40,6 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
       { id: 'experto', label: t('TAB_EXPERTO', 'Experto') },
       { id: 'optimizaciones', label: t('TAB_OPTIMIZACIONES', '🔥 Optimizaciones') }
     ];
-
-    if (topicId === 'datascience') {
-      tabs.push(
-        { id: 'pyspark', label: '⚡ PySpark & Big Data' },
-        { id: 'kafka', label: '📨 Apache Kafka' },
-        { id: 'deltalake', label: '🏔️ Delta Lake' },
-        { id: 'mlops', label: '🤖 MLOps & GPU' },
-        { id: 'polars', label: '🚀 Polars Rust' }
-      );
-    }
   }
 
   const currentTab = tabs.find(t => t.id === activeTab) || (tabs.length > 0 ? tabs[0] : { id: 'default', label: 'Guía Completa' });
@@ -85,7 +75,7 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
           subtitle={`${translatedTitle} - Guía Técnica Profesional ${!singleFile ? `(Nivel ${currentTab.label})` : ''}`} 
         />
 
-        {!singleFile && (
+        {!singleFile && tabs.length > 0 && (
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '0.6rem' }}>
             {tabs.map(tab => (
               <button
