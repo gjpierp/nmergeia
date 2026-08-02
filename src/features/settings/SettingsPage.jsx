@@ -18,7 +18,14 @@ export const SettingsPage = () => {
   const [ignoreCase, setIgnoreCase] = useState(() => localStorage.getItem('nmerge_cfg_ignore_case') === 'true');
   const [maxFileSize, setMaxFileSize] = useState(() => localStorage.getItem('nmerge_cfg_max_filesize') || '10');
   const [workerCount, setWorkerCount] = useState(() => localStorage.getItem('nmerge_cfg_workers') || '4');
-  const [sentinelUrl, setSentinelUrl] = useState(() => localStorage.getItem('nmerge_sentinel_url') || 'http://localhost:3005');
+  const [sentinelUrl, setSentinelUrl] = useState(() => {
+    const saved = localStorage.getItem('nmerge_sentinel_url');
+    if (saved && (saved.includes('localhost') || saved.includes('3005'))) {
+      localStorage.removeItem('nmerge_sentinel_url');
+      return '/api';
+    }
+    return saved || '/api';
+  });
 
   const darkThemes = [
     { id: 'cyber', name: 'Cyber Neon (Oscuro)', icon: 'palette', color: '#06b6d4', desc: 'Fondo negro azabache con cian y esmeralda eléctrico' },

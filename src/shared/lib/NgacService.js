@@ -6,12 +6,16 @@
 
 const DEFAULT_NGAC_URL = '/api';
 
-// Obtiene la URL base configurada o por defecto
+// Obtiene la URL base configurada o por defecto (siempre relativa /api para prevenir popups de red local)
 const getNgacUrl = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('nmergeia_ngac_url') || DEFAULT_NGAC_URL;
+    const saved = localStorage.getItem('nmergeia_ngac_url');
+    if (saved && (saved.includes('localhost') || saved.includes('3005') || saved.includes('sentinel'))) {
+      localStorage.removeItem('nmergeia_ngac_url');
+    }
+    return DEFAULT_NGAC_URL;
   }
-  return process.env.NGAC_URL || 'http://sentinel-ngac-backend:3005/api';
+  return DEFAULT_NGAC_URL;
 };
 
 // Decodifica carga útil de JWT de forma simple en frontend

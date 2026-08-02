@@ -31,7 +31,7 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/, /^\/ads\.txt$/, /^\/manifest\.webmanifest$/]
       },
       devOptions: {
-        enabled: true
+        enabled: false // Desactivado en desarrollo para prevenir popups de permisos en el navegador
       },
       manifest: {
         name: 'NMerge IA',
@@ -72,20 +72,20 @@ export default defineConfig({
     }
   },
   server: {
-    host: true,
+    host: '127.0.0.1',
     port: 3001,
     strictPort: true,
     allowedHosts: true,
+    headers: {
+      'Access-Control-Allow-Private-Network': 'true'
+    },
     watch: {
       usePolling: true,
       interval: 100
     },
-    hmr: {
-      clientPort: 443
-    },
     proxy: {
       '/api': {
-        target: 'http://sentinel-ngac-backend:3005',
+        target: 'http://127.0.0.1:3005',
         changeOrigin: true
       }
     }
