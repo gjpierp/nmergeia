@@ -65,6 +65,12 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
     id: 118, code: 'CAT_NMERGEIA_N4_TEMAS', label: 'Biblioteca Técnica', icon: 'school', node_type: 'CONTAINER',
     children: [
       {
+        id: 1180, code: 'SUB_TEMAS_DATASCIENCE', label: 'Data Science & AI Engineering', icon: 'analytics', node_type: 'CONTAINER',
+        children: [
+          { id: 1181, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI', path: '/temas/datascience', icon: 'analytics', node_type: 'OBJECT' }
+        ]
+      },
+      {
         id: 119, code: 'SUB_TEMAS_BD', label: 'Base de Datos & Optimización', icon: 'storage', node_type: 'CONTAINER',
         children: [
           { id: 120, code: 'MNU_TEMA_01', label: 'PostgreSQL', path: '/temas/tema-postgres', icon: 'speed', node_type: 'OBJECT' },
