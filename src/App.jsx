@@ -547,69 +547,89 @@ function App() {
     if (activeTab === 'tema-04-iac-terraform') return <Tema04IacTerraformPage appLanguage={appLanguage} />;
     if (activeTab === 'auth-avanzado' || activeTab === 'tema-05-rbac-abac-ngac') return <Tema05RbacAbacNgacPage appLanguage={appLanguage} />;
     if (activeTab === 'auth-experto' || activeTab === 'tema-06-ngac-menus') return <Tema06NgacMenusPage appLanguage={appLanguage} />;
-    if (activeTab === 'cripto-avanzado' || activeTab === 'tema-07-rls-gobernanza') return <Tema07RlsGobernanzaPage appLanguage={appLanguage} />;
-    if (activeTab === 'devsecops-avanzado' || activeTab === 'tema-08-devsecops-vault') return <Tema08DevsecopsVaultPage appLanguage={appLanguage} />;
+    // 🧠 Data Science & AI Engineering
+    if (activeTab === 'datascience' || activeTab.startsWith('datascience-')) {
+      const sub = activeTab.replace('datascience-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones', 'pyspark', 'kafka', 'deltalake', 'mlops', 'polars'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience" title="Data Science & AI Engineering" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'dwh-avanzado' || activeTab === 'tema-10-etl-saga') return <Tema10EtlSagaPage appLanguage={appLanguage} />;
-    if (activeTab === 'arq-avanzado' || activeTab === 'tema-11-saas-multitenant') return <Tema11SaasMultitenantPage appLanguage={appLanguage} />;
-    if (activeTab === 'arq-experto' || activeTab === 'tema-12-resiliencia-backend') return <Tema12ResilienciaBackendPage appLanguage={appLanguage} />;
-    if (activeTab === 'ia-avanzado' || activeTab === 'tema-13-llm-rag') return <Tema13LlmRagPage appLanguage={appLanguage} />;
-    if (activeTab === 'ia-experto' || activeTab === 'tema-14-ai-agents') return <Tema14AiAgentsPage appLanguage={appLanguage} />;
-    if (activeTab === 'cleancode-avanzado' || activeTab === 'tema-15-arquitecturas-limpias') return <Tema15ArquitecturasPage appLanguage={appLanguage} />;
-    if (activeTab === 'req-avanzado' || activeTab === 'tema-16-ingenieria-requerimientos') return <Tema16RequerimientosPage appLanguage={appLanguage} />;
-    if (activeTab === 'kubernetes-avanzado' || activeTab === 'tema-17-kubernetes') return <Tema17KubernetesPage appLanguage={appLanguage} />;
-    if (activeTab === 'cloud-avanzado' || activeTab === 'tema-18-cloud-native') return <Tema18CloudNativePage appLanguage={appLanguage} />;
+    // 🐘 Base de Datos & Optimización
+    if (activeTab === 'postgres' || activeTab.startsWith('postgres-') || activeTab === 'tema-postgres') {
+      const sub = activeTab.replace('postgres-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="postgres" title="PostgreSQL Enterprise" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'ext-react') return <GenericTopicPage topicId="ext_react" title="React Avanzado" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-vue') return <GenericTopicPage topicId="ext_vue" title="Vue.js Master" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-angular') return <GenericTopicPage topicId="ext_angular" title="Angular Core" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-svelte') return <GenericTopicPage topicId="ext_svelte" title="SvelteKit" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-wasm') return <GenericTopicPage topicId="ext_wasm" title="WebAssembly" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-node') return <GenericTopicPage topicId="ext_node" title="Node.js Avanzado" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-spring') return <GenericTopicPage topicId="ext_spring" title="Spring Boot" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-django') return <GenericTopicPage topicId="ext_django" title="Django Rest" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-fastapi') return <GenericTopicPage topicId="ext_fastapi" title="FastAPI" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-graphql') return <GenericTopicPage topicId="ext_graphql" title="GraphQL & gRPC" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-aws') return <GenericTopicPage topicId="ext_aws" title="AWS Serverless" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-azure') return <GenericTopicPage topicId="ext_azure" title="Azure DevOps" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-gcp') return <GenericTopicPage topicId="ext_gcp" title="GCP Anthos" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-cicd') return <GenericTopicPage topicId="ext_cicd" title="CI/CD Avanzado" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-obs') return <GenericTopicPage topicId="ext_obs" title="Observabilidad" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-pentest') return <GenericTopicPage topicId="ext_pentest" title="Pentesting Web" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-malware') return <GenericTopicPage topicId="ext_malware" title="Análisis Malware" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-cripto') return <GenericTopicPage topicId="ext_cripto" title="Criptografía" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-harden') return <GenericTopicPage topicId="ext_harden" title="Hardening Linux" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-zerot') return <GenericTopicPage topicId="ext_zerot" title="Zero Trust" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-prompt') return <GenericTopicPage topicId="ext_prompt" title="Prompt Engineering" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-finetune') return <GenericTopicPage topicId="ext_finetune" title="Fine-Tuning LLM" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-datalake') return <GenericTopicPage topicId="ext_datalake" title="Data Lakes" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-kafka') return <GenericTopicPage topicId="ext_kafka" title="Apache Kafka" appLanguage={appLanguage} />;
-    if (activeTab === 'ext-spark') return <GenericTopicPage topicId="ext_spark" title="Apache Spark" appLanguage={appLanguage} />;
+    if (activeTab === 'oracle' || activeTab.startsWith('oracle-') || activeTab === 'tema-oracle') {
+      const sub = activeTab.replace('oracle-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'maestro'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="oracle" title="Oracle Database Enterprise" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'git-inicial') return <div style={{ padding: '2rem' }}><h2>Git Inicial</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'git-basico') return <div style={{ padding: '2rem' }}><h2>Git Básico</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'git-medio') return <div style={{ padding: '2rem' }}><h2>Git Medio</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'git-experto') return <div style={{ padding: '2rem' }}><h2>Git Experto</h2><p>Nivel en construcción.</p></div>;
+    // 🐳 Contenedores e Infraestructura
+    if (activeTab === 'docker' || activeTab.startsWith('docker-')) {
+      const sub = activeTab.replace('docker-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="docker" title="Docker & Contenedores" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'terraform-inicial') return <div style={{ padding: '2rem' }}><h2>Terraform Inicial</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'terraform-basico') return <div style={{ padding: '2rem' }}><h2>Terraform Básico</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'terraform-medio') return <div style={{ padding: '2rem' }}><h2>Terraform Medio</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'terraform-experto') return <div style={{ padding: '2rem' }}><h2>Terraform Experto</h2><p>Nivel en construcción.</p></div>;
+    // 🛡️ Ciberseguridad & Gobernanza NGAC
+    if (activeTab === 'ngac' || activeTab.startsWith('ngac-')) {
+      const sub = activeTab.replace('ngac-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'maestro'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ngac" title="Gobernanza Sentinel-NGAC" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'arq-inicial') return <div style={{ padding: '2rem' }}><h2>Arquitectura Inicial</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'arq-basico') return <Tema10EtlSagaPage appLanguage={appLanguage} />;
-    if (activeTab === 'arq-medio') return <Tema11SaasMultitenantPage appLanguage={appLanguage} />;
-    if (activeTab === 'arq-experto') return <Tema12ResilienciaBackendPage appLanguage={appLanguage} />;
+    // ⚛️ Frontend & Backend Ecosystem
+    if (activeTab === 'ext-react' || activeTab.startsWith('ext-react-')) {
+      const sub = activeTab.replace('ext-react-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ext_react" title="React.js Avanzado & Profiling" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'ia-inicial') return <div style={{ padding: '2rem' }}><h2>IA Inicial</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'ia-basico') return <div style={{ padding: '2rem' }}><h2>IA Básica</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'ia-medio') return <Tema13LlmRagPage appLanguage={appLanguage} />;
-    if (activeTab === 'ia-experto') return <Tema14AiAgentsPage appLanguage={appLanguage} />;
+    if (activeTab === 'ext-vue' || activeTab.startsWith('ext-vue-')) {
+      const sub = activeTab.replace('ext-vue-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ext_vue" title="Vue.js Ecosystem & Pinia" initialLevel={level} appLanguage={appLanguage} />;
+    }
 
-    if (activeTab === 'req-inicial') return <div style={{ padding: '2rem' }}><h2>Requerimientos Inicial</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'req-basico') return <div style={{ padding: '2rem' }}><h2>Requerimientos Básico</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'req-medio') return <div style={{ padding: '2rem' }}><h2>Requerimientos Medio</h2><p>Nivel en construcción.</p></div>;
-    if (activeTab === 'req-experto') return <div style={{ padding: '2rem' }}><h2>Requerimientos Experto</h2><p>Nivel en construcción.</p></div>;
+    if (activeTab === 'ext-node' || activeTab.startsWith('ext-node-')) {
+      const sub = activeTab.replace('ext-node-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ext_node" title="Node.js Enterprise Architecture" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'ext-aws' || activeTab.startsWith('ext-aws-')) {
+      const sub = activeTab.replace('ext-aws-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ext_aws" title="AWS Serverless & Lambda" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'ext-pentest' || activeTab.startsWith('ext-pentest-')) {
+      const sub = activeTab.replace('ext-pentest-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="ext_pentest" title="Pentesting Web & OWASP Top 10" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    // 🏗️ Temas Específicos Integrados a la Cáscara Unificada de la Biblioteca
+    if (activeTab === 'tema-02-docker-multistage') return <GenericTopicPage topicId="docker" title="Docker Multi-stage Builds" singleFile="docker_medio.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-03-git-avanzado' || activeTab === 'git-avanzado') return <GenericTopicPage topicId="ext_node" title="Git Avanzado & Rebase" singleFile="tema_03_git_avanzado.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-04-iac-terraform' || activeTab === 'terraform-avanzado') return <GenericTopicPage topicId="ext_aws" title="Infrastructure as Code (Terraform)" singleFile="tema_04_iac_terraform.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-05-rbac-abac-ngac' || activeTab === 'auth-avanzado') return <GenericTopicPage topicId="ngac" title="Control de Acceso RBAC / ABAC / NGAC" singleFile="tema_05_rbac_abac_ngac.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-06-ngac-menus' || activeTab === 'auth-experto') return <GenericTopicPage topicId="ngac" title="Menús Dinámicos Sentinel-NGAC" singleFile="tema_06_ngac_menus.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-07-rls-gobernanza' || activeTab === 'cripto-avanzado') return <GenericTopicPage topicId="postgres" title="Row-Level Security (RLS) & Gobernanza" singleFile="tema_07_rls_gobernanza.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-08-devsecops-vault' || activeTab === 'devsecops-avanzado') return <GenericTopicPage topicId="ngac" title="DevSecOps & HashiCorp Vault" singleFile="tema_08_devsecops_vault.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-09-migracion-db') return <GenericTopicPage topicId="postgres" title="Migraciones de Base de Datos (Liquibase/Flyway)" singleFile="tema_09_migracion_db.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-10-etl-saga' || activeTab === 'dwh-avanzado') return <GenericTopicPage topicId="ext_node" title="Patrón Saga & Distributed ETL" singleFile="tema_10_etl_saga.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-11-saas-multitenant' || activeTab === 'arq-avanzado') return <GenericTopicPage topicId="ext_node" title="Arquitecturas SaaS Multi-Tenant" singleFile="tema_11_saas_multitenant.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-12-resiliencia-backend' || activeTab === 'arq-experto') return <GenericTopicPage topicId="ext_node" title="Resiliencia Backend & Circuit Breakers" singleFile="tema_12_resiliencia_backend.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-13-llm-rag' || activeTab === 'ia-avanzado') return <GenericTopicPage topicId="datascience" title="Arquitecturas LLM & RAG Vectorial" singleFile="tema_13_llm_rag.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-14-ai-agents' || activeTab === 'ia-experto') return <GenericTopicPage topicId="datascience" title="Agentes Autónomos de IA" singleFile="tema_14_ai_agents.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-15-arquitecturas-software' || activeTab === 'cleancode-avanzado') return <GenericTopicPage topicId="ext_node" title="Arquitecturas Limpias & Hexagonal" singleFile="tema_15_arquitecturas_software.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-16-toma-requerimientos' || activeTab === 'req-avanzado') return <GenericTopicPage topicId="ext_node" title="DDD & Toma de Requerimientos" singleFile="tema_16_toma_requerimientos.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-17-kubernetes' || activeTab === 'kubernetes-avanzado') return <GenericTopicPage topicId="docker" title="Kubernetes & Orquestación" singleFile="tema_17_kubernetes_orquestacion.md" appLanguage={appLanguage} />;
+    if (activeTab === 'tema-18-cloud-native' || activeTab === 'cloud-avanzado') return <GenericTopicPage topicId="docker" title="Cloud Native & SRE Resiliencia" singleFile="tema_18_cloud_native_sre.md" appLanguage={appLanguage} />;
 
     if (activeTab === 'main') {
       return (
