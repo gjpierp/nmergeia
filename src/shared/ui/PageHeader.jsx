@@ -100,13 +100,13 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <h1 style={{
-              fontSize: '1.9rem',
+              fontSize: '2.25rem',
               fontWeight: '800',
               lineHeight: '1.2',
               margin: 0,
               letterSpacing: '-0.02em',
               color: 'var(--text-primary)',
-              fontFamily: '"Outfit", sans-serif'
+              fontFamily: 'var(--font-main, "Outfit", sans-serif)'
             }}>
               {title}
             </h1>

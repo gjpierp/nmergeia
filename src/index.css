@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 :root {
+  --font-main: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -8,15 +13,12 @@
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -24,10 +26,6 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,68 +39,165 @@
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 }
 
-body {
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-main);
+  text-align: left;
+  background-color: var(--bg-primary, #05070d);
+  color: var(--text-primary, #f8fafc);
 }
 
 #root {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  max-width: none;
   margin: 0;
   padding: 0;
-  text-align: center;
+  text-align: left;
+  font-family: var(--font-main);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ==========================================================================
+   ESTRUCTURA JERÁRQUICA DE TITULOS (ESTRICTA & ALINEADA A LA IZQUIERDA)
+   h1 > h2 > h3 > h4 > h5 > h6
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-main);
+  text-align: left;
+  margin-top: 0;
+  color: var(--text-primary, #f8fafc);
+  letter-spacing: -0.015em;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
 }
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 1.65rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.85rem !important;
+  border-bottom: 1px solid var(--border-light, rgba(255, 255, 255, 0.1)) !important;
+  padding-bottom: 0.4rem !important;
 }
+
+h3 {
+  font-size: 1.35rem !important;
+  font-weight: 650 !important;
+  line-height: 1.35 !important;
+  margin-top: 1.4rem !important;
+  margin-bottom: 0.6rem !important;
+}
+
+h4 {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  margin-top: 1.2rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+h5 {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.4rem !important;
+}
+
+h6 {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  margin-top: 0.8rem !important;
+  margin-bottom: 0.3rem !important;
+}
+
+p, li, span, label, input, button, textarea, select {
+  font-family: var(--font-main);
+  text-align: left;
+}
+
 p {
-  margin: 0;
+  line-height: 1.6;
+  margin-bottom: 1rem;
 }
 
+/* ==========================================================================
+   DIAGRAMAS MERMAID CENTRALIZADOS
+   ========================================================================== */
+
+.mermaid-svg-wrapper,
+.mermaid,
+svg.mermaid-svg {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 1.75rem auto !important;
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.mermaid-svg-wrapper svg,
+.mermaid svg {
+  margin: 0 auto !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   CÓDIGOS DE EJEMPLO ALINEADOS A LA IZQUIERDA E INDENTADOS (JETBRAINS MONO)
+   ========================================================================== */
+
+pre,
 code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+pre code,
+.hljs {
+  font-family: var(--font-mono) !important;
+  text-align: left !important;
+  direction: ltr !important;
+  white-space: pre !important;
+  word-spacing: normal !important;
+  word-break: normal !important;
+  tab-size: 2 !important;
+  -moz-tab-size: 2 !important;
+  hyphens: none !important;
+  line-height: 1.5 !important;
+  font-size: 0.88rem !important;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+pre {
+  background: var(--bg-primary, #05070d) !important;
+  border: 1px solid var(--border-color, #1e293b) !important;
+  border-radius: 8px !important;
+  padding: 1.25rem !important;
+  margin: 1.25rem 0 !important;
+  overflow-x: auto !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+:not(pre) > code {
+  background: var(--badge-bg, rgba(6, 182, 212, 0.15)) !important;
+  color: var(--accent-secondary, #10b981) !important;
+  padding: 0.2rem 0.45rem !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--border-light, rgba(6, 182, 212, 0.2)) !important;
+  font-size: 0.86rem !important;
 }
