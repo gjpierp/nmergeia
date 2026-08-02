@@ -165,15 +165,29 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-// Obtener mensajes de contacto guardados localmente
+// Obtener mensajes de contacto guardados localmente con soporte de Paginación Escalable (1MM+ registros)
 app.get('/api/contact/messages', (req, res) => {
     try {
+        const page = Math.max(1, parseInt(req.query.page || '1', 10));
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit || '20', 10)));
         const contactsFile = path.join(configsDir, 'contacts.json');
+        
         let contacts = [];
         if (fs.existsSync(contactsFile)) {
-            contacts = JSON.parse(fs.readFileSync(contactsFile, 'utf8'));
+            try { contacts = JSON.parse(fs.readFileSync(contactsFile, 'utf8')); } catch (_) { contacts = []; }
         }
-        res.json(contacts);
+
+        const total = contacts.length;
+        const startIndex = (page - 1) * limit;
+        const paginatedItems = contacts.slice(startIndex, startIndex + limit);
+
+        res.json({
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit) || 1,
+            items: paginatedItems
+        });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

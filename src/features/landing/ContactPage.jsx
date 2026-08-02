@@ -17,12 +17,15 @@ export const ContactPage = () => {
   const [messagesList, setMessagesList] = useState([]);
   const [showAdminTickets, setShowAdminTickets] = useState(false);
 
-  const fetchMessages = async () => {
+  const [totalTickets, setTotalTickets] = useState(0);
+
+  const fetchMessages = async (page = 1) => {
     try {
-      const res = await fetch('/api/contact/messages');
+      const res = await fetch(`/api/contact/messages?page=${page}&limit=20`);
       if (res.ok) {
         const data = await res.json();
-        setMessagesList(data);
+        setMessagesList(Array.isArray(data) ? data : (data.items || []));
+        setTotalTickets(Array.isArray(data) ? data.length : (data.total || 0));
       }
     } catch (_) {}
   };
