@@ -41,6 +41,17 @@ export const ContactPage = () => {
       return;
     }
 
+    if (formData.email.length > 255) {
+      addToast(isEn ? 'Email address is too long (maximum 255 characters).' : 'El correo electrónico es demasiado largo (máximo 255 caracteres).', 'error');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      addToast(isEn ? 'Invalid email format (example: user@domain.com).' : 'Formato de correo electrónico no válido (ejemplo: usuario@dominio.com).', 'error');
+      return;
+    }
+
     try {
       setSubmitting(true);
       const res = await fetch('/api/contact', {
@@ -49,19 +60,19 @@ export const ContactPage = () => {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         setTicketId(data.ticketId || ('TICK-' + Date.now()));
         setSubmitted(true);
         addToast(isEn ? 'Message sent successfully. Ticket registered.' : 'Mensaje registrado con éxito en el sistema de tickets.', 'success');
         fetchMessages();
       } else {
-        throw new Error(data.error || 'Error al procesar solicitud');
+        const errorMsg = Array.isArray(data.error) 
+          ? data.error.map(e => e.message || e).join('. ') 
+          : (data.error || (isEn ? 'Error processing request.' : 'Error al procesar solicitud.'));
+        addToast(errorMsg, 'error');
       }
     } catch (err) {
-      // Fallback local seguro si corre en cliente puro sin backend activo
-      setSubmitted(true);
-      setTicketId('TICK-LOCAL-' + Date.now().toString().slice(-4));
-      addToast(isEn ? 'Message recorded locally.' : 'Mensaje registrado localmente en la aplicación.', 'info');
+      addToast(isEn ? 'Connection error. Please try again later.' : 'Error de conexión con el servidor. Intente nuevamente.', 'error');
     } finally {
       setSubmitting(false);
     }

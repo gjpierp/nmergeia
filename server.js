@@ -33,10 +33,10 @@ const LicenseSchema = z.object({
   key: z.string().min(10)
 });
 const ContactSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  subject: z.string().default('soporte'),
-  message: z.string().min(5)
+  name: z.string().min(1, "El nombre es requerido").max(100, "El nombre no puede exceder 100 caracteres"),
+  email: z.string().max(255, "El correo electrónico es demasiado largo (máximo 255 caracteres)").email("El correo electrónico introducido no tiene un formato válido (ejemplo: usuario@dominio.com)"),
+  subject: z.string().max(150, "El asunto no puede exceder 150 caracteres").default('soporte'),
+  message: z.string().min(5, "El mensaje debe tener al menos 5 caracteres").max(5000, "El mensaje no puede exceder 5,000 caracteres")
 });
 
 
