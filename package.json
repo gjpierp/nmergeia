@@ -8,7 +8,7 @@
     "dev:frontend": "vite --port 3009",
     "dev:backend": "cross-env PORT=3001 node server.js",
     "dev": "node server.js",
-    "build": "node src/shared/lib/generate-sitemap.js && vite build",
+    "build": "node src/shared/lib/generate-sitemap.js && vite build && node src/shared/lib/prerender.js",
     "sitemap": "node src/shared/lib/generate-sitemap.js",
     "lint": "oxlint",
     "preview": "vite preview",
