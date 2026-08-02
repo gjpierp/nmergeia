@@ -202,7 +202,7 @@ export const LandingPage = () => {
             A diferencia de los comparadores tradicionales en la nube que exigen cargar archivos a servidores remotos exponiendo propiedad intelectual sensible, <strong>NMerge IA opera bajo el paradigma Local-First</strong>. Mediante el uso avanzado de la <em>File System Access API</em> nativa de los navegadores modernos, la aplicación lee, parsea y computa las diferencias de código directamente en la memoria volátil de tu dispositivo local (Sandbox seguro del navegador).
           </p>
           <p>
-            Tus archivos de código fuente, scripts de bases de datos, claves de configuración `.env` y artefactos de despliegue nunca abandonan la máquina del operador. Esto garantiza un cumplimiento del 100% con normativas estrictas de protección de datos como **GDPR, HIPAA, ISO 27001 y SOC 2 Type II**, permitiendo realizar auditorías de seguridad en entornos <em>Air-Gapped</em> o redes corporativas blindadas sin necesidad de conexión externa a internet ni riesgos de filtrado de datos.
+            Tus archivos de código fuente, scripts de bases de datos, claves de configuración `.env` y artefactos de despliegue nunca abandonan la máquina del operador. Esto garantiza un cumplimiento del 100% con normativas estrictas de protección de datos como <strong>GDPR, HIPAA, ISO 27001 y SOC 2 Type II</strong>, permitiendo realizar auditorías de seguridad en entornos <em>Air-Gapped</em> o redes corporativas blindadas sin necesidad de conexión externa a internet ni riesgos de filtrado de datos.
           </p>
         </section>
 
@@ -213,7 +213,7 @@ export const LandingPage = () => {
             2. Algoritmo Myers LCS y Comparación Tridimensional de Estructuras
           </h2>
           <p>
-            El núcleo sintáctico de NMerge IA se fundamenta en el algoritmo **Myers LCS (Longest Common Subsequence)** optimizado mediante Web Workers multihilo aislados. Esta implementación permite calcular las secuencias comunes más largas entre millones de líneas de código fuente en milisegundos, ofreciendo un rendimiento de grado industrial sin congelar la interfaz de usuario:
+            El núcleo sintáctico de NMerge IA se fundamenta en el algoritmo <strong>Myers LCS (Longest Common Subsequence)</strong> optimizado mediante Web Workers multihilo aislados. Esta implementación permite calcular las secuencias comunes más largas entre millones de líneas de código fuente en milisegundos, ofreciendo un rendimiento de grado industrial sin congelar la interfaz de usuario:
           </p>
           <ul>
             <li><strong>Diffing en Tiempo Real:</strong> Evaluación instantánea de modificaciones línea por línea y carácter por carácter con resaltado de sintaxis enriquecido mediante Monaco Editor (el mismo motor de edición que impulsa Microsoft Visual Studio Code).</li>
@@ -232,7 +232,7 @@ export const LandingPage = () => {
             Cuando dos ramas de desarrollo modifican las mismas líneas de un archivo crítico, los algoritmos sintácticos estándar se detienen solicitando intervención manual prolija. NMerge IA resuelve este cuello de botella incorporando un <strong>Asistente Agéntico de IA para Fusión Semántica</strong>:
           </p>
           <p>
-            El sistema se conecta de manera nativa con instancias de **Ollama Local** (ej. modelos <em>Qwen 2.5, Llama 3 o Codestral</em> ejecutándose localmente en tu propia GPU/CPU) o con **Google Gemini Cloud API** mediante claves cifradas de usuario. La IA analiza el contexto semántico de ambos bloques de código, identifica la intención original de los desarrolladores y genera automáticamente una versión unificada limpia y libre de conflictos de sintaxis o duplicación de lógica.
+            El sistema se conecta de manera nativa con instancias de <strong>Ollama Local</strong> (ej. modelos <em>Qwen 2.5, Llama 3 o Codestral</em> ejecutándose localmente en tu propia GPU/CPU) o con <strong>Google Gemini Cloud API</strong> mediante claves cifradas de usuario. La IA analiza el contexto semántico de ambos bloques de código, identifica la intención original de los desarrolladores y genera automáticamente una versión unificada limpia y libre de conflictos de sintaxis o duplicación de lógica.
           </p>
         </section>
 
@@ -243,7 +243,7 @@ export const LandingPage = () => {
             4. Gobernanza de Acceso Sentinel-NGAC (NIST SP 800-162)
           </h2>
           <p>
-            La plataforma integra el motor de seguridad **Sentinel-NGAC (Next Generation Access Control)** estructurado rigurosamente sobre el estándar oficial del NIST. A diferencia de las matrices de permisos tradicionales RBAC/ABAC que se vuelven inmanejables en organizaciones grandes, Sentinel-NGAC representa las políticas de seguridad mediante grafos orientados compuestos por atributos de usuario, recursos y contextos operativos.
+            La plataforma integra el motor de seguridad <strong>Sentinel-NGAC (Next Generation Access Control)</strong> estructurado rigurosamente sobre el estándar oficial del NIST. A diferencia de las matrices de permisos tradicionales RBAC/ABAC que se vuelven inmanejables en organizaciones grandes, Sentinel-NGAC representa las políticas de seguridad mediante grafos orientados compuestos por atributos de usuario, recursos y contextos operativos.
           </p>
           <p>
             Esto permite definir reglas dinámicas de grano fino (ej. restringir la exportación de parches de código a ciertos roles o filtrar menús según el nivel de suscripción del usuario) garantizando una arquitectura de Cero Confianza (*Zero-Trust Architecture*) de extremo a extremo en cada sesión.
