@@ -6,8 +6,8 @@ import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 export const EulaPage = () => {
   return (
     <div style={{
-      maxWidth: '900px',
-      margin: '0 auto',
+      width: '100%',
+      
       padding: '40px 20px',
       color: 'var(--text-primary)',
       fontFamily: '"Outfit", sans-serif',

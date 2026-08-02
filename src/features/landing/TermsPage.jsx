@@ -23,7 +23,7 @@ export const TermsPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Términos y Condiciones' }]} />
         
         {/* Header */}

@@ -71,8 +71,8 @@ export const SettingsPage = () => {
   return (
     <div style={{ flex: 1, minHeight: 0, maxHeight: 'calc(100vh - 120px)', width: '100%', overflowY: 'auto', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
       <div style={{
-        maxWidth: '1000px',
-        margin: '0 auto',
+        width: '100%',
+        
         padding: '30px 20px',
         color: 'var(--text-primary)',
         fontFamily: '"Outfit", sans-serif',

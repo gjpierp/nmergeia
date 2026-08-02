@@ -20,7 +20,7 @@ export const PricingPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Planes y Precios' }]} />
         <PageHeader title="Planes y Precios" />
         <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '1rem', maxWidth: '600px', margin: '0 auto 40px auto' }}>

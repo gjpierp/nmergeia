@@ -79,7 +79,7 @@ export const LandingPage = () => {
       </Helmet>
 
       {/* Standardized Main Container (1000px Max Width matching design system) */}
-      <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         
         {/* Standardized Header UI: Breadcrumbs + PageHeader */}
         <Breadcrumbs items={[{ label: 'Inicio' }]} />

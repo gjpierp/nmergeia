@@ -44,12 +44,12 @@ export const PostgresGuidePage = () => {
         }}>
           {t('postgresGuide.title', { defaultValue: 'Guías de Optimización en PostgreSQL' })}
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '700px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '700px',  }}>
           {t('postgresGuide.subtitle', { defaultValue: 'Documentación técnica completa: desde los fundamentos hasta tuning avanzado sin downtime.' })}
         </p>
       </div>
 
-      <div style={{ maxWidth: '850px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div style={{ width: '100%', width: '100%',  display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         
         {/* Guía Básica */}
         <section style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '2rem' }}>

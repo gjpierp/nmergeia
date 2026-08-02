@@ -22,7 +22,7 @@ export const DocsPanel = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ maxWidth: '850px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Biblioteca Técnica & Documentación' }]} />
         <PageHeader title="Documentación Técnica e i18n" subtitle="Arquitectura de Comparación, Algoritmos Myers LCS y Gobernanza de Acceso NGAC" />
 

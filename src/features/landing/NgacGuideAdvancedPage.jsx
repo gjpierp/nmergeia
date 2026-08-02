@@ -22,7 +22,7 @@ export const NgacGuideAdvancedPage = () => {
   }, [i18n.language]);
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto', height: '100%', overflowY: 'auto' }}>
+    <div style={{ padding: '2rem', width: '100%',  height: '100%', overflowY: 'auto' }}>
       <Helmet>
         <title>NGAC (Avanzado) - nMerge</title>
       </Helmet>

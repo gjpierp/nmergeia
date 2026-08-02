@@ -35,7 +35,7 @@ export const FeaturesPage = () => {
         <link rel="canonical" href="https://nmergeia.com/features" />
       </Helmet>
 
-      <div style={{ maxWidth: '1000px', width: '100%', margin: '0 auto', textAlign: 'left' }}>
+      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Características Técnicas' }]} />
         <PageHeader 
           title="Características y Capacidades de Ingeniería" 
