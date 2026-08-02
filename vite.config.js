@@ -1,12 +1,29 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+import fs from 'fs';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
   plugins: [
     react(),
+    {
+      name: 'serve-sitemap',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url && (req.url === '/sitemap.xml' || req.url.startsWith('/sitemap.xml?'))) {
+            res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+            const xmlPath = path.resolve('public/sitemap.xml');
+            if (fs.existsSync(xmlPath)) {
+              return res.end(fs.readFileSync(xmlPath, 'utf8'));
+            }
+          }
+          next();
+        });
+      }
+    },
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
@@ -72,4 +89,4 @@ export default defineConfig({
       }
     }
   }
-})
+});
