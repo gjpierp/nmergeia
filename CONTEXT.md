@@ -16,3 +16,4 @@
 3. **Manejo de Licencias (Monetización):** La aplicación debe bloquear explícitamente características premium detrás del `MonetizationStore` (validando SQLite).
 4. **Diseño de Interfaz:** Se utilizará un patrón *Dense Form* para los inputs y modales. Cero popups no intrusivos. Las ventanas modales usan cabeceras del 100%.
 5. **Testing (Quality Gate):** Mínimo 80% de code coverage en los módulos críticos.
+6. **Estandarización de Layout UI/UX:** Toda página o vista nueva de la plataforma debe implementar obligatoriamente el contenedor unificado de `1000px` (`maxWidth: '1000px'`, `margin: '0 auto'`) precedido por la secuencia de encabezado estándar (`<Breadcrumbs />` + `<PageHeader title subtitle badgeText />`). En código JSX, los resaltados de texto deben usar etiquetas HTML semánticas (`<strong>`, `<em>`) en lugar de sintaxis Markdown cruda (`**`).
