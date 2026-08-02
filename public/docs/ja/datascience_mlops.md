@@ -1,6 +1,6 @@
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
 
-La presente guía detalla la implementación profesional de **MLOps & vLLM Infrastructure** en su **Nivel Inicial**.
+La presente guía detalla la implementación profesional de **MLOps & vLLM Infrastructure** en su **入門レベル**.
 Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
 
 ### 💡 Puntos Clave de este Nivel:
@@ -15,10 +15,10 @@ Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configurac
 
 ```mermaid
 flowchart TD
-    A["Cliente / Aplicación NMerge"] -->|Petición de Procesamiento| B["MLOps & vLLM Infrastructure Engine (Nivel Inicial)"]
-    B -->|Particionado Dinámico| C["Gestor de Memoria SIMD / Buffer Directo"]
-    C -->|Persistencia Estructurada| D["Parquet / Delta Storage Layer"]
-    B -->|Auditoría de Seguridad| E["Sentinel-NGAC PDP Evaluator"]
+    A["NMerge クライアント / アプリ"] -->|処理リクエスト| B["MLOps & vLLM Infrastructure Engine (入門レベル)"]
+    B -->|動的パーティショニング| C["SIMD メモリマネージャー / ダイレクトバッファ"]
+    C -->|構造化永続性| D["Parquet / Delta Storage Layer"]
+    B -->|セキュリティ監査| E["Sentinel-NGAC PDP Evaluator"]
 ```
 
 ---

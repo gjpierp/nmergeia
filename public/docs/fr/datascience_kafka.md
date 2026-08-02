@@ -1,6 +1,6 @@
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
 
-La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **Nivel Inicial**.
+La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **Niveau Initial**.
 Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
 
 ### 💡 Puntos Clave de este Nivel:
@@ -15,10 +15,10 @@ Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configurac
 
 ```mermaid
 flowchart TD
-    A["Cliente / Aplicación NMerge"] -->|Petición de Procesamiento| B["Apache Kafka Event Streaming Engine (Nivel Inicial)"]
-    B -->|Particionado Dinámico| C["Gestor de Memoria SIMD / Buffer Directo"]
-    C -->|Persistencia Estructurada| D["Parquet / Delta Storage Layer"]
-    B -->|Auditoría de Seguridad| E["Sentinel-NGAC PDP Evaluator"]
+    A["Client / Application NMerge"] -->|Demande de traitement| B["Apache Kafka Event Streaming Engine (Niveau Initial)"]
+    B -->|Partitionnement dynamique| C["Gestionnaire de mémoire SIMD / Buffer direct"]
+    C -->|Persistance structurée| D["Parquet / Delta Storage Layer"]
+    B -->|Audit de sécurité| E["Sentinel-NGAC PDP Evaluator"]
 ```
 
 ---

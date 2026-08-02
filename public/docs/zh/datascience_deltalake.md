@@ -1,6 +1,6 @@
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
 
-La presente guía detalla la implementación profesional de **Delta Lake Architecture** en su **Nivel Inicial**.
+La presente guía detalla la implementación profesional de **Delta Lake Architecture** en su **入门级**.
 Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
 
 ### 💡 Puntos Clave de este Nivel:
@@ -15,10 +15,10 @@ Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configurac
 
 ```mermaid
 flowchart TD
-    A["Cliente / Aplicación NMerge"] -->|Petición de Procesamiento| B["Delta Lake Architecture Engine (Nivel Inicial)"]
-    B -->|Particionado Dinámico| C["Gestor de Memoria SIMD / Buffer Directo"]
-    C -->|Persistencia Estructurada| D["Parquet / Delta Storage Layer"]
-    B -->|Auditoría de Seguridad| E["Sentinel-NGAC PDP Evaluator"]
+    A["NMerge 客户端 / 应用"] -->|处理请求| B["Delta Lake Architecture Engine (入门级)"]
+    B -->|动态分区| C["SIMD 内存管理器 / 直接缓冲区"]
+    C -->|结构化持久化| D["Parquet / Delta Storage Layer"]
+    B -->|安全审计| E["Sentinel-NGAC PDP Evaluator"]
 ```
 
 ---

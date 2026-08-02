@@ -92,7 +92,7 @@ CREATE INDEX idx_active_products ON inventory.products(status) WHERE status = 'a
 Si tienes una tabla de "Usuarios" con 10 millones de registros, pero solo 50,000 están marcados como `is_deleted = false`, un índice parcial sobre los usuarios activos será microscópico y ultra-rápido en comparación a indexar la tabla entera.
 
 ## Reflexión de Cierre
-Dominar los tipos `JSONB`, usar esquemas lógicos y proteger tu información con `CHECK` constraints transformará tus bases de datos de simples hojas de cálculo glorificadas en bóvedas de datos robustas. En el **Nivel Medio**, exploraremos el arte negro de las consultas complejas: *Common Table Expressions (CTEs)* y *Window Functions*.
+Dominar los tipos `JSONB`, usar esquemas lógicos y proteger tu información con `CHECK` constraints transformará tus bases de datos de simples hojas de cálculo glorificadas en bóvedas de datos robustas. En el **Intermediate Level**, exploraremos el arte negro de las consultas complejas: *Common Table Expressions (CTEs)* y *Window Functions*.
 
 
 ---

@@ -74,68 +74,59 @@ const MermaidChart = ({ chart, theme }) => {
 
         // Ejecutar renderizado seguro de Mermaid
         const { svg } = await mermaid.render(chartId, safeChart);
-
-        // Remover elemento DOM temporal si fue creado por el render de Mermaid en body
-        const tempEl = document.getElementById(chartId);
-        if (tempEl) tempEl.remove();
-
+        
         if (isMounted && ref.current) {
           ref.current.innerHTML = svg;
+          setHasError(false);
         }
-      } catch (e) {
-        console.error("[NMerge Mermaid Error]:", e);
+      } catch (err) {
+        console.warn("⚠️ Mermaid render warning:", err?.message || err);
         if (isMounted) {
-          setErrorMsg(e?.message || String(e));
           setHasError(true);
+          setErrorMsg(err?.message || "Diagram render notice");
         }
       }
     };
 
-    if (chart) {
-      renderChart();
-    }
-
-    return () => {
-      isMounted = false;
-    };
+    renderChart();
+    return () => { isMounted = false; };
   }, [chart, theme]);
 
   if (hasError) {
     return (
-      <div className="mermaid-error-fallback" style={{
-        background: 'var(--bg-tertiary, #1e1e1e)',
-        color: '#f87171',
-        padding: '1.2rem',
+      <div style={{
+        padding: '12px 16px',
+        margin: '1rem 0',
+        background: 'rgba(239, 68, 68, 0.08)',
+        border: '1px solid var(--accent-danger)',
         borderRadius: '8px',
-        border: '1px solid #7f1d1d',
-        margin: '1.5rem 0',
-        fontFamily: 'monospace',
-        whiteSpace: 'pre-wrap',
-        overflowX: 'auto',
-        fontSize: '0.85rem'
+        fontSize: '0.82rem',
+        color: 'var(--text-secondary)',
+        fontFamily: 'monospace'
       }}>
-        <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 'bold' }}>⚠️ Vista de Código Diagrama Mermaid:</p>
-        <pre style={{ margin: 0, color: 'var(--text-primary)', background: 'transparent' }}>{chart}</pre>
+        <strong>📌 Diagrama de Arquitectura (Vista Previa de Código Raw):</strong>
+        <pre style={{ margin: '8px 0 0 0', whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>
+          {chart}
+        </pre>
       </div>
     );
   }
 
   return (
     <div 
-      className="mermaid-diagram" 
+      ref={ref} 
+      className="mermaid-svg-wrapper"
       style={{ 
         display: 'flex', 
         justifyContent: 'center', 
-        alignItems: 'center',
-        margin: '2rem 0',
-        background: 'var(--bg-secondary)',
-        padding: '24px',
-        borderRadius: '12px',
-        border: '1px solid var(--border-color)',
+        alignItems: 'center', 
+        margin: '1.5rem 0',
         overflowX: 'auto',
-        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)'
+        background: 'var(--bg-primary)',
+        padding: '1rem',
+        borderRadius: '8px',
+        border: '1px solid var(--border-light)'
       }} 
-      ref={ref} 
     />
   );
 };
@@ -147,38 +138,62 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchDoc = async () => {
       try {
         setLoading(true);
-        // Fallback inteligente: probar idioma actual -> español -> archivo base
+        setError(null);
+
+        const isValidMarkdownResponse = (res, textStr) => {
+          if (!res || !res.ok) return false;
+          if (!textStr || textStr.trim().startsWith('<!doctype html') || textStr.trim().startsWith('<html')) {
+            return false;
+          }
+          return true;
+        };
+
+        // 1. Probar idioma activo (ej. en, de, fr, etc.)
         let response = await fetch(`/docs/${appLanguage}/${filename}`);
-        if (!response.ok && appLanguage !== 'es') {
+        let text = response.ok ? await response.text() : '';
+
+        // 2. Si falló o devolvió HTML de SPA, probar en español (es)
+        if (!isValidMarkdownResponse(response, text) && appLanguage !== 'es') {
           response = await fetch(`/docs/es/${filename}`);
+          text = response.ok ? await response.text() : '';
         }
-        if (!response.ok) {
-          // Si es un subtema de nivel como datascience_pyspark_inicial.md, probar datascience_pyspark.md
+
+        // 3. Si falló (ej. por nombre con sufijo de nivel), probar nombre base
+        if (!isValidMarkdownResponse(response, text)) {
           const baseName = filename.replace(/_(inicial|basico|medio|avanzado|experto|optimizaciones)\.md$/, '.md');
           if (baseName !== filename) {
             response = await fetch(`/docs/${appLanguage}/${baseName}`);
-            if (!response.ok && appLanguage !== 'es') {
+            text = response.ok ? await response.text() : '';
+            if (!isValidMarkdownResponse(response, text) && appLanguage !== 'es') {
               response = await fetch(`/docs/es/${baseName}`);
+              text = response.ok ? await response.text() : '';
             }
           }
         }
 
-        if (!response.ok) {
-          throw new Error('No se pudo cargar el documento.');
+        if (isMounted) {
+          if (isValidMarkdownResponse(response, text)) {
+            setContent(text);
+            setError(null);
+          } else {
+            setError('No se pudo cargar la documentación técnica para este tema.');
+          }
+          setLoading(false);
         }
-        const text = await response.text();
-        setContent(text);
-        setError(null);
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setError('Error al cargar la documentación técnica.');
+          setLoading(false);
+        }
       }
     };
+
     fetchDoc();
+    return () => { isMounted = false; };
   }, [filename, appLanguage]);
 
   return (
@@ -188,53 +203,62 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
       color: 'var(--text-primary)',
       borderRadius: '8px',
       border: '1px solid var(--border-color)',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-      minHeight: '600px',
-      position: 'relative'
+      maxWidth: '1000px',
+      margin: '0 auto',
+      boxSizing: 'border-box'
     }}>
-      {loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <div className="premium-skeleton skeleton-title"></div>
-          <div className="premium-skeleton skeleton-text"></div>
-          <div className="premium-skeleton skeleton-text" style={{ width: '90%' }}></div>
-          <div className="premium-skeleton skeleton-block"></div>
-        </div>
-      )}
+      {title && <PageHeader title={title} sticky={true} />}
 
-      {error && (
-        <div style={{
-          padding: '1.5rem',
-          background: 'rgba(255, 60, 60, 0.1)',
-          borderLeft: '4px solid #ff4d4f',
-          color: '#ff4d4f',
-          borderRadius: '4px'
-        }}>
-          <strong>Hubo un problema:</strong> {error}. <br/>
-          <em>Estamos trabajando para restaurar este gemelo digital.</em>
+      {loading ? (
+        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <span className="material-symbols-rounded" style={{ animation: 'spin 1s linear infinite', fontSize: '2rem' }}>sync</span>
+          <p>Cargando documentación...</p>
         </div>
-      )}
-
-      {!loading && !error && (
-        <div className="markdown-body">
-          <ReactMarkdown 
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
-            components={{
-              h1: 'h2',
-              code({node, inline, className, children, ...props}) {
-                const match = /language-(\w+)/.exec(className || '');
-                if (!inline && match && match[1] === 'mermaid') {
-                  return <MermaidChart chart={String(children).replace(/\n$/, '')} theme={appTheme} />;
-                }
-                return <code className={className} {...props}>
-                  {children}
-                </code>;
+      ) : error ? (
+        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--accent-danger)' }}>
+          <span className="material-symbols-rounded" style={{ fontSize: '2.5rem' }}>error</span>
+          <p style={{ marginTop: '0.5rem' }}>{error}</p>
+        </div>
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || '');
+              const lang = match ? match[1] : '';
+              
+              if (!inline && lang === 'mermaid') {
+                return <MermaidChart chart={String(children).replace(/\n$/, '')} theme={appTheme} />;
               }
-            }}
-          >
-            {content}
-          </ReactMarkdown>
-        </div>
+
+              return !inline ? (
+                <pre style={{
+                  background: 'var(--bg-primary)',
+                  padding: '1rem',
+                  borderRadius: '6px',
+                  overflowX: 'auto',
+                  border: '1px solid var(--border-light)'
+                }}>
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                </pre>
+              ) : (
+                <code className={className} style={{
+                  background: 'var(--badge-bg)',
+                  padding: '0.2rem 0.4rem',
+                  borderRadius: '4px',
+                  fontSize: '0.9em'
+                }} {...props}>
+                  {children}
+                </code>
+              );
+            }
+          }}
+        >
+          {content}
+        </ReactMarkdown>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-# Motor de Ejecución, Vacuum e Índices Compuestos
+# Ausführungs-Engine, Vacuum e Índices Compuestos
 
 En el nivel avanzado, dejamos de escribir código ciegamente y empezamos a entender **cómo PostgreSQL lee nuestro código**. La diferencia entre una consulta que tarda 5 minutos y una que tarda 50 milisegundos radica en comprender el *Query Planner*.
 
@@ -31,7 +31,7 @@ CREATE INDEX idx_orders_status_total ON sales.orders(status, total);
 
 ## 3. Autovacuum: El Recolector de Basura de MVCC
 
-En el Nivel Medio aprendimos sobre MVCC y las *dead tuples* (filas obsoletas generadas por UPDATEs y DELETEs). Si estas filas no se limpian, tu base de datos sufrirá de **Bloat** (hinchazón), consumiendo disco y destruyendo el rendimiento.
+En el Mittlere Stufe aprendimos sobre MVCC y las *dead tuples* (filas obsoletas generadas por UPDATEs y DELETEs). Si estas filas no se limpian, tu base de datos sufrirá de **Bloat** (hinchazón), consumiendo disco y destruyendo el rendimiento.
 
 El proceso `Autovacuum` es el encargado de limpiar esto.
 

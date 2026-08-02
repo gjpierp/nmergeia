@@ -71,7 +71,7 @@ app.use((err, req, res, next) => {
 });
 ```
 
-Esta arquitectura te llevará lejos, pero hoy en día usar Express sin Tipado estricto es un riesgo corporativo. En el **Nivel Avanzado**, daremos el salto a NestJS o migraremos Express hacia TypeScript (POO) con inyección de dependencias.
+Esta arquitectura te llevará lejos, pero hoy en día usar Express sin Tipado estricto es un riesgo corporativo. En el **上級レベル**, daremos el salto a NestJS o migraremos Express hacia TypeScript (POO) con inyección de dependencias.
 
 
 ---

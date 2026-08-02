@@ -83,7 +83,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 ```
 
-En el **Nivel Experto**, abordaremos la latencia de base de datos, el almacenamiento en caché distribuido (Redis), y la arquitectura de mensajería (RabbitMQ/Kafka) para Microservicios.
+En el **专家级**, abordaremos la latencia de base de datos, el almacenamiento en caché distribuido (Redis), y la arquitectura de mensajería (RabbitMQ/Kafka) para Microservicios.
 
 
 ---

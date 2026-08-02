@@ -1,6 +1,6 @@
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
 
-La presente guía detalla la implementación profesional de **Polars Rust & SIMD** en su **Nivel Inicial**.
+La presente guía detalla la implementación profesional de **Polars Rust & SIMD** en su **Einführungsstufe**.
 Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
 
 ### 💡 Puntos Clave de este Nivel:
@@ -15,10 +15,10 @@ Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configurac
 
 ```mermaid
 flowchart TD
-    A["Cliente / Aplicación NMerge"] -->|Petición de Procesamiento| B["Polars Rust & SIMD Engine (Nivel Inicial)"]
-    B -->|Particionado Dinámico| C["Gestor de Memoria SIMD / Buffer Directo"]
-    C -->|Persistencia Estructurada| D["Parquet / Delta Storage Layer"]
-    B -->|Auditoría de Seguridad| E["Sentinel-NGAC PDP Evaluator"]
+    A["NMerge Client / Anwendung"] -->|Verarbeitungsanfrage| B["Polars Rust & SIMD Engine (Einführungsstufe)"]
+    B -->|Dynamische Partitionierung| C["SIMD-Speicher-Manager / Direkter Puffer"]
+    C -->|Strukturierte Persistenz| D["Parquet / Delta Storage Layer"]
+    B -->|Sicherheitsaudit| E["Sentinel-NGAC PDP Evaluator"]
 ```
 
 ---

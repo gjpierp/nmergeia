@@ -51,7 +51,7 @@ export const handler = async (event) => {
 ```
 
 ## Próximos Pasos
-Hemos entendido que Serverless es ejecución por eventos (Event-Driven Computing). En el **Nivel Básico**, exploraremos profundamente AWS Lambda, sus restricciones de tiempo, y el concepto del "Cold Start" (Arranque en frío).
+Hemos entendido que Serverless es ejecución por eventos (Event-Driven Computing). En el **基础级**, exploraremos profundamente AWS Lambda, sus restricciones de tiempo, y el concepto del "Cold Start" (Arranque en frío).
 
 
 ---

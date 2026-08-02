@@ -82,7 +82,7 @@ sls deploy --stage prod
 Nota la sección `iam` en el YAML. Por defecto, una Lambda en AWS **no tiene permiso para hacer nada**. Si intenta leer DynamoDB sin un rol IAM asignado, lanzará un error `AccessDenied`. 
 Escribir la infraestructura en código te permite auditar visualmente en Github qué Lambdas tienen acceso de borrado (`dynamodb:DeleteItem`) y cuáles solo de lectura, aplicando el **Principio del Menor Privilegio**.
 
-En el **Nivel Experto**, dejaremos de pensar en APIs sincrónicas y pasaremos al Event-Driven total usando SQS, SNS y EventBridge para coreografiar microservicios.
+En el **Expertenstufe**, dejaremos de pensar en APIs sincrónicas y pasaremos al Event-Driven total usando SQS, SNS y EventBridge para coreografiar microservicios.
 
 
 ---

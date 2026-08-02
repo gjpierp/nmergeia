@@ -44,7 +44,7 @@ Cuando cambias el estado de tu aplicación, React no destruye y reconstruye toda
 Si solo cambió el número de "Likes" en un botón, React viajará directamente a ese nodo del DOM y actualizará el texto, dejando intacto el resto del árbol (imágenes, formularios).
 
 ## Próximos Pasos
-Hemos entendido cómo React dibuja la pantalla. En el **Nivel Básico**, exploraremos cómo darle "memoria" a nuestros componentes utilizando Hooks (`useState` y `useEffect`), el corazón del React moderno.
+Hemos entendido cómo React dibuja la pantalla. En el **Basic Level**, exploraremos cómo darle "memoria" a nuestros componentes utilizando Hooks (`useState` y `useEffect`), el corazón del React moderno.
 
 
 ---

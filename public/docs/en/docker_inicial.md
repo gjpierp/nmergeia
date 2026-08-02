@@ -56,7 +56,7 @@ docker run -d --name mi-servidor-web -p 8080:80 nginx:alpine
 Visita `http://localhost:8080` en tu navegador. Si ves la página de bienvenida de NGINX, has desplegado con éxito tu primer contenedor.
 
 ## Próximos Pasos
-Hemos dominado el consumo de imágenes preexistentes. En el **Nivel Básico**, dejaremos de ser consumidores para convertirnos en creadores: aprenderemos a escribir nuestro propio `Dockerfile` y empacar nuestra propia aplicación Node.js/Python.
+Hemos dominado el consumo de imágenes preexistentes. En el **Basic Level**, dejaremos de ser consumidores para convertirnos en creadores: aprenderemos a escribir nuestro propio `Dockerfile` y empacar nuestra propia aplicación Node.js/Python.
 
 
 ---

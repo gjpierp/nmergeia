@@ -2,7 +2,7 @@
 
 Llevar una imagen Docker a producción exige un rigor totalmente distinto al de un entorno de desarrollo local. Una imagen de 1 Gigabyte que contiene herramientas de compilación, repositorios locales y código fuente expuesto es una bomba de tiempo financiera (costos de transferencia) y una pesadilla de ciberseguridad.
 
-En el Nivel Avanzado, dominaremos el patrón arquitectónico más importante de Docker: **Los Builds Multi-Etapa (Multi-Stage Builds)**.
+En el Fortgeschrittene Stufe, dominaremos el patrón arquitectónico más importante de Docker: **Los Builds Multi-Etapa (Multi-Stage Builds)**.
 
 ## 1. El Problema de las Imágenes Monolíticas
 

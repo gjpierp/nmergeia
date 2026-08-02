@@ -67,7 +67,7 @@ useEffect(() => { fetchDatos() }, []);
 useEffect(() => { fetchDatosUsuario(userId) }, [userId]); 
 ```
 
-Dominar `useState` y `useEffect` te permite construir el 80% de cualquier aplicación. En el **Nivel Medio**, resolveremos el infame problema del "Prop Drilling" y conectaremos nuestra app a un estado global con la Context API.
+Dominar `useState` y `useEffect` te permite construir el 80% de cualquier aplicación. En el **Intermediate Level**, resolveremos el infame problema del "Prop Drilling" y conectaremos nuestra app a un estado global con la Context API.
 
 
 ---

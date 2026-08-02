@@ -86,7 +86,7 @@ host    all             all             0.0.0.0/0               scram-sha-256
 ```
 
 ## Próximos Pasos
-Con el motor corriendo y la arquitectura multi-proceso clara, estás listo para crear tablas, explorar los tipos de datos JSONB avanzados y entender el motor de índices en la guía de **Nivel Básico**.
+Con el motor corriendo y la arquitectura multi-proceso clara, estás listo para crear tablas, explorar los tipos de datos JSONB avanzados y entender el motor de índices en la guía de **Niveau Basique**.
 
 
 ---
