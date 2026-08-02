@@ -1,8 +1,4 @@
-# Guía Profesional de Apache Kafka Event Streaming - Nivel Medio
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Medio)
 
 La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **Nivel Medio**.
 Arquitectura intermedia, tuning de rendimiento, manejo de memoria y estructuración modular.

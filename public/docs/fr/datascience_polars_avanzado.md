@@ -1,8 +1,4 @@
-# Guía Profesional de Polars Rust & SIMD - Nivel Avanzado
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Avanzado)
 
 La presente guía detalla la implementación profesional de **Polars Rust & SIMD** en su **Nivel Avanzado**.
 Optimización de bajo nivel, paralelismo masivo, patrones de resiliencia y diseño empresarial.

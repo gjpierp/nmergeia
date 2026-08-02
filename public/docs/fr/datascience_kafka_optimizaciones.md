@@ -1,8 +1,4 @@
-# Guía Profesional de Apache Kafka Event Streaming - Nivel Optimizaciones
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Optimizaciones)
 
 La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **Nivel Optimizaciones**.
 Recetario de alto rendimiento, micro-benchmarks, estrategias anti-skew y reducción de latencia al límite.

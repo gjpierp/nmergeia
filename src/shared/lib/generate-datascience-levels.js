@@ -26,11 +26,7 @@ const LEVELS = [
 ];
 
 const generateMarkdown = (subtopic, level, lang) => {
-  return `# Guía Profesional de ${subtopic.name} - Nivel ${level.label}
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+  return `## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (${level.label})
 
 La presente guía detalla la implementación profesional de **${subtopic.name}** en su **Nivel ${level.label}**.
 ${level.desc}
@@ -118,7 +114,7 @@ Todas las ejecuciones de **${subtopic.name}** en este nivel están sujetas a la 
 `;
 };
 
-console.log('🚀 Regenerando los 30 archivos de niveles de Data Science sin cabeceras internas en 7 idiomas...');
+console.log('🚀 Regenerando los 30 archivos de niveles de Data Science sin títulos redundantes en 7 idiomas...');
 
 let count = 0;
 LANGUAGES.forEach(lang => {
@@ -144,4 +140,4 @@ LANGUAGES.forEach(lang => {
   });
 });
 
-console.log(`✅ ¡Regenerados exitosamente ${count} archivos markdown limpios sin metadatos internos!`);
+console.log(`✅ ¡Regenerados exitosamente ${count} archivos markdown limpios sin títulos redundantes!`);

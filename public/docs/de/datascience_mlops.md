@@ -1,8 +1,4 @@
-# Guía Profesional de MLOps & vLLM Infrastructure - Nivel Inicial
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
 
 La presente guía detalla la implementación profesional de **MLOps & vLLM Infrastructure** en su **Nivel Inicial**.
 Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.

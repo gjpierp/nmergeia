@@ -1,8 +1,4 @@
-# Guía Profesional de PySpark & Big Data - Nivel Básico
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Básico)
 
 La presente guía detalla la implementación profesional de **PySpark & Big Data** en su **Nivel Básico**.
 Operaciones esenciales, transformación de datos, consultas estructuradas y patrones comunes de desarrollo.

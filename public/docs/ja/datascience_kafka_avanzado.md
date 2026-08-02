@@ -1,8 +1,4 @@
-# Guía Profesional de Apache Kafka Event Streaming - Nivel Avanzado
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Avanzado)
 
 La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **Nivel Avanzado**.
 Optimización de bajo nivel, paralelismo masivo, patrones de resiliencia y diseño empresarial.

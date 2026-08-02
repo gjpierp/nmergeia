@@ -1,8 +1,4 @@
-# Guía Profesional de Delta Lake Architecture - Nivel Experto
-
----
-
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
+## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Experto)
 
 La presente guía detalla la implementación profesional de **Delta Lake Architecture** en su **Nivel Experto**.
 Internals del engine, depuración de garbage collection, paridad de registros y algoritmos distribuidos custom.
