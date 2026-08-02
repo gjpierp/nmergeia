@@ -1,37 +1,46 @@
-# Infraestructura como Código (IaC) y Terraform
+# 基础设施即代码与不可变性 (IaC & Terraform)
 
-Antes de IaC, crear infraestructura (servidores, redes, bases de datos) se hacía de forma manual: entrando a la consola web de AWS (ClickOps), buscando menús y dándole click a "Crear EC2". Esto es inauditable, lento, e irrepetible. Si un desastre borra tu infraestructura, reconstruirla a mano tomaría días.
+**基础设施即代码 (IaC)** 是通过声明性代码自动化配置和管理云基础架构的核心 DevOps 实践。
 
-## 1. El Concepto de Infraestructura Declarativa
-Con Infraestructura como Código (IaC), **escribes código que define el Estado Deseado** de tu arquitectura. Guardas ese código en un repositorio (Git) al lado del código de tu aplicación. 
+## 1. 声明式架构
 
-Existen dos enfoques en herramientas:
-* **Imperativo (Scripts Bash, Ansible):** Dices *CÓMO* hacer las cosas. Ej: "Crea una EC2. Si ya hay 2, crea 1 más".
-* **Declarativo (Terraform, CloudFormation, Kubernetes YAML):** Dices *QUÉ* quieres. Ej: "Quiero que existan exactamente 3 EC2". La herramienta calcula la diferencia contra la realidad y se encarga del *CÓMO* (creará una, borrará dos, o no hará nada).
+```mermaid
+flowchart TD
+subgraph sub_1 ["开发与版本控制"]
+Git["Git 仓库 (HCL)"] -->|Merge| CI["CI/CD 流水线"]
+end
 
-## 2. HashiCorp Terraform (El Estándar Agnóstico)
-Terraform permite usar su lenguaje declarativo (HCL) para crear recursos en cualquier nube (AWS, Azure, GCP, VMWare, DataDog) usando **Providers**. 
+subgraph sub_2 ["Terraform 引擎"]
+CI -->|terraform init| Init["下载 Provider"]
+Init -->|terraform plan| Plan["生成变更计划 (Plan)"]
+Plan -->|terraform apply| Lock["状态锁 (DynamoDB)"]
+end
 
-### Ciclo de vida básico de Terraform:
-1. `terraform init`: Descarga el provider necesario (ej. el de AWS).
-2. `terraform plan`: ¡El paso más importante! Analiza tu código, analiza la nube, y te muestra un "Dry Run" o *diff* de qué va a crear, modificar o destruir. Todavía no cambia nada.
-3. `terraform apply`: Si estás de acuerdo con el plan, ejecuta los cambios en la nube real.
-4. `terraform destroy`: Borra absolutamente todo lo declarado en el código. Útil para entornos temporales de QA.
+subgraph sub_3 ["不可变云架构"]
+Lock -->|自动配置| S3["远程状态 (Amazon S3)"]
+Lock -->|资源| Infra["VPC + 子网 + EC2 + K8s"]
+end
+```
 
-## 3. El Archivo de Estado (State File - El Talón de Aquiles)
-¿Cómo sabe Terraform que ya creó una Máquina Virtual si ejecutas `apply` por segunda vez? Lo sabe porque guarda un archivo llamado `terraform.tfstate`. Es un JSON masivo que mapea los recursos de tu código a sus equivalentes reales (IDs) en la nube.
+## 2. Terraform 生命周期
 
-* **Anti-patrón Fatal:** Dejar el `.tfstate` en tu disco duro local o hacerle push al repositorio de Git. Si tu compañero ejecuta Terraform, no tendrá tu estado y el código colapsará intentando crear recursos duplicados. Peor aún, el archivo de estado guarda contraseñas y llaves de bases de datos en texto plano.
-* **La Solución (Remote State Backends):** El archivo de estado debe guardarse centralizadamente en un Storage cifrado de nube (ej. Amazon S3) e implementar un sistema de **Bloqueo (State Locking)** usando DynamoDB para asegurar que dos desarrolladores no apliquen cambios simultáneamente, corrompiendo la infraestructura.
+```bash
+terraform init
+terraform plan
+terraform apply -auto-approve
+terraform destroy
+```
 
-## 4. Estructura y Módulos
-No escribas un solo archivo de 3,000 líneas.
-Los **Terraform Modules** permiten encapsular patrones. Por ejemplo, en vez de obligar a tus devs a escribir 20 recursos complejos para hacer un Servidor Web seguro (EC2 + Security Groups + IAM Role + Load Balancer), el equipo de DevOps crea un módulo reutilizable.
-Los desarrolladores solo tienen que invocar:
+## 3. 远程状态与并发锁 (S3 + DynamoDB)
+
 ```hcl
-module "mi_web_app" {
-  source = "./modules/servidor-web-seguro"
-  nombre_app = "tienda-online"
-  tamaño = "t3.medium"
+terraform {
+  backend "s3" {
+    bucket         = "nmerge-terraform-state-prod"
+    key            = "global/s3/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "nmerge-terraform-locks"
+    encrypt        = true
+  }
 }
 ```

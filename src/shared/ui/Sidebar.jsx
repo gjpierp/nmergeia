@@ -88,7 +88,6 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
         id: 122, code: 'SUB_TEMAS_INFRA', label: 'Contenedores e Infraestructura', icon: 'cloud', node_type: 'CONTAINER',
         children: [
           { id: 1220, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores', path: '/temas/docker', icon: 'cloud', node_type: 'OBJECT' },
-          { id: 123, code: 'MNU_TEMA_02', label: 'Docker Multi-stage Builds', path: '/temas/tema-02-docker-multistage', icon: 'layers', node_type: 'OBJECT' },
           { id: 1222, code: 'MNU_TEMA_04', label: 'Infrastructure as Code (Terraform)', path: '/temas/tema-04-iac-terraform', icon: 'build_circle', node_type: 'OBJECT' },
           { id: 1223, code: 'MNU_TEMA_17', label: 'Kubernetes & Orquestación', path: '/temas/tema-17-kubernetes', icon: 'hub', node_type: 'OBJECT' },
           { id: 1224, code: 'MNU_TEMA_18', label: 'Cloud Native & SRE', path: '/temas/tema-18-cloud-native', icon: 'cloud_done', node_type: 'OBJECT' },

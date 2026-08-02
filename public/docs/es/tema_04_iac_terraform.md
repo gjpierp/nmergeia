@@ -1,37 +1,96 @@
-# Infraestructura como Código (IaC) y Terraform
+# Infraestructura como Código e Inmutabilidad (IaC & Terraform)
 
-Antes de IaC, crear infraestructura (servidores, redes, bases de datos) se hacía de forma manual: entrando a la consola web de AWS (ClickOps), buscando menús y dándole click a "Crear EC2". Esto es inauditable, lento, e irrepetible. Si un desastre borra tu infraestructura, reconstruirla a mano tomaría días.
+La **Infraestructura como Código (IaC)** es la práctica fundamental de DevOps y Cloud Engineering que permite aprovisionar, configurar y gestionar la infraestructura tecnológica (servidores, redes, bases de datos y balanceadores) mediante código fuente auditable, reproducible e inmutable, sustituyendo la configuración manual basada en clics en la consola web (*ClickOps*).
 
-## 1. El Concepto de Infraestructura Declarativa
-Con Infraestructura como Código (IaC), **escribes código que define el Estado Deseado** de tu arquitectura. Guardas ese código en un repositorio (Git) al lado del código de tu aplicación. 
+## 1. El Paradigma Declarativo e Inmutabilidad
 
-Existen dos enfoques en herramientas:
-* **Imperativo (Scripts Bash, Ansible):** Dices *CÓMO* hacer las cosas. Ej: "Crea una EC2. Si ya hay 2, crea 1 más".
-* **Declarativo (Terraform, CloudFormation, Kubernetes YAML):** Dices *QUÉ* quieres. Ej: "Quiero que existan exactamente 3 EC2". La herramienta calcula la diferencia contra la realidad y se encarga del *CÓMO* (creará una, borrará dos, o no hará nada).
+A diferencia de la gestión tradicional basada en scripts imperativos (como Bash o PowerShell) que indican *CÓMO* ejecutar pasos secuenciales, la arquitectura de **Terraform** utiliza un enfoque **Declarativo**: defines el *ESTADO DESEADO* de tu infraestructura y el motor calcula automáticamente la diferencia contra el estado real en la nube.
 
-## 2. HashiCorp Terraform (El Estándar Agnóstico)
-Terraform permite usar su lenguaje declarativo (HCL) para crear recursos en cualquier nube (AWS, Azure, GCP, VMWare, DataDog) usando **Providers**. 
+### Diagrama de Flujo de Aprovisionamiento Declarativo
 
-### Ciclo de vida básico de Terraform:
-1. `terraform init`: Descarga el provider necesario (ej. el de AWS).
-2. `terraform plan`: ¡El paso más importante! Analiza tu código, analiza la nube, y te muestra un "Dry Run" o *diff* de qué va a crear, modificar o destruir. Todavía no cambia nada.
-3. `terraform apply`: Si estás de acuerdo con el plan, ejecuta los cambios en la nube real.
-4. `terraform destroy`: Borra absolutamente todo lo declarado en el código. Útil para entornos temporales de QA.
+```mermaid
+flowchart TD
+subgraph sub_1 ["Desarrollo & Control de Versiones"]
+Git["Repositorio Git (Código HCL)"] -->|Pull Request / Merge| CI["Pipeline CI/CD (GitHub Actions / GitLab)"]
+end
 
-## 3. El Archivo de Estado (State File - El Talón de Aquiles)
-¿Cómo sabe Terraform que ya creó una Máquina Virtual si ejecutas `apply` por segunda vez? Lo sabe porque guarda un archivo llamado `terraform.tfstate`. Es un JSON masivo que mapea los recursos de tu código a sus equivalentes reales (IDs) en la nube.
+subgraph sub_2 ["Motor HashiCorp Terraform"]
+CI -->|terraform init| Init["Descarga de Providers (AWS, Azure, GCP)"]
+Init -->|terraform plan| Plan["Generación de Plan de Cambios (Diff)"]
+Plan -->|terraform apply| Lock["Bloqueo de Estado (DynamoDB State Lock)"]
+end
 
-* **Anti-patrón Fatal:** Dejar el `.tfstate` en tu disco duro local o hacerle push al repositorio de Git. Si tu compañero ejecuta Terraform, no tendrá tu estado y el código colapsará intentando crear recursos duplicados. Peor aún, el archivo de estado guarda contraseñas y llaves de bases de datos en texto plano.
-* **La Solución (Remote State Backends):** El archivo de estado debe guardarse centralizadamente en un Storage cifrado de nube (ej. Amazon S3) e implementar un sistema de **Bloqueo (State Locking)** usando DynamoDB para asegurar que dos desarrolladores no apliquen cambios simultáneamente, corrompiendo la infraestructura.
+subgraph sub_3 ["Infraestructura Inmutable en la Nube"]
+Lock -->|Aprovisionamiento API| S3["Backend Estado Remoto (Amazon S3)"]
+Lock -->|Despliegue Recursos| Infra["VPC + Subnets + EC2 + RDS + K8s"]
+end
+```
 
-## 4. Estructura y Módulos
-No escribas un solo archivo de 3,000 líneas.
-Los **Terraform Modules** permiten encapsular patrones. Por ejemplo, en vez de obligar a tus devs a escribir 20 recursos complejos para hacer un Servidor Web seguro (EC2 + Security Groups + IAM Role + Load Balancer), el equipo de DevOps crea un módulo reutilizable.
-Los desarrolladores solo tienen que invocar:
+## 2. Ciclo de Vida de Terraform
+
+El flujo de trabajo estándar en ingeniería de infraestructura consta de 4 comandos esenciales:
+
+```bash
+# 1. Inicializar directorio y descargar proveedores
+terraform init
+
+# 2. Vista previa y cálculo del diff contra la infraestructura real
+terraform plan
+
+# 3. Aplicación de cambios y creación de recursos
+terraform apply -auto-approve
+
+# 4. Destrucción segura de entornos temporales de pruebas
+terraform destroy
+```
+
+## 3. Estado Remoto y Bloqueo Concurrente (Remote State Locking)
+
+El archivo de estado `terraform.tfstate` es el mapa de verdad que asocia los recursos declarados en el código con los IDs reales creados en el proveedor de nube. 
+
+* **Anti-patrón:** Guardar el estado localmente o enviarlo a Git (expone secretos y genera colisiones entre desarrolladores).
+* **Mejor Práctica Enterprise:** Almacenar el archivo de estado cifrado en **Amazon S3** con un mecanismo de bloqueo atómico mediante **Amazon DynamoDB**.
+
+### Ejemplo de Configuración `backend.tf`:
+
 ```hcl
-module "mi_web_app" {
-  source = "./modules/servidor-web-seguro"
-  nombre_app = "tienda-online"
-  tamaño = "t3.medium"
+terraform {
+  required_version = ">= 1.5.0"
+  
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  backend "s3" {
+    bucket         = "nmerge-terraform-state-prod"
+    key            = "global/s3/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "nmerge-terraform-locks"
+    encrypt        = true
+  }
+}
+```
+
+## 4. Módulos Reutilizables de Producción
+
+Los módulos encapsulan conjuntos de recursos para promover la reutilización y estandarizar la seguridad empresarial.
+
+```hcl
+# Ejemplo de invocación de Módulo Web App Reutilizable
+module "servidor_web_produccion" {
+  source          = "./modules/infraestructura_web"
+  environment     = "production"
+  instance_type   = "t3.medium"
+  min_size        = 2
+  max_size        = 10
+  enable_autoscaling = true
+
+  tags = {
+    Proyecto  = "NMerge IA"
+    ManagedBy = "Terraform"
+  }
 }
 ```
