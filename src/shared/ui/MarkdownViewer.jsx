@@ -203,8 +203,7 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
       color: 'var(--text-primary)',
       borderRadius: '8px',
       border: '1px solid var(--border-color)',
-      maxWidth: '1000px',
-      margin: '0 auto',
+      width: '100%',
       boxSizing: 'border-box'
     }}>
       {title && <PageHeader title={title} sticky={true} />}
