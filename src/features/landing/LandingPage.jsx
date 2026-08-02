@@ -50,7 +50,6 @@ export const LandingPage = () => {
   const handleNav = (tab, path, e) => {
     if (e) e.preventDefault();
     setActiveTab(tab);
-    window.history.pushState({}, '', path);
   };
 
   return (

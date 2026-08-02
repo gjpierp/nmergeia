@@ -329,6 +329,9 @@ function App() {
 
   useEffect(() => {
     initContentProtection();
+    if (typeof window !== 'undefined' && (window.location.search || window.location.hash || window.location.pathname !== '/')) {
+      window.history.replaceState({}, '', '/');
+    }
   }, []);
   const sessionFilterConfig = useAppStore(s => s.sessionFilterConfig);
   const savedProfiles = useAppStore(s => s.savedProfiles);
@@ -882,23 +885,23 @@ function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.65rem' }}>
           <span>&copy; 2026 {t('app_title')}. StackUpIA Software Labs</span>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#privacy" onClick={(e) => { e.preventDefault(); window.location.hash = 'privacy'; setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_privacy') || 'Privacidad'}</a>
+          <a href="#privacy" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_privacy') || 'Privacidad'}</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#terms" onClick={(e) => { e.preventDefault(); window.location.hash = 'terms'; setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_terms') || 'Términos'}</a>
+          <a href="#terms" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_terms') || 'Términos'}</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#cookie-policy" onClick={(e) => { e.preventDefault(); window.location.hash = 'cookie-policy'; setActiveTab('cookie-policy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Cookies</a>
+          <a href="#cookie-policy" onClick={(e) => { e.preventDefault(); setActiveTab('cookie-policy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Cookies</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#legal-notice" onClick={(e) => { e.preventDefault(); window.location.hash = 'legal-notice'; setActiveTab('legal-notice'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Aviso Legal</a>
+          <a href="#legal-notice" onClick={(e) => { e.preventDefault(); setActiveTab('legal-notice'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Aviso Legal</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#eula" onClick={(e) => { e.preventDefault(); window.location.hash = 'eula'; setActiveTab('eula'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>EULA</a>
+          <a href="#eula" onClick={(e) => { e.preventDefault(); setActiveTab('eula'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>EULA</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#about" onClick={(e) => { e.preventDefault(); window.location.hash = 'about'; setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Sobre Nosotros</a>
+          <a href="#about" onClick={(e) => { e.preventDefault(); setActiveTab('about'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Sobre Nosotros</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#contact" onClick={(e) => { e.preventDefault(); window.location.hash = 'contact'; setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contacto</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); setActiveTab('contact'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contacto</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#docs" onClick={(e) => { e.preventDefault(); window.location.hash = 'docs'; setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_docs') || 'Biblioteca'}</a>
+          <a href="#docs" onClick={(e) => { e.preventDefault(); setActiveTab('docs'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_docs') || 'Biblioteca'}</a>
           <span style={{ opacity: 0.4 }}>•</span>
-          <a href="#faq" onClick={(e) => { e.preventDefault(); window.location.hash = 'faq'; setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_faq') || 'FAQ'}</a>
+          <a href="#faq" onClick={(e) => { e.preventDefault(); setActiveTab('faq'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_faq') || 'FAQ'}</a>
           <span style={{ opacity: 0.4 }}>•</span>
           <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary, #38bdf8)', textDecoration: 'none', fontWeight: 600 }}>Sitemap XML</a>
         </div>

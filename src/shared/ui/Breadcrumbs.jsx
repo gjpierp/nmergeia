@@ -42,7 +42,7 @@ export const Breadcrumbs = ({ items = [] }) => {
 
       <span 
         className="breadcrumb-item-link"
-        onClick={() => { window.location.hash = 'landing'; setActiveTab('landing'); }}
+        onClick={() => setActiveTab('landing')}
         style={{ cursor: 'pointer', color: 'var(--accent-primary)', textDecoration: 'none', transition: 'color 0.2s' }}
       >
         Inicio
@@ -54,7 +54,7 @@ export const Breadcrumbs = ({ items = [] }) => {
           {item.tabId ? (
             <span 
               className="breadcrumb-item-link"
-              onClick={() => { window.location.hash = item.tabId; setActiveTab(item.tabId); }}
+              onClick={() => setActiveTab(item.tabId)}
               style={{ cursor: 'pointer', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}
             >
               {item.label}

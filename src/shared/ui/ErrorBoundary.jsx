@@ -18,8 +18,8 @@ export class ErrorBoundary extends React.Component {
     try {
       localStorage.clear();
       sessionStorage.clear();
-      // Forzar recarga sin caché
-      window.location.replace(window.location.origin + '?nocache=' + Date.now());
+      // Recarga limpia en la raíz del sitio
+      window.location.replace(window.location.origin + '/');
     } catch (e) {
       window.location.reload();
     }
