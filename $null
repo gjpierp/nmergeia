@@ -1,10 +1,9 @@
-Error response from daemon: No such container: agents_pgvector
-Error response from daemon: No such container: agents_redis
 Error response from daemon: No such container: ;
 Error response from daemon: No such container: cmd.exe
+Error response from daemon: inspecting container c: Error response from daemon: multiple IDs found with provided prefix: c
 Error response from daemon: No such container: start
 invalid container name or ID: value is empty
 Error response from daemon: No such container: d
 Error response from daemon: No such container: C:\Local\nmerge
 Error response from daemon: No such container: C:\Local\nmerge\run-local.bat
-failed to start containers: agents_pgvector, agents_redis, ;, cmd.exe, start, , /d, C:\Local\nmerge, C:\Local\nmerge\run-local.bat
+failed to start containers: ;, cmd.exe, /c, start, , /d, C:\Local\nmerge, C:\Local\nmerge\run-local.bat

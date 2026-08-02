@@ -67,45 +67,63 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
       {
         id: 1180, code: 'SUB_TEMAS_DATASCIENCE', label: 'Data Science & AI Engineering', icon: 'analytics', node_type: 'CONTAINER',
         children: [
-          { id: 1181, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI', path: '/temas/datascience', icon: 'analytics', node_type: 'OBJECT' }
+          { id: 1181, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI (Guía Completa)', path: '/temas/datascience', icon: 'analytics', node_type: 'OBJECT' },
+          { id: 1182, code: 'MNU_DATASCIENCE_PYSPARK', label: 'PySpark & Big Data', path: '/temas/datascience/pyspark', icon: 'dataset', node_type: 'OBJECT' },
+          { id: 1183, code: 'MNU_DATASCIENCE_KAFKA', label: 'Apache Kafka Event Streaming', path: '/temas/datascience/kafka', icon: 'stream', node_type: 'OBJECT' },
+          { id: 1184, code: 'MNU_DATASCIENCE_DELTALAKE', label: 'Delta Lake & Lakehouse', path: '/temas/datascience/deltalake', icon: 'layers', node_type: 'OBJECT' },
+          { id: 1185, code: 'MNU_DATASCIENCE_MLOPS', label: 'MLOps & GPU vLLM Serving', path: '/temas/datascience/mlops', icon: 'memory', node_type: 'OBJECT' },
+          { id: 1186, code: 'MNU_DATASCIENCE_POLARS', label: 'Polars Rust SIMD Engine', path: '/temas/datascience/polars', icon: 'bolt', node_type: 'OBJECT' }
         ]
       },
       {
         id: 119, code: 'SUB_TEMAS_BD', label: 'Base de Datos & Optimización', icon: 'storage', node_type: 'CONTAINER',
         children: [
-          { id: 120, code: 'MNU_TEMA_01', label: 'PostgreSQL', path: '/temas/tema-postgres', icon: 'speed', node_type: 'OBJECT' },
-          { id: 121, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Enterprise', path: '/temas/tema-oracle', icon: 'storage', node_type: 'OBJECT' }
+          { id: 120, code: 'MNU_POSTGRES_GUIDE', label: 'PostgreSQL Enterprise', path: '/temas/postgres', icon: 'storage', node_type: 'OBJECT' },
+          { id: 121, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Enterprise', path: '/temas/oracle', icon: 'database', node_type: 'OBJECT' },
+          { id: 1212, code: 'MNU_TEMA_09', label: 'Migraciones de BD (Liquibase/Flyway)', path: '/temas/tema-09-migracion-db', icon: 'published_with_changes', node_type: 'OBJECT' },
+          { id: 1213, code: 'MNU_TEMA_07', label: 'Row-Level Security (RLS)', path: '/temas/tema-07-rls-gobernanza', icon: 'policy', node_type: 'OBJECT' }
         ]
       },
       {
         id: 122, code: 'SUB_TEMAS_INFRA', label: 'Contenedores e Infraestructura', icon: 'cloud', node_type: 'CONTAINER',
         children: [
-          { id: 123, code: 'MNU_TEMA_02', label: 'Docker Multi-stage', path: '/temas/tema-02-docker-multistage', icon: 'layers', node_type: 'OBJECT' }
-        ]
-      },
-      {
-        id: 400, code: 'SUB_EXT_FRONT', label: 'Frontend Moderno', icon: 'web', node_type: 'CONTAINER',
-        children: [
-          { id: 401, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', node_type: 'OBJECT' },
-          { id: 408, code: 'MNU_EXT_VUE', label: 'Vue.js Ecosystem', path: '/temas/ext-vue', icon: 'code', node_type: 'OBJECT' }
-        ]
-      },
-      {
-        id: 402, code: 'SUB_EXT_BACK', label: 'Backend & APIs', icon: 'api', node_type: 'CONTAINER',
-        children: [
-          { id: 403, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', node_type: 'OBJECT' }
-        ]
-      },
-      {
-        id: 404, code: 'SUB_EXT_CLOUD', label: 'DevOps & Cloud', icon: 'cloud', node_type: 'CONTAINER',
-        children: [
+          { id: 1220, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores', path: '/temas/docker', icon: 'cloud', node_type: 'OBJECT' },
+          { id: 123, code: 'MNU_TEMA_02', label: 'Docker Multi-stage Builds', path: '/temas/tema-02-docker-multistage', icon: 'layers', node_type: 'OBJECT' },
+          { id: 1222, code: 'MNU_TEMA_04', label: 'Infrastructure as Code (Terraform)', path: '/temas/tema-04-iac-terraform', icon: 'build_circle', node_type: 'OBJECT' },
+          { id: 1223, code: 'MNU_TEMA_17', label: 'Kubernetes & Orquestación', path: '/temas/tema-17-kubernetes', icon: 'hub', node_type: 'OBJECT' },
+          { id: 1224, code: 'MNU_TEMA_18', label: 'Cloud Native & SRE', path: '/temas/tema-18-cloud-native', icon: 'cloud_done', node_type: 'OBJECT' },
           { id: 405, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', node_type: 'OBJECT' }
         ]
       },
       {
-        id: 406, code: 'SUB_EXT_SEC', label: 'Ciberseguridad', icon: 'security', node_type: 'CONTAINER',
+        id: 406, code: 'SUB_EXT_SEC', label: 'Ciberseguridad & Gobernanza NGAC', icon: 'security', node_type: 'CONTAINER',
         children: [
+          { id: 1230, code: 'MNU_NGAC_GUIDE', label: 'Gobernanza Sentinel-NGAC', path: '/temas/ngac', icon: 'security', node_type: 'OBJECT' },
+          { id: 1231, code: 'MNU_TEMA_05', label: 'Control de Acceso RBAC/ABAC/NGAC', path: '/temas/tema-05-rbac-abac-ngac', icon: 'admin_panel_settings', node_type: 'OBJECT' },
+          { id: 1232, code: 'MNU_TEMA_06', label: 'Menús Dinámicos Sentinel-NGAC', path: '/temas/tema-06-ngac-menus', icon: 'list_alt', node_type: 'OBJECT' },
+          { id: 1233, code: 'MNU_TEMA_08', label: 'DevSecOps & HashiCorp Vault', path: '/temas/tema-08-devsecops-vault', icon: 'vpn_key', node_type: 'OBJECT' },
           { id: 407, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 400, code: 'SUB_EXT_FRONT', label: 'Frontend & Backend', icon: 'web', node_type: 'CONTAINER',
+        children: [
+          { id: 401, code: 'MNU_EXT_REACT', label: 'React Avanzado', path: '/temas/ext-react', icon: 'javascript', node_type: 'OBJECT' },
+          { id: 408, code: 'MNU_EXT_VUE', label: 'Vue.js Ecosystem', path: '/temas/ext-vue', icon: 'code', node_type: 'OBJECT' },
+          { id: 403, code: 'MNU_EXT_NODE', label: 'Node.js Avanzado', path: '/temas/ext-node', icon: 'terminal', node_type: 'OBJECT' },
+          { id: 1243, code: 'MNU_TEMA_03', label: 'Git Avanzado & Rebase', path: '/temas/tema-03-git-avanzado', icon: 'merge_type', node_type: 'OBJECT' }
+        ]
+      },
+      {
+        id: 500, code: 'SUB_TEMAS_ARCH', label: 'Arquitectura & Patrones', icon: 'architecture', node_type: 'CONTAINER',
+        children: [
+          { id: 1250, code: 'MNU_TEMA_10', label: 'Patrón Saga & Distributed ETL', path: '/temas/tema-10-etl-saga', icon: 'account_tree', node_type: 'OBJECT' },
+          { id: 1251, code: 'MNU_TEMA_11', label: 'SaaS Multi-tenant', path: '/temas/tema-11-saas-multitenant', icon: 'domain', node_type: 'OBJECT' },
+          { id: 1252, code: 'MNU_TEMA_12', label: 'Resiliencia Backend & Circuit Breakers', path: '/temas/tema-12-resiliencia-backend', icon: 'shield_heart', node_type: 'OBJECT' },
+          { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', node_type: 'OBJECT' },
+          { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', node_type: 'OBJECT' },
+          { id: 1255, code: 'MNU_TEMA_15', label: 'Arquitecturas Limpias & Hexagonal', path: '/temas/tema-15-arquitecturas-software', icon: 'architecture', node_type: 'OBJECT' },
+          { id: 1256, code: 'MNU_TEMA_16', label: 'DDD & Toma de Requerimientos', path: '/temas/tema-16-toma-requerimientos', icon: 'assignment', node_type: 'OBJECT' }
         ]
       }
     ]

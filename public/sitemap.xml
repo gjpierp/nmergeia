@@ -132,6 +132,71 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/#temas/datascience/pyspark</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/datascience/pyspark"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience/pyspark"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/datascience/kafka</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/datascience/kafka"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience/kafka"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/datascience/deltalake</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/datascience/deltalake"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience/deltalake"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/datascience/mlops</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/datascience/mlops"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience/mlops"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/datascience/polars</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/datascience/polars"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience/polars"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/#temas/postgres</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -158,6 +223,32 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/oracle"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/#temas/tema-09-migracion-db</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-09-migracion-db"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-09-migracion-db"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-07-rls-gobernanza</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-07-rls-gobernanza"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-07-rls-gobernanza"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/#temas/docker</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -171,6 +262,71 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/docker"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/#temas/tema-02-docker-multistage</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-02-docker-multistage"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-02-docker-multistage"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-04-iac-terraform</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-04-iac-terraform"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-04-iac-terraform"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-17-kubernetes</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-17-kubernetes"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-17-kubernetes"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-18-cloud-native</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-18-cloud-native"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-18-cloud-native"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/ext-aws</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-aws"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/#temas/ngac</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -182,6 +338,58 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ngac"/>
     <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ngac"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ngac"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-05-rbac-abac-ngac</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-05-rbac-abac-ngac"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-05-rbac-abac-ngac"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-06-ngac-menus</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-06-ngac-menus"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-06-ngac-menus"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-08-devsecops-vault</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-08-devsecops-vault"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-08-devsecops-vault"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/ext-pentest</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-pentest"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-react</loc>
@@ -223,30 +431,108 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-node"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#temas/ext-aws</loc>
+    <loc>https://nmergeia.com/#temas/tema-03-git-avanzado</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-aws"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-aws"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-03-git-avanzado"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-03-git-avanzado"/>
   </url>
   <url>
-    <loc>https://nmergeia.com/#temas/ext-pentest</loc>
+    <loc>https://nmergeia.com/#temas/tema-10-etl-saga</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/ext-pentest"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/ext-pentest"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-10-etl-saga"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-10-etl-saga"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-11-saas-multitenant</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-11-saas-multitenant"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-11-saas-multitenant"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-12-resiliencia-backend</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-12-resiliencia-backend"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-12-resiliencia-backend"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-13-llm-rag</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-13-llm-rag"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-14-ai-agents</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-14-ai-agents"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-15-arquitecturas-software</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-15-arquitecturas-software"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-15-arquitecturas-software"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-16-toma-requerimientos</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-16-toma-requerimientos"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-16-toma-requerimientos"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#about</loc>
