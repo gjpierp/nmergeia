@@ -244,5 +244,6 @@
   "SUB_TEMAS_DATASCIENCE": "Data Science & IA",
   "SUB_TEMAS_BD": "Bancos de Dados & Otimização",
   "SUB_TEMAS_INFRA": "Contêineres & Infraestrutura",
-  "SUB_EXT_SEC": "Cibersegurança & Governança NGAC"
+  "SUB_EXT_SEC": "Cibersegurança & Governança NGAC",
+  "nav_faq": "Preguntas Frecuentes"
 }

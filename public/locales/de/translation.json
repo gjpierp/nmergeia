@@ -244,5 +244,6 @@
   "SUB_TEMAS_DATASCIENCE": "Data Science & KI",
   "SUB_TEMAS_BD": "Datenbanken & Optimierung",
   "SUB_TEMAS_INFRA": "Container & Infrastruktur",
-  "SUB_EXT_SEC": "Cybersicherheit & NGAC-Governance"
+  "SUB_EXT_SEC": "Cybersicherheit & NGAC-Governance",
+  "nav_faq": "Preguntas Frecuentes"
 }

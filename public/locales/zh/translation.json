@@ -244,5 +244,6 @@
   "SUB_TEMAS_DATASCIENCE": "数据科学与 AI",
   "SUB_TEMAS_BD": "数据库与性能优化",
   "SUB_TEMAS_INFRA": "容器与基础设施",
-  "SUB_EXT_SEC": "网络安全与 NGAC 治理"
+  "SUB_EXT_SEC": "网络安全与 NGAC 治理",
+  "nav_faq": "Preguntas Frecuentes"
 }
