@@ -603,7 +603,7 @@ function App() {
       return <GenericTopicPage topicId="ext_vue" title="Vue.js Ecosystem & Pinia" initialLevel={level} appLanguage={appLanguage} />;
     }
 
-    if (activeTab === 'ext-node' || activeTab.startsWith('ext-node-')) {
+    if (activeTab === 'ext-node' || activeTab.startsWith('ext-node-') || activeTab === 'temas/ext-node') {
       const sub = activeTab.replace('ext-node-', '');
       const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
       return <GenericTopicPage topicId="ext_node" title="Node.js Enterprise Architecture" initialLevel={level} appLanguage={appLanguage} />;
