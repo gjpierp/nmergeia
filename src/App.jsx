@@ -530,11 +530,6 @@ function App() {
     if (activeTab === 'docker-avanzado') return <GenericTopicPage topicId="docker" initialLevel="avanzado" title="Docker & Contenedores" appLanguage={appLanguage} />;
     if (activeTab === 'docker-experto') return <GenericTopicPage topicId="docker" initialLevel="experto" title="Docker & Contenedores" appLanguage={appLanguage} />;
 
-    if (activeTab === 'ngac-inicial') return <GenericTopicPage topicId="ngac" initialLevel="inicial" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-basico') return <GenericTopicPage topicId="ngac" initialLevel="basico" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-medio') return <GenericTopicPage topicId="ngac" initialLevel="medio" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-avanzado') return <GenericTopicPage topicId="ngac" initialLevel="avanzado" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
-    if (activeTab === 'ngac-experto') return <GenericTopicPage topicId="ngac" initialLevel="experto" title="Gobernanza Sentinel-NGAC" appLanguage={appLanguage} />;
 
     // Bases de Datos
     if (activeTab === 'tema-postgres') return <GenericTopicPage topicId="postgres" initialLevel="inicial" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
@@ -545,11 +540,6 @@ function App() {
     if (activeTab === 'tema-mongodb') return <GenericTopicPage topicId="db_mongodb" title="MongoDB" appLanguage={appLanguage} />;
 
     // Temas Especializados
-    if (activeTab === 'tema-02-docker-multistage') return <GenericTopicPage topicId="docker" title="Docker Multi-stage" appLanguage={appLanguage} />;
-    if (activeTab === 'git-avanzado' || activeTab === 'tema-03-git-avanzado') return <Tema03GitAvanzadoPage appLanguage={appLanguage} />;
-    if (activeTab === 'tema-04-iac-terraform') return <Tema04IacTerraformPage appLanguage={appLanguage} />;
-    if (activeTab === 'auth-avanzado' || activeTab === 'tema-05-rbac-abac-ngac') return <Tema05RbacAbacNgacPage appLanguage={appLanguage} />;
-    if (activeTab === 'auth-experto' || activeTab === 'tema-06-ngac-menus') return <Tema06NgacMenusPage appLanguage={appLanguage} />;
     // 🧠 Data Science & Sub-temas Especializados (Páginas Únicas Limpias sin Niveles)
     if (activeTab === 'datascience-pyspark' || activeTab.startsWith('datascience-pyspark-') || activeTab === 'temas/datascience/pyspark') {
       return <GenericTopicPage topicId="datascience_pyspark" title="PySpark & Big Data" singleFile="datascience_pyspark.md" appLanguage={appLanguage} />;
@@ -595,11 +585,9 @@ function App() {
       return <GenericTopicPage topicId="docker" title="Docker & Contenedores" initialLevel={level} appLanguage={appLanguage} />;
     }
 
-    // 🛡️ Ciberseguridad & Gobernanza NGAC
-    if (activeTab === 'ngac' || activeTab.startsWith('ngac-')) {
-      const sub = activeTab.replace('ngac-', '');
-      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'maestro'].includes(sub) ? sub : 'inicial';
-      return <GenericTopicPage topicId="ngac" title="Gobernanza Sentinel-NGAC" initialLevel={level} appLanguage={appLanguage} />;
+    // 🛡️ Ciberseguridad & Gobernanza NGAC (Página Única Limpia sin Niveles)
+    if (activeTab === 'ngac' || activeTab.startsWith('ngac-') || activeTab === 'temas/ngac') {
+      return <GenericTopicPage topicId="ngac" title="Gobernanza Sentinel-NGAC" singleFile="ngac.md" appLanguage={appLanguage} />;
     }
 
     // ⚛️ Frontend & Backend Ecosystem
