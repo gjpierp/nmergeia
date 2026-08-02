@@ -35,36 +35,43 @@ const MermaidChart = ({ chart, theme }) => {
           if (!rawChart) return '';
           let str = rawChart.replace(/\r/g, '').trim();
 
-          // Verificar palabras clave válidas de Mermaid
-          const validKeywords = ['graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram', 'erDiagram', 'gantt', 'pie', 'gitGraph', 'C4Context'];
+          // Palabras clave oficiales de inicio de diagramas Mermaid
+          const validKeywords = [
+            'graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 
+            'stateDiagram', 'stateDiagram-v2', 'erDiagram', 'gantt', 
+            'pie', 'gitGraph', 'C4Context', 'architecture', 'mindmap', 
+            'timeline', 'quadrantChart', 'sankey', 'requirementDiagram'
+          ];
           const firstWord = str.split(/\s+/)[0];
-          if (!validKeywords.includes(firstWord)) {
+          const isKnownDiagram = validKeywords.some(kw => firstWord.startsWith(kw));
+
+          if (!isKnownDiagram) {
             str = 'flowchart TD\n' + str;
           }
 
-          // Normalizar 'graph' -> 'flowchart'
-          str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
+          // Solo aplicar transformaciones de sintaxis de nodos si es un diagrama tipo flowchart o graph
+          const currentType = str.split(/\s+/)[0];
+          if (currentType === 'flowchart' || currentType === 'graph') {
+            str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
 
-          // Envolver etiquetas de subgraphs: subgraph sub_1 [Label (Info)] -> subgraph sub_1 ["Label (Info)"]
-          let subCount = 0;
-          str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
-            subCount++;
-            const subId = id ? id.trim() : `sub_${subCount}`;
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            return `subgraph ${subId} ["${cleanLabel}"]`;
-          });
+            let subCount = 0;
+            str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
+              subCount++;
+              const subId = id ? id.trim() : `sub_${subCount}`;
+              const cleanLabel = label.replace(/"/g, "'").trim();
+              return `subgraph ${subId} ["${cleanLabel}"]`;
+            });
 
-          // Envolver etiquetas de nodos: Node[Label / Info] -> Node["Label / Info"]
-          str = str.replace(/([a-zA-Z0-9_-]+)\[([^"\n][^\]]*?)\]/g, (match, id, label) => {
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            return `${id}["${cleanLabel}"]`;
-          });
+            str = str.replace(/([a-zA-Z0-9_-]+)\[([^"\n][^\]]*?)\]/g, (match, id, label) => {
+              const cleanLabel = label.replace(/"/g, "'").trim();
+              return `${id}["${cleanLabel}"]`;
+            });
 
-          // Envolver etiquetas de BD: Node[(Label)] -> Node[("Label")]
-          str = str.replace(/([a-zA-Z0-9_-]+)\[\((.*?)\)\]/g, (match, id, label) => {
-            const cleanLabel = label.replace(/"/g, "'").trim();
-            return `${id}[("${cleanLabel}")]`;
-          });
+            str = str.replace(/([a-zA-Z0-9_-]+)\[\((.*?)\)\]/g, (match, id, label) => {
+              const cleanLabel = label.replace(/"/g, "'").trim();
+              return `${id}[("${cleanLabel}")]`;
+            });
+          }
 
           return str;
         };
