@@ -1,4 +1,4 @@
-# Data Science, Ecosistema Python, NumPy y Pandas Core
+# Data Science, Écosystème Python, NumPy et Pandas Core
 
 La **Ciencia de Datos (Data Science)** es la disciplina interdisciplinaria que combina métodos científicos, algoritmos matemáticos, procesos estadísticos y sistemas de computación para extraer conocimiento útil, patrones ocultos e insights accionables a partir de grandes volúmenes de datos estructurados y no estructurados. En la era actual de la Inteligencia Artificial y el Big Data, Python se ha consolidado como el lenguaje estándar absoluto gracias a su ecosistema rico en librerías científicas optimizadas en C/C++ y Rust.
 

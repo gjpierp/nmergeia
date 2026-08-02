@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. ガバナンスと Sentinel-NGAC セキュリティ
 Todos los endpoints de inferencia MLOps están auditados por **Sentinel-NGAC**, asegurando límites de cuotas de tokens y prevención de Prompt Injections.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. All rights reserved.

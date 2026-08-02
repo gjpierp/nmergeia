@@ -1,4 +1,4 @@
-## 🎯 1. Polars Rust SIMD Engine
+## 🎯 1. Moteur Polars Rust & Acceleration SIMD
 
 **Polars** es la biblioteca de procesamiento de datos de última generación desarrollada en **Rust**. Ofrece un rendimiento extremadamente superior a Pandas gracias al uso de vectorización **SIMD** (Single Instruction, Multiple Data), procesamiento de múltiples hilos sin GIL (Global Interpreter Lock) y optimizaciones de consultas mediante su motor **Lazy Engine**.
 
@@ -27,7 +27,7 @@ flowchart TD
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Polars Rust SIMD Engine
+# NMerge IA - Módulo de Especialidad: Moteur Polars Rust & Acceleration SIMD
 # Procesamiento vectorizado masivo con LazyFrames y Predicate Pushdown
 # =====================================================================
 
@@ -67,7 +67,7 @@ print(result_df.head(10))
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. Gouvernance & Sécurité Sentinel-NGAC
 Toda consulta ejecutada vía Polars cumple con las políticas de control de datos **Sentinel-NGAC**.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Tous droits réservés.

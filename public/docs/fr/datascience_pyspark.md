@@ -1,4 +1,4 @@
-## 🎯 1. PySpark & Distributed Big Data Processing
+## 🎯 1. PySpark & Traitement Distribué des Big Data
 
 **PySpark** es la interfaz en Python para Apache Spark, la plataforma líder en procesamiento distribuido de Big Data a escala petabyte. Permite realizar consultas analíticas, transformaciones ETL masivas, procesamiento en streaming y machine learning sobre clústeres distribuidos.
 
@@ -93,7 +93,7 @@ print("🚀 Pipeline PySpark completado exitosamente.")
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. Gouvernance & Sécurité Sentinel-NGAC
 Todas las ejecuciones de **PySpark** cuentan con aislamiento de contexto de seguridad y cifrado en disco y red (RPC SASL/AES-256).
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Tous droits réservés.

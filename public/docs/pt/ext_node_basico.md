@@ -73,4 +73,4 @@ Es crucial entender cómo el frontend te envía datos por la URL.
   });
   ```
 
-Ahora sabes crear las rutas, pero meter todo en un solo archivo `index.js` crea código espagueti. En el **Nível Intermediário**, aprenderemos a estructurar la arquitectura por Capas (Routes, Controllers, Services) y el concepto más vital de Express: Los Middlewares.
+Ahora sabes crear las rutas, pero meter todo en un solo archivo `index.js` crea código espagueti. En el **Nivel Medio**, aprenderemos a estructurar la arquitectura por Capas (Routes, Controllers, Services) y el concepto más vital de Express: Los Middlewares.

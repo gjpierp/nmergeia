@@ -137,7 +137,7 @@ def run_consumer_loop():
 
 ---
 
-## 🧪 4. Cobertura de Pruebas & Verificación
+## 🧪 4. テストカバレッジと検証
 
 ```bash
 # Ejecutar verificación de integraciones Kafka Event Streaming
@@ -146,7 +146,7 @@ npm run test -- --grep="kafka_streaming"
 
 ---
 
-## 🔒 5. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 5. ガバナンスと Sentinel-NGAC セキュリティ
 Toda la infraestructura de temas en Apache Kafka utiliza cifrado **TLS 1.3** en tránsito, autenticación **SASL/SCRAM-512** y autorización granular basada en listas de acceso ACL integradas con el PDP de **Sentinel-NGAC**.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. All rights reserved.

@@ -562,7 +562,9 @@ function App() {
     }
 
     if (activeTab === 'datascience' || activeTab.startsWith('datascience-') || activeTab === 'temas/datascience') {
-      return <GenericTopicPage topicId="datascience" title="Data Science & AI Engineering" singleFile="datascience.md" appLanguage={appLanguage} />;
+      const sub = activeTab.replace('datascience-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience" title="Data Science & AI Engineering" initialLevel={level} appLanguage={appLanguage} />;
     }
 
     // 🐘 Base de Datos & Optimización

@@ -77,4 +77,4 @@ export const handler = async (event) => {
 };
 ```
 
-En el **Nível Intermediário**, veremos cómo conectar nuestras Lambdas al mundo exterior usando API Gateway y cómo manejar Bases de Datos Serverless con DynamoDB.
+En el **Nivel Medio**, veremos cómo conectar nuestras Lambdas al mundo exterior usando API Gateway y cómo manejar Bases de Datos Serverless con DynamoDB.

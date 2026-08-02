@@ -68,4 +68,4 @@ export const handler = async (event) => {
 ```
 
 ## Próximos Pasos
-Crear estos recursos haciendo clics en la consola web de AWS (Click-Ops) es un pecado capital en la industria. En el **Nível Avançado**, abrazaremos la Infraestructura como Código (IaC) usando Serverless Framework, SAM o Terraform.
+Crear estos recursos haciendo clics en la consola web de AWS (Click-Ops) es un pecado capital en la industria. En el **Nivel Avanzado**, abrazaremos la Infraestructura como Código (IaC) usando Serverless Framework, SAM o Terraform.

@@ -92,4 +92,4 @@ npm-debug.log
 .env
 ```
 
-Con estas bases dominadas, estás listo para dejar de correr contenedores aislados. En el **Mittlere Stufe**, aprenderemos a conectar múltiples servicios (como tu API en Node.js y una base de datos PostgreSQL) en una red orquestada utilizando **Docker Compose**.
+Con estas bases dominadas, estás listo para dejar de correr contenedores aislados. En el **Nivel Medio**, aprenderemos a conectar múltiples servicios (como tu API en Node.js y una base de datos PostgreSQL) en una red orquestada utilizando **Docker Compose**.

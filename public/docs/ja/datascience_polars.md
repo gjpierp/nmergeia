@@ -67,7 +67,7 @@ print(result_df.head(10))
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. ガバナンスと Sentinel-NGAC セキュリティ
 Toda consulta ejecutada vía Polars cumple con las políticas de control de datos **Sentinel-NGAC**.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. All rights reserved.

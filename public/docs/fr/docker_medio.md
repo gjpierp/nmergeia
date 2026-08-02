@@ -97,4 +97,4 @@ Los contenedores son entidades **efímeras**. Si eliminas un contenedor de base 
 
 En el ejemplo anterior, al definir `volumes: - pg_data:/var/lib/postgresql/data`, le estamos diciendo a Docker: "Toma todo lo que PostgreSQL guarde en esa carpeta interna y guárdalo de forma segura en un volumen de mi disco duro físico". Si destruyes el contenedor de Postgres y levantas uno nuevo al día siguiente, el nuevo contenedor se conectará al volumen `pg_data` y recuperará todas tus tablas al instante.
 
-Dominar `docker-compose` elimina por completo el síndrome de "Configuración de Entorno Local". En el **Niveau Avancé**, daremos el salto crítico de desarrollo a producción: exploraremos las Builds Multietapa (Multi-Stage Builds) para reducir imágenes de gigabytes a unos pocos megabytes blindados.
+Dominar `docker-compose` elimina por completo el síndrome de "Configuración de Entorno Local". En el **Nivel Avanzado**, daremos el salto crítico de desarrollo a producción: exploraremos las Builds Multietapa (Multi-Stage Builds) para reducir imágenes de gigabytes a unos pocos megabytes blindados.

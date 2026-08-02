@@ -48,4 +48,4 @@ Si necesitas procesar video, entrenar modelos de Inteligencia Artificial, o rend
 Node.js es el REY absoluto en aplicaciones **I/O Intensive** (Input/Output): Chats en tiempo real, APIs REST, streaming de datos y microservicios.
 
 ## Próximos Pasos
-Hemos entendido cómo respira Node.js. En el **Nível Básico**, dejaremos la teoría y crearemos nuestro primer servidor HTTP utilizando el framework que gobierna el 90% del mercado: Express.js.
+Hemos entendido cómo respira Node.js. En el **Nivel Básico**, dejaremos la teoría y crearemos nuestro primer servidor HTTP utilizando el framework que gobierna el 90% del mercado: Express.js.

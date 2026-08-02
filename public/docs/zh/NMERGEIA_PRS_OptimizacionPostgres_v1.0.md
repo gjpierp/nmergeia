@@ -17,7 +17,7 @@ Estado: Documento Técnico Final / Representación Visual
 ---
 
 ## 📉 Diapositiva 2: El Costo del Mal Rendimiento en Bases de Datos
-* **Puntos Clave:**
+* **关键要点:**
   * **Uso ineficiente de recursos:** Consultas lentas saturan el CPU y consumen los `shared_buffers`.
   * **Experiencia de usuario (UX):** Latencia acumulada en endpoints críticos de la aplicación.
   * **Costes de Cloud (FinOps):** Reducir costes escalando verticalmente es una mala solución frente al tuning de código.

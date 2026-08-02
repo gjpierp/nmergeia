@@ -1,57 +1,57 @@
-# Infrastructure as Code & Immutability (IaC & Terraform)
+# Infraestructura como Código e Inmutabilidad (IaC & Terraform)
 
-**Infrastructure as Code (IaC)** is the foundational DevOps and Cloud Engineering practice of provisioning, configuring, and managing IT infrastructure (servers, networks, databases, load balancers) via auditable, reproducible, and immutable code, replacing manual web console configurations (*ClickOps*).
+La **Infraestructura como Código (IaC)** es la práctica fundamental de DevOps y Cloud Engineering que permite aprovisionar, configurar y gestionar la infraestructura tecnológica (servidores, redes, bases de datos y balanceadores) mediante código fuente auditable, reproducible e inmutable, sustituyendo la configuración manual basada en clics en la consola web (*ClickOps*).
 
-## 1. Declarative Paradigm & Immutability
+## 1. El Paradigma Declarativo e Inmutabilidad
 
-Unlike traditional step-by-step imperative scripting (Bash or PowerShell), **Terraform** uses a **Declarative** approach: you define the *DESIRED STATE* of your architecture, and the engine automatically calculates the diff against real cloud resources.
+A diferencia de la gestión tradicional basada en scripts imperativos (como Bash o PowerShell) que indican *CÓMO* ejecutar pasos secuenciales, la arquitectura de **Terraform** utiliza un enfoque **Declarativo**: defines el *ESTADO DESEADO* de tu infraestructura y el motor calcula automáticamente la diferencia contra el estado real en la nube.
 
-### Declarative Provisioning Flowchart
+### Diagrama de Flujo de Aprovisionamiento Declarativo
 
 ```mermaid
 flowchart TD
-subgraph sub_1 ["Development & Version Control"]
-Git["Git Repository (HCL Code)"] -->|Pull Request / Merge| CI["CI/CD Pipeline (GitHub Actions / GitLab)"]
+subgraph sub_1 ["Desarrollo & Control de Versiones"]
+Git["Repositorio Git (Código HCL)"] -->|Pull Request / Merge| CI["Pipeline CI/CD (GitHub Actions / GitLab)"]
 end
 
-subgraph sub_2 ["HashiCorp Terraform Engine"]
-CI -->|terraform init| Init["Download Providers (AWS, Azure, GCP)"]
-Init -->|terraform plan| Plan["Generate Diff Plan"]
-Plan -->|terraform apply| Lock["Acquire State Lock (DynamoDB)"]
+subgraph sub_2 ["Motor HashiCorp Terraform"]
+CI -->|terraform init| Init["Descarga de Providers (AWS, Azure, GCP)"]
+Init -->|terraform plan| Plan["Generación de Plan de Cambios (Diff)"]
+Plan -->|terraform apply| Lock["Bloqueo de Estado (DynamoDB State Lock)"]
 end
 
-subgraph sub_3 ["Immutable Cloud Infrastructure"]
-Lock -->|API Provisioning| S3["Remote State Backend (Amazon S3)"]
-Lock -->|Deploy Resources| Infra["VPC + Subnets + EC2 + RDS + K8s"]
+subgraph sub_3 ["Infraestructura Inmutable en la Nube"]
+Lock -->|Aprovisionamiento API| S3["Backend Estado Remoto (Amazon S3)"]
+Lock -->|Despliegue Recursos| Infra["VPC + Subnets + EC2 + RDS + K8s"]
 end
 ```
 
-## 2. Terraform Lifecycle
+## 2. Ciclo de Vida de Terraform
 
-The standard infrastructure engineering workflow consists of 4 essential commands:
+El flujo de trabajo estándar en ingeniería de infraestructura consta de 4 comandos esenciales:
 
 ```bash
-# 1. Initialize working directory & download provider plugins
+# 1. Inicializar directorio y descargar proveedores
 terraform init
 
-# 2. Preview changes & calculate diff against real infrastructure
+# 2. Vista previa y cálculo del diff contra la infraestructura real
 terraform plan
 
-# 3. Apply changes and provision resources
+# 3. Aplicación de cambios y creación de recursos
 terraform apply -auto-approve
 
-# 4. Safely destroy temporary test environments
+# 4. Destrucción segura de entornos temporales de pruebas
 terraform destroy
 ```
 
-## 3. Remote State & Atomic Locking (S3 + DynamoDB)
+## 3. Estado Remoto y Bloqueo Concurrente (Remote State Locking)
 
-The `terraform.tfstate` file maps declared code resources to actual cloud IDs.
+El archivo de estado `terraform.tfstate` es el mapa de verdad que asocia los recursos declarados en el código con los IDs reales creados en el proveedor de nube. 
 
-* **Anti-pattern:** Storing state locally or committing to Git (exposes secrets and causes state corruption).
-* **Enterprise Best Practice:** Store state encrypted in **Amazon S3** with atomic concurrency locking via **Amazon DynamoDB**.
+* **Anti-patrón:** Guardar el estado localmente o enviarlo a Git (expone secretos y genera colisiones entre desarrolladores).
+* **Mejor Práctica Enterprise:** Almacenar el archivo de estado cifrado en **Amazon S3** con un mecanismo de bloqueo atómico mediante **Amazon DynamoDB**.
 
-### Example `backend.tf` Configuration:
+### Ejemplo de Configuración `backend.tf`:
 
 ```hcl
 terraform {
@@ -74,22 +74,22 @@ terraform {
 }
 ```
 
-## 4. Reusable Production Modules
+## 4. Módulos Reutilizables de Producción
 
-Modules encapsulate resource sets to promote code reuse and standardize security policies.
+Los módulos encapsulan conjuntos de recursos para promover la reutilización y estandarizar la seguridad empresarial.
 
 ```hcl
-# Reusable Web App Infrastructure Module
-module "production_web_server" {
-  source             = "./modules/web_infrastructure"
-  environment        = "production"
-  instance_type      = "t3.medium"
-  min_size           = 2
-  max_size           = 10
+# Ejemplo de invocación de Módulo Web App Reutilizable
+module "servidor_web_produccion" {
+  source          = "./modules/infraestructura_web"
+  environment     = "production"
+  instance_type   = "t3.medium"
+  min_size        = 2
+  max_size        = 10
   enable_autoscaling = true
 
   tags = {
-    Project   = "NMerge AI"
+    Proyecto  = "NMerge IA"
     ManagedBy = "Terraform"
   }
 }

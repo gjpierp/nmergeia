@@ -1,4 +1,4 @@
-## 🎯 1. Apache Kafka Event Streaming
+## 🎯 1. Streaming d'Événements Apache Kafka
 
 **Apache Kafka** es la plataforma distribuida de transmisión de eventos de alto rendimiento utilizada por más del 80% de las empresas Fortune 500. Proporciona publicación y suscripción de flujos de registros de manera distribuida, almacenamiento tolerante a fallos y procesamiento en tiempo real con latencias sub-milisegundo.
 
@@ -49,7 +49,7 @@ flowchart TD
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Apache Kafka Event Streaming
+# NMerge IA - Módulo de Especialidad: Streaming d'Événements Apache Kafka
 # Productor Idempotente y Consumidor Transaccional con Schema Registry
 # =====================================================================
 
@@ -137,7 +137,7 @@ def run_consumer_loop():
 
 ---
 
-## 🧪 4. Cobertura de Pruebas & Verificación
+## 🧪 4. Couverture des Tests & Vérification
 
 ```bash
 # Ejecutar verificación de integraciones Kafka Event Streaming
@@ -146,7 +146,7 @@ npm run test -- --grep="kafka_streaming"
 
 ---
 
-## 🔒 5. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 5. Gouvernance & Sécurité Sentinel-NGAC
 Toda la infraestructura de temas en Apache Kafka utiliza cifrado **TLS 1.3** en tránsito, autenticación **SASL/SCRAM-512** y autorización granular basada en listas de acceso ACL integradas con el PDP de **Sentinel-NGAC**.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Tous droits réservés.

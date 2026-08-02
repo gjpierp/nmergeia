@@ -93,7 +93,7 @@ print("🚀 Pipeline PySpark completado exitosamente.")
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. Governança & Segurança Sentinel-NGAC
 Todas las ejecuciones de **PySpark** cuentan con aislamiento de contexto de seguridad y cifrado en disco y red (RPC SASL/AES-256).
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Todos os direitos reservados.

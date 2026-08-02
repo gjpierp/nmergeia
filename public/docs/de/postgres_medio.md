@@ -1,6 +1,6 @@
 # Consultas Avanzadas, CTEs y Transacciones ACID
 
-Cuando el `SELECT` y el `JOIN` básico ya no son suficientes para procesar la lógica de negocio, entramos al Mittlere Stufe. Aquí transformamos a PostgreSQL de un simple almacén de datos a un **motor de computación analítica**. Mover el cómputo a la base de datos (donde viven los datos) es casi siempre más eficiente que enviar gigabytes de datos a través de la red hacia tu servidor Node.js o Python.
+Cuando el `SELECT` y el `JOIN` básico ya no son suficientes para procesar la lógica de negocio, entramos al Nivel Medio. Aquí transformamos a PostgreSQL de un simple almacén de datos a un **motor de computación analítica**. Mover el cómputo a la base de datos (donde viven los datos) es casi siempre más eficiente que enviar gigabytes de datos a través de la red hacia tu servidor Node.js o Python.
 
 ## 1. Common Table Expressions (CTEs): Limpiando el Espagueti SQL
 
@@ -104,4 +104,4 @@ ON CONFLICT (date, user_id)
 DO UPDATE SET visits = analytics.daily_stats.visits + 1;
 ```
 
-Con estas herramientas, has dejado atrás la escritura de SQL monolítico. Estás escribiendo código limpio, declarativo y matemáticamente robusto. En el **Fortgeschrittene Stufe**, nos adentraremos en el subsuelo del motor: los Planes de Ejecución (EXPLAIN) y la limpieza interna (Vacuum).
+Con estas herramientas, has dejado atrás la escritura de SQL monolítico. Estás escribiendo código limpio, declarativo y matemáticamente robusto. En el **Nivel Avanzado**, nos adentraremos en el subsuelo del motor: los Planes de Ejecución (EXPLAIN) y la limpieza interna (Vacuum).

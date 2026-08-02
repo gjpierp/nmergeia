@@ -1,4 +1,4 @@
-## 🎯 1. Delta Lake Architecture
+## 🎯 1. Architecture Delta Lake Engine
 
 **Delta Lake** es la capa de almacenamiento de código abierto que convierte los Data Lakes (S3, ADLS, GCS) en una arquitectura **Lakehouse empresarial**. Aporta transacciones ACID, viajes en el tiempo (Time Travel), evolución de esquemas y compactación en tiempo real manteniendo el formato de archivo abierto Parquet.
 
@@ -44,7 +44,7 @@ flowchart LR
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Delta Lake Architecture
+# NMerge IA - Módulo de Especialidad: Architecture Delta Lake Engine
 # Operaciones ACID, MERGE (Upsert), Z-Ordering y Time Travel en PySpark
 # =====================================================================
 
@@ -114,10 +114,10 @@ def query_time_travel(version: int):
 
 ---
 
-## 🧪 4. Cobertura de Pruebas & Verificación
+## 🧪 4. Couverture des Tests & Vérification
 
 ```bash
-# Ejecutar verificación formal para Delta Lake Architecture
+# Ejecutar verificación formal para Architecture Delta Lake Engine
 npm run test -- --grep="deltalake_acid"
 ```
 
@@ -126,4 +126,4 @@ npm run test -- --grep="deltalake_acid"
 ## 🔒 5. Cumplimiento & Gobernanza Sentinel-NGAC
 Todas las tablas Delta están protegidas por controles de acceso finos **Sentinel-NGAC** e integración nativa con políticas de auditoría en la capa de metadatos de almacenamiento.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Tous droits réservés.

@@ -1,4 +1,4 @@
-## 🎯 1. MLOps & GPU vLLM Serving
+## 🎯 1. Infraestructura MLOps & Service GPU vLLM
 
 **MLOps (Machine Learning Operations)** y las arquitecturas de despliegue de **vLLM** representan el estándar para operacionalizar modelos de lenguaje (LLMs) e Inteligencia Artificial en entornos de producción con alta concurrencia y baja latencia.
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+## 🔒 4. Gouvernance & Sécurité Sentinel-NGAC
 Todos los endpoints de inferencia MLOps están auditados por **Sentinel-NGAC**, asegurando límites de cuotas de tokens y prevención de Prompt Injections.
 
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. StackUpIA Software Labs. Tous droits réservés.

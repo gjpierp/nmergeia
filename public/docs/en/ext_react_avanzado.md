@@ -89,4 +89,4 @@ export const useAppStore = create(
 );
 ```
 
-En el **Expert Level**, dejaremos de lado el estado y nos concentraremos en el infierno más temido de los desarrolladores React: El manejo asíncrono profundo, el cacheo de peticiones HTTP con React Query, y el SSR.
+En el **Nivel Experto**, dejaremos de lado el estado y nos concentraremos en el infierno más temido de los desarrolladores React: El manejo asíncrono profundo, el cacheo de peticiones HTTP con React Query, y el SSR.

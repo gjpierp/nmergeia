@@ -4,7 +4,7 @@ Bienvenido al nivel final. Aquí no escribimos SQL; aquí modificamos el comport
 
 ## 1. El Problema de las Conexiones (Connection Pooling)
 
-Como vimos en el 入门级, Postgres hace un *fork* (crea un nuevo proceso) por cada conexión de cliente. Cada proceso consume aproximadamente de 2 a 10 MB de RAM. Si tu API Serverless (ej. AWS Lambda) abre 5,000 conexiones concurrentes, Postgres consumirá toda la memoria del servidor solo en procesos inactivos, causando un *Out of Memory (OOM) Crash*.
+Como vimos en el Nivel Inicial, Postgres hace un *fork* (crea un nuevo proceso) por cada conexión de cliente. Cada proceso consume aproximadamente de 2 a 10 MB de RAM. Si tu API Serverless (ej. AWS Lambda) abre 5,000 conexiones concurrentes, Postgres consumirá toda la memoria del servidor solo en procesos inactivos, causando un *Out of Memory (OOM) Crash*.
 
 ### Arquitectura con PgBouncer
 
