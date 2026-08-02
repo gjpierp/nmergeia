@@ -150,8 +150,22 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
     const fetchDoc = async () => {
       try {
         setLoading(true);
-        // Fallback a 'es' si no existe la traducción
-        const response = await fetch(`/docs/${appLanguage}/${filename}`);
+        // Fallback inteligente: probar idioma actual -> español -> archivo base
+        let response = await fetch(`/docs/${appLanguage}/${filename}`);
+        if (!response.ok && appLanguage !== 'es') {
+          response = await fetch(`/docs/es/${filename}`);
+        }
+        if (!response.ok) {
+          // Si es un subtema de nivel como datascience_pyspark_inicial.md, probar datascience_pyspark.md
+          const baseName = filename.replace(/_(inicial|basico|medio|avanzado|experto|optimizaciones)\.md$/, '.md');
+          if (baseName !== filename) {
+            response = await fetch(`/docs/${appLanguage}/${baseName}`);
+            if (!response.ok && appLanguage !== 'es') {
+              response = await fetch(`/docs/es/${baseName}`);
+            }
+          }
+        }
+
         if (!response.ok) {
           throw new Error('No se pudo cargar el documento.');
         }

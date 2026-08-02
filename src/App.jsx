@@ -547,10 +547,40 @@ function App() {
     if (activeTab === 'tema-04-iac-terraform') return <Tema04IacTerraformPage appLanguage={appLanguage} />;
     if (activeTab === 'auth-avanzado' || activeTab === 'tema-05-rbac-abac-ngac') return <Tema05RbacAbacNgacPage appLanguage={appLanguage} />;
     if (activeTab === 'auth-experto' || activeTab === 'tema-06-ngac-menus') return <Tema06NgacMenusPage appLanguage={appLanguage} />;
-    // 🧠 Data Science & AI Engineering
+    // 🧠 Data Science & Sub-temas Independientes del Sidebar (Cada uno con sus 6 Niveles)
+    if (activeTab === 'datascience-pyspark' || activeTab.startsWith('datascience-pyspark-')) {
+      const sub = activeTab.replace('datascience-pyspark-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience_pyspark" title="PySpark & Big Data" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'datascience-kafka' || activeTab.startsWith('datascience-kafka-')) {
+      const sub = activeTab.replace('datascience-kafka-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience_kafka" title="Apache Kafka Event Streaming" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'datascience-deltalake' || activeTab.startsWith('datascience-deltalake-')) {
+      const sub = activeTab.replace('datascience-deltalake-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience_deltalake" title="Delta Lake Architecture" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'datascience-mlops' || activeTab.startsWith('datascience-mlops-')) {
+      const sub = activeTab.replace('datascience-mlops-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience_mlops" title="MLOps & vLLM Infrastructure" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
+    if (activeTab === 'datascience-polars' || activeTab.startsWith('datascience-polars-')) {
+      const sub = activeTab.replace('datascience-polars-', '');
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
+      return <GenericTopicPage topicId="datascience_polars" title="Polars Rust & SIMD" initialLevel={level} appLanguage={appLanguage} />;
+    }
+
     if (activeTab === 'datascience' || activeTab.startsWith('datascience-')) {
       const sub = activeTab.replace('datascience-', '');
-      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones', 'pyspark', 'kafka', 'deltalake', 'mlops', 'polars'].includes(sub) ? sub : 'inicial';
+      const level = ['inicial', 'basico', 'medio', 'avanzado', 'experto', 'optimizaciones'].includes(sub) ? sub : 'inicial';
       return <GenericTopicPage topicId="datascience" title="Data Science & AI Engineering" initialLevel={level} appLanguage={appLanguage} />;
     }
 
