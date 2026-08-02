@@ -118,7 +118,7 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
         children: [
           { id: 1250, code: 'MNU_TEMA_10', label: 'Patrón Saga & Distributed ETL', path: '/temas/tema-10-etl-saga', icon: 'account_tree', node_type: 'OBJECT' },
           { id: 1251, code: 'MNU_TEMA_11', label: 'SaaS Multi-tenant', path: '/temas/tema-11-saas-multitenant', icon: 'domain', node_type: 'OBJECT' },
-          { id: 1252, code: 'MNU_TEMA_12', label: 'Resiliencia Backend & Circuit Breakers', path: '/temas/tema-12-resiliencia-backend', icon: 'shield_heart', node_type: 'OBJECT' },
+          { id: 1252, code: 'MNU_TEMA_12', label: 'Resiliencia Backend & Circuit Breakers', path: '/temas/tema-12-resiliencia-backend', icon: 'monitor_heart', node_type: 'OBJECT' },
           { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', node_type: 'OBJECT' },
           { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', node_type: 'OBJECT' },
           { id: 1255, code: 'MNU_TEMA_15', label: 'Arquitecturas Limpias & Hexagonal', path: '/temas/tema-15-arquitecturas-software', icon: 'architecture', node_type: 'OBJECT' },
