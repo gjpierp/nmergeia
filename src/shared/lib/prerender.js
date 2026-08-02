@@ -145,6 +145,7 @@ const routes = [
 
 // Añadir rutas dinámicas de guías técnicas por tema
 const techTopics = [
+  { id: 'datascience', title: 'Guía Profesional de Data Science & Machine Learning - NMerge IA' },
   { id: 'postgres', title: 'Guía Profesional de PostgreSQL Enterprise - NMerge IA' },
   { id: 'oracle', title: 'Guía Profesional de Oracle DB Enterprise - NMerge IA' },
   { id: 'docker', title: 'Guía Profesional de Docker & Contenedores - NMerge IA' },

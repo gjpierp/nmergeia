@@ -9,6 +9,17 @@ export const TopicLogo = ({ topicId, size = "42px", alt = "Tech Logo" }) => {
 
   // Map SVGs o colores/iconos SVG profesionales vectoriales
   const topicMap = {
+    datascience: {
+      name: 'Data Science & AI',
+      color: '#10b981',
+      bg: 'rgba(16, 185, 129, 0.15)',
+      svg: (
+        <svg viewBox="0 0 128 128" width={size} height={size}>
+          <path fill="#10B981" d="M64 8L16 32v64l48 24 48-24V32L64 8zm0 18l32 16v32L64 90 32 74V42l32-16z"/>
+          <circle cx="64" cy="58" r="10" fill="#34D399"/>
+        </svg>
+      )
+    },
     postgres: {
       name: 'PostgreSQL',
       color: '#336791',

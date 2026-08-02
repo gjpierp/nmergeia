@@ -491,7 +491,19 @@ function App() {
       );
     }
 
-    // Guías por Niveles (PostgreSQL, Oracle, Docker, NGAC) con Título, Subtítulo y Pestañas de Niveles
+    // Guías por Niveles (Data Science, PostgreSQL, Oracle, Docker, NGAC) con Título, Subtítulo y Pestañas de Niveles
+    if (
+      activeTab === 'datascience' ||
+      activeTab === 'datascience-inicial' ||
+      activeTab === 'temas/datascience' ||
+      activeTab === 'mnu_datascience_guide'
+    ) return <GenericTopicPage topicId="datascience" initialLevel="inicial" title="Data Science & AI" appLanguage={appLanguage} />;
+    if (activeTab === 'datascience-basico') return <GenericTopicPage topicId="datascience" initialLevel="basico" title="Data Science & AI" appLanguage={appLanguage} />;
+    if (activeTab === 'datascience-medio') return <GenericTopicPage topicId="datascience" initialLevel="medio" title="Data Science & AI" appLanguage={appLanguage} />;
+    if (activeTab === 'datascience-avanzado') return <GenericTopicPage topicId="datascience" initialLevel="avanzado" title="Data Science & AI" appLanguage={appLanguage} />;
+    if (activeTab === 'datascience-experto') return <GenericTopicPage topicId="datascience" initialLevel="experto" title="Data Science & AI" appLanguage={appLanguage} />;
+    if (activeTab === 'datascience-optimizaciones') return <GenericTopicPage topicId="datascience" initialLevel="optimizaciones" title="Data Science & AI" appLanguage={appLanguage} />;
+
     if (activeTab === 'postgres-inicial') return <GenericTopicPage topicId="postgres" initialLevel="inicial" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
     if (activeTab === 'postgres-basico') return <GenericTopicPage topicId="postgres" initialLevel="basico" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;
     if (activeTab === 'postgres-medio') return <GenericTopicPage topicId="postgres" initialLevel="medio" title="PostgreSQL Enterprise" appLanguage={appLanguage} />;

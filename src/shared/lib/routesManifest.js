@@ -23,6 +23,7 @@ export const MENU_TREE = [
   {
     id: 120, code: 'CAT_NMERGEIA_GUIAS', label: 'Biblioteca Técnica & Especialidades', icon: 'school',
     children: [
+      { id: 120, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI (Guía Completa & Niveles)', path: '/temas/datascience', icon: 'analytics', priority: '0.9', changefreq: 'weekly' },
       { id: 121, code: 'MNU_POSTGRES_GUIDE', label: 'PostgreSQL (Guía Completa & Niveles)', path: '/temas/postgres', icon: 'storage', priority: '0.8', changefreq: 'weekly' },
       { id: 122, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Database Enterprise', path: '/temas/oracle', icon: 'database', priority: '0.8', changefreq: 'weekly' },
       { id: 130, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores (Guía Completa & Niveles)', path: '/temas/docker', icon: 'cloud', priority: '0.8', changefreq: 'weekly' },
