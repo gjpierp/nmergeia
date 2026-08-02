@@ -32,6 +32,12 @@ const ConfigSchema = z.object({
 const LicenseSchema = z.object({
   key: z.string().min(10)
 });
+const ContactSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  subject: z.string().default('soporte'),
+  message: z.string().min(5)
+});
 
 
 const configsDir = process.env.CONFIGS_PATH || path.join(__dirname, 'configs');
@@ -109,6 +115,65 @@ app.post('/api/license/verify', (req, res) => {
         } else {
             res.status(401).json({ valid: false, message: 'La licencia no existe o está expirada' });
         }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Guardar y procesar solicitudes de contacto
+app.post('/api/contact', async (req, res) => {
+    try {
+        const parsed = ContactSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({ error: 'Validación fallida', details: parsed.error.issues });
+        }
+        const { name, email, subject, message } = parsed.data;
+        const ticketId = 'TICK-' + Date.now();
+        const newContact = {
+            id: ticketId,
+            name,
+            email,
+            subject,
+            message,
+            createdAt: new Date().toISOString(),
+            status: 'NUEVO'
+        };
+
+        // 1. Guardar localmente en configs/contacts.json
+        const contactsFile = path.join(configsDir, 'contacts.json');
+        let contacts = [];
+        if (fs.existsSync(contactsFile)) {
+            try { contacts = JSON.parse(fs.readFileSync(contactsFile, 'utf8')); } catch (_) { contacts = []; }
+        }
+        contacts.unshift(newContact);
+        fs.writeFileSync(contactsFile, JSON.stringify(contacts, null, 2), 'utf8');
+
+        // 2. Reenviar asíncronamente a webhook/Formspree si está configurado
+        if (process.env.CONTACT_WEBHOOK_URL) {
+            try {
+                fetch(process.env.CONTACT_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newContact)
+                }).catch(err => console.error('Error enviando webhook de contacto:', err));
+            } catch (_) {}
+        }
+
+        res.json({ success: true, ticketId, message: 'Solicitud registrada correctamente.' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Obtener mensajes de contacto guardados localmente
+app.get('/api/contact/messages', (req, res) => {
+    try {
+        const contactsFile = path.join(configsDir, 'contacts.json');
+        let contacts = [];
+        if (fs.existsSync(contactsFile)) {
+            contacts = JSON.parse(fs.readFileSync(contactsFile, 'utf8'));
+        }
+        res.json(contacts);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
