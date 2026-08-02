@@ -41,6 +41,8 @@ export const MENU_TREE = [
     children: [
       // 🧠 Data Science & AI Engineering
       { id: 1200, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI (Guía Completa)', path: '/temas/datascience', icon: 'analytics', priority: '0.9', changefreq: 'weekly' },
+      { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', priority: '0.8', changefreq: 'monthly' },
+      { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', priority: '0.8', changefreq: 'monthly' },
       { id: 1201, code: 'MNU_DATASCIENCE_PYSPARK', label: 'PySpark & Big Data', path: '/temas/datascience/pyspark', icon: 'dataset', priority: '0.8', changefreq: 'weekly' },
       { id: 1202, code: 'MNU_DATASCIENCE_KAFKA', label: 'Apache Kafka Event Streaming', path: '/temas/datascience/kafka', icon: 'stream', priority: '0.8', changefreq: 'weekly' },
       { id: 1203, code: 'MNU_DATASCIENCE_DELTALAKE', label: 'Delta Lake & Lakehouse', path: '/temas/datascience/deltalake', icon: 'layers', priority: '0.8', changefreq: 'weekly' },
@@ -78,8 +80,6 @@ export const MENU_TREE = [
       { id: 1250, code: 'MNU_TEMA_10', label: 'Patrón Saga & Distributed ETL', path: '/temas/tema-10-etl-saga', icon: 'account_tree', priority: '0.7', changefreq: 'monthly' },
       { id: 1251, code: 'MNU_TEMA_11', label: 'Arquitecturas SaaS Multi-tenant', path: '/temas/tema-11-saas-multitenant', icon: 'domain', priority: '0.7', changefreq: 'monthly' },
       { id: 1252, code: 'MNU_TEMA_12', label: 'Resiliencia Backend & Circuit Breakers', path: '/temas/tema-12-resiliencia-backend', icon: 'monitor_heart', priority: '0.7', changefreq: 'monthly' },
-      { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', priority: '0.8', changefreq: 'monthly' },
-      { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', priority: '0.8', changefreq: 'monthly' },
       { id: 1255, code: 'MNU_TEMA_15', label: 'Arquitecturas Limpias & Hexagonal', path: '/temas/tema-15-arquitecturas-software', icon: 'architecture', priority: '0.8', changefreq: 'monthly' },
       { id: 1256, code: 'MNU_TEMA_16', label: 'DDD & Toma de Requerimientos', path: '/temas/tema-16-toma-requerimientos', icon: 'assignment', priority: '0.7', changefreq: 'monthly' }
     ]

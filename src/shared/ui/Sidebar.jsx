@@ -68,6 +68,8 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
         id: 1180, code: 'SUB_TEMAS_DATASCIENCE', label: 'Data Science & AI Engineering', icon: 'analytics', node_type: 'CONTAINER',
         children: [
           { id: 1181, code: 'MNU_DATASCIENCE_GUIDE', label: 'Data Science & AI (Guía Completa)', path: '/temas/datascience', icon: 'analytics', node_type: 'OBJECT' },
+          { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', node_type: 'OBJECT' },
+          { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', node_type: 'OBJECT' },
           { id: 1182, code: 'MNU_DATASCIENCE_PYSPARK', label: 'PySpark & Big Data', path: '/temas/datascience/pyspark', icon: 'dataset', node_type: 'OBJECT' },
           { id: 1183, code: 'MNU_DATASCIENCE_KAFKA', label: 'Apache Kafka Event Streaming', path: '/temas/datascience/kafka', icon: 'stream', node_type: 'OBJECT' },
           { id: 1184, code: 'MNU_DATASCIENCE_DELTALAKE', label: 'Delta Lake & Lakehouse', path: '/temas/datascience/deltalake', icon: 'layers', node_type: 'OBJECT' },
@@ -119,8 +121,6 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
           { id: 1250, code: 'MNU_TEMA_10', label: 'Patrón Saga & Distributed ETL', path: '/temas/tema-10-etl-saga', icon: 'account_tree', node_type: 'OBJECT' },
           { id: 1251, code: 'MNU_TEMA_11', label: 'SaaS Multi-tenant', path: '/temas/tema-11-saas-multitenant', icon: 'domain', node_type: 'OBJECT' },
           { id: 1252, code: 'MNU_TEMA_12', label: 'Resiliencia Backend & Circuit Breakers', path: '/temas/tema-12-resiliencia-backend', icon: 'monitor_heart', node_type: 'OBJECT' },
-          { id: 1253, code: 'MNU_TEMA_13', label: 'Arquitecturas LLM & RAG Vectorial', path: '/temas/tema-13-llm-rag', icon: 'psychology', node_type: 'OBJECT' },
-          { id: 1254, code: 'MNU_TEMA_14', label: 'Agentes Autónomos de IA', path: '/temas/tema-14-ai-agents', icon: 'smart_toy', node_type: 'OBJECT' },
           { id: 1255, code: 'MNU_TEMA_15', label: 'Arquitecturas Limpias & Hexagonal', path: '/temas/tema-15-arquitecturas-software', icon: 'architecture', node_type: 'OBJECT' },
           { id: 1256, code: 'MNU_TEMA_16', label: 'DDD & Toma de Requerimientos', path: '/temas/tema-16-toma-requerimientos', icon: 'assignment', node_type: 'OBJECT' }
         ]

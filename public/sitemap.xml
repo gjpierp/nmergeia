@@ -132,6 +132,32 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/datascience"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/#temas/tema-13-llm-rag</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-13-llm-rag"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-13-llm-rag"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/#temas/tema-14-ai-agents</loc>
+    <lastmod>2026-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-14-ai-agents"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-14-ai-agents"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/#temas/datascience/pyspark</loc>
     <lastmod>2026-08-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -481,32 +507,6 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-12-resiliencia-backend"/>
     <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-12-resiliencia-backend"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-12-resiliencia-backend"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#temas/tema-13-llm-rag</loc>
-    <lastmod>2026-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-13-llm-rag"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-13-llm-rag"/>
-  </url>
-  <url>
-    <loc>https://nmergeia.com/#temas/tema-14-ai-agents</loc>
-    <lastmod>2026-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/?lang=en#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/?lang=pt#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/?lang=fr#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/?lang=de#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/?lang=zh#temas/tema-14-ai-agents"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/?lang=ja#temas/tema-14-ai-agents"/>
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-15-arquitecturas-software</loc>
