@@ -112,7 +112,7 @@ export const NgacAdBanner = ({ position = 'Top' }) => {
           <div style={{ opacity: 0.7, marginBottom: adConfig.imageUrl ? '6px' : 0 }}>{adConfig.title || `Publicidad (${position})`}</div>
           {adConfig.imageUrl && (
             <a href={adConfig.linkUrl || '#'} target="_blank" rel="noopener noreferrer">
-              <img src={adConfig.imageUrl} alt="Ad" style={{ maxWidth: '100%', borderRadius: '4px' }} />
+              <img src={adConfig.imageUrl} alt={adConfig.title || "Anuncio Publicitario Patrocinado - NMerge IA"} style={{ maxWidth: '100%', borderRadius: '4px' }} />
             </a>
           )}
         </>

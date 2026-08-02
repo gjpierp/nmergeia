@@ -3,7 +3,7 @@ import { useAppStore } from '../../app/useAppStore.js';
 
 /**
  * @file Breadcrumbs.jsx
- * @description Componente de jerarquía de navegación (Breadcrumbs) con soporte JSON-LD Schema para SEO.
+ * @description Componente de jerarquía de navegación (Breadcrumbs) con marcado Schema.org BreadcrumbList HTML Microdata y JSON-LD.
  */
 export const Breadcrumbs = ({ items = [] }) => {
   const { setActiveTab } = useAppStore();
@@ -13,12 +13,20 @@ export const Breadcrumbs = ({ items = [] }) => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.label,
-      "item": item.path ? `https://nmergeia.com/#${item.path.replace(/^\//, '')}` : undefined
-    }))
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://nmergeia.com/"
+      },
+      ...items.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 2,
+        "name": item.label,
+        "item": item.path ? `https://nmergeia.com/#${item.path.replace(/^\//, '')}` : `https://nmergeia.com/#${item.tabId || ''}`
+      }))
+    ]
   };
 
   return (
@@ -28,9 +36,9 @@ export const Breadcrumbs = ({ items = [] }) => {
         display: 'flex',
         alignItems: 'center',
         gap: '4px',
-        fontSize: '0.7rem',
+        fontSize: '0.75rem',
         color: 'var(--text-tertiary)',
-        marginBottom: '4px',
+        marginBottom: '8px',
         marginTop: '0px',
         flexWrap: 'wrap',
         fontFamily: '"Outfit", sans-serif'
@@ -40,32 +48,65 @@ export const Breadcrumbs = ({ items = [] }) => {
         {JSON.stringify(jsonLd)}
       </script>
 
-      <span 
-        className="breadcrumb-item-link"
-        onClick={() => setActiveTab('landing')}
-        style={{ cursor: 'pointer', color: 'var(--accent-primary)', textDecoration: 'none', transition: 'color 0.2s' }}
+      <ol 
+        itemScope 
+        itemType="https://schema.org/BreadcrumbList"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          listStyle: 'none',
+          padding: 0,
+          margin: 0,
+          flexWrap: 'wrap'
+        }}
       >
-        Inicio
-      </span>
+        <li 
+          itemProp="itemListElement" 
+          itemScope 
+          itemType="https://schema.org/ListItem"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+        >
+          <a 
+            itemProp="item" 
+            href="/"
+            className="breadcrumb-item-link"
+            onClick={(e) => { e.preventDefault(); setActiveTab('landing'); }}
+            style={{ cursor: 'pointer', color: 'var(--accent-primary)', textDecoration: 'none', transition: 'color 0.2s' }}
+          >
+            <span itemProp="name">Inicio</span>
+          </a>
+          <meta itemProp="position" content="1" />
+        </li>
 
-      {items.map((item, idx) => (
-        <React.Fragment key={idx}>
-          <span style={{ opacity: 0.4, fontSize: '0.7rem' }}>/</span>
-          {item.tabId ? (
-            <span 
-              className="breadcrumb-item-link"
-              onClick={() => setActiveTab(item.tabId)}
-              style={{ cursor: 'pointer', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}
-            >
-              {item.label}
-            </span>
-          ) : (
-            <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
-              {item.label}
-            </span>
-          )}
-        </React.Fragment>
-      ))}
+        {items.map((item, idx) => (
+          <li 
+            key={idx}
+            itemProp="itemListElement" 
+            itemScope 
+            itemType="https://schema.org/ListItem"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+          >
+            <span style={{ opacity: 0.4, fontSize: '0.7rem' }}>/</span>
+            {item.tabId ? (
+              <a 
+                itemProp="item"
+                href={`#${item.tabId}`}
+                className="breadcrumb-item-link"
+                onClick={(e) => { e.preventDefault(); setActiveTab(item.tabId); }}
+                style={{ cursor: 'pointer', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}
+              >
+                <span itemProp="name">{item.label}</span>
+              </a>
+            ) : (
+              <span itemProp="name" style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
+                {item.label}
+              </span>
+            )}
+            <meta itemProp="position" content={`${idx + 2}`} />
+          </li>
+        ))}
+      </ol>
     </nav>
   );
 };

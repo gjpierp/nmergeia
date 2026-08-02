@@ -45,7 +45,7 @@ export const Logo = ({ height = '42px', className = '', style = {}, alt = 'NMerg
   return (
     <img 
       src={logoPng} 
-      alt={alt} 
+      alt={alt || "NMerge IA - Logo Oficial"} 
       className={`app-logo-img ${className}`}
       style={{ 
         height: height, 
