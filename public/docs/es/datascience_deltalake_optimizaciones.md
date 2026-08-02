@@ -1,8 +1,5 @@
 # Guía Profesional de Delta Lake Architecture - Nivel Optimizaciones
 
-> **NMerge IA Technical Library** | Módulo de Inteligencia de Datos
-> **Idioma:** ES | **Fase de Producción:** Fase 3 (Testing & Cobertura Avanzada)
-
 ---
 
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel

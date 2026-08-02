@@ -1,8 +1,5 @@
 # Guía Profesional de PySpark & Big Data - Nivel Medio
 
-> **NMerge IA Technical Library** | Módulo de Inteligencia de Datos
-> **Idioma:** EN | **Fase de Producción:** Fase 3 (Testing & Cobertura Avanzada)
-
 ---
 
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel

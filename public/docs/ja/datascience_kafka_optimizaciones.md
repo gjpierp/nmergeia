@@ -1,8 +1,5 @@
 # Guía Profesional de Apache Kafka Event Streaming - Nivel Optimizaciones
 
-> **NMerge IA Technical Library** | Módulo de Inteligencia de Datos
-> **Idioma:** JA | **Fase de Producción:** Fase 3 (Testing & Cobertura Avanzada)
-
 ---
 
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel

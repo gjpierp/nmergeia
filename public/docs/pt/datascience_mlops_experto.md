@@ -1,8 +1,5 @@
 # Guía Profesional de MLOps & vLLM Infrastructure - Nivel Experto
 
-> **NMerge IA Technical Library** | Módulo de Inteligencia de Datos
-> **Idioma:** PT | **Fase de Producción:** Fase 3 (Testing & Cobertura Avanzada)
-
 ---
 
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel

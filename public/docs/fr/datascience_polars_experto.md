@@ -1,8 +1,5 @@
 # Guía Profesional de Polars Rust & SIMD - Nivel Experto
 
-> **NMerge IA Technical Library** | Módulo de Inteligencia de Datos
-> **Idioma:** FR | **Fase de Producción:** Fase 3 (Testing & Cobertura Avanzada)
-
 ---
 
 ## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel
