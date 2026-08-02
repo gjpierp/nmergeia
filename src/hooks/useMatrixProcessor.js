@@ -37,11 +37,14 @@ export const DEFAULT_FILTER_CONTENT = `- node_modules
 - dist
 - build
 - .git
+- .env
 - .docs
-- .docs/
 - .agents
 - .next
-- .vscode`;
+- .vscode
+- coverage
+- .DS_Store
+- vendor`;
 
 export const getEffectiveFilterText = async (overrideTabFilterText, sessionFilterConfig) => {
   // 1. Filtro específico del tab (mayor prioridad)

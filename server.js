@@ -226,6 +226,14 @@ app.get('/api/filters/:filename', (req, res) => {
 - dist
 - build
 - .git
+- .env
+- .docs
+- .agents
+- .next
+- .vscode
+- coverage
+- .DS_Store
+- vendor
 `;
                  fs.writeFileSync(filePath, tpl, 'utf8');
             } else {

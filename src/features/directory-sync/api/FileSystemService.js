@@ -61,6 +61,11 @@ export const verifyPermission = async (fileHandle, userTriggered = false) => {
   return false;
 };
 
+const safeGlobPattern = (pat) => {
+  if (!pat) return '';
+  return pat.replace(/([\(\)\[\]])/g, '\\$1');
+};
+
 const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes = [], rootName = dirHandle.name, state = null) => {
   if (!state) {
       const expandedExcludes = new Set(IGNORED_PATHS.map(p => p.toLowerCase()));
@@ -70,23 +75,31 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
           expandedExcludes.add(cleanPat.toLowerCase());
       });
 
+      const safeExcludesList = Array.from(expandedExcludes).map(safeGlobPattern);
+      const safeIncludesList = includes.map(safeGlobPattern);
+
       state = { 
           lastYield: performance.now(),
           excludeSet: expandedExcludes,
-          igExclude: ignore().add(Array.from(expandedExcludes)), 
-          igInclude: ignore().add(includes) 
+          igExclude: ignore().add(safeExcludesList), 
+          igInclude: ignore().add(safeIncludesList) 
       };
   }
   const files = [];
   try {
     if (dirHandle.type === 'files') {
        for (const entry of dirHandle.handles) {
-          const file = await entry.getFile();
-          Object.defineProperty(file, 'webkitRelativePath', {
-             value: `${rootName}/${entry.name}`
-          });
-          file.fileHandle = entry; 
-          files.push(file);
+          if (entry.kind === 'directory') {
+             const subFiles = await _getFilesFromHandle(entry, `${entry.name}/`, excludes, includes, rootName, state);
+             files.push(...subFiles);
+          } else if (typeof entry.getFile === 'function') {
+             const file = await entry.getFile();
+             Object.defineProperty(file, 'webkitRelativePath', {
+                value: `${rootName}/${entry.name}`
+             });
+             file.fileHandle = entry; 
+             files.push(file);
+          }
        }
        return files;
     }
