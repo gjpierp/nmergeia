@@ -23,6 +23,7 @@ import { MatrixView } from './features/matrix/MatrixView.jsx';
 import { MainScreen } from './features/matrix/ui/MainScreen.jsx';
 import { HistoryScreen } from './features/history/ui/HistoryScreen.jsx';
 import { CommandTerminal } from './features/terminal/CommandTerminal.jsx';
+import { initContentProtection } from './shared/lib/contentProtection.js';
 import { LandingPage } from './features/landing/LandingPage.jsx';
 import { PrivacyPage } from './features/landing/PrivacyPage.jsx';
 import { TermsPage } from './features/landing/TermsPage.jsx';
@@ -325,6 +326,10 @@ function App() {
     }, 800);
     return () => clearInterval(timer);
   }, [isProcessing]);
+
+  useEffect(() => {
+    initContentProtection();
+  }, []);
   const sessionFilterConfig = useAppStore(s => s.sessionFilterConfig);
   const savedProfiles = useAppStore(s => s.savedProfiles);
   const setSavedProfiles = useAppStore(s => s.setSavedProfiles);
