@@ -1,4 +1,6 @@
+import React, { useState } from 'react';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 
 const faqData = {
   es: [
