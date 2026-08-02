@@ -498,7 +498,7 @@ export const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed }) => {
         {(!isCollapsed || activeTab === 'settings') && (
           <button 
             className={`sidebar-btn ${activeTab === 'settings' ? 'active' : ''}`} 
-            data-tooltip="Configuración del Sistema" 
+            data-tooltip={t('nav_settings') || 'Configuración'} 
             onClick={() => handleNavClick('settings')}
             style={{
               display: 'flex',
@@ -519,7 +519,7 @@ export const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed }) => {
             }}
           >
             <span className="material-symbols-rounded" style={{ fontSize: '1.15rem', color: 'var(--accent-secondary)', flexShrink: 0 }}>settings</span> 
-            {!isCollapsed && <span>Configuración</span>}
+            {!isCollapsed && <span>{t('nav_settings') || 'Configuración'}</span>}
           </button>
         )}
 

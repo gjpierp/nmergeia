@@ -238,5 +238,11 @@
   "MNU_EXT_NODE": "Node.js エンタープライズバックエンド",
   "MNU_EXT_PENTEST": "ペネトレーションテスト＆セキュリティ",
   "MNU_EXT_REACT": "React 19＆Next.js アーキテクチャ",
-  "MNU_EXT_VUE": "Vue 3＆Nuxt エンタープライズ"
+  "MNU_EXT_VUE": "Vue 3＆Nuxt エンタープライズ",
+  "nav_settings": "設定",
+  "CAT_NMERGEIA_N4_TEMAS": "技術ライブラリ",
+  "SUB_TEMAS_DATASCIENCE": "データサイエンス＆AI",
+  "SUB_TEMAS_BD": "データベース＆最適化",
+  "SUB_TEMAS_INFRA": "コンテナ＆インフラ",
+  "SUB_EXT_SEC": "サイバーセキュリティ＆NGACガバナンス"
 }

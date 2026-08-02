@@ -238,5 +238,11 @@
   "MNU_EXT_NODE": "Node.js Enterprise Backend",
   "MNU_EXT_PENTEST": "Pentesting & Ethical Hacking",
   "MNU_EXT_REACT": "React 19 & Next.js Architektur",
-  "MNU_EXT_VUE": "Vue 3 & Nuxt Enterprise"
+  "MNU_EXT_VUE": "Vue 3 & Nuxt Enterprise",
+  "nav_settings": "Einstellungen",
+  "CAT_NMERGEIA_N4_TEMAS": "Technische Bibliothek",
+  "SUB_TEMAS_DATASCIENCE": "Data Science & KI",
+  "SUB_TEMAS_BD": "Datenbanken & Optimierung",
+  "SUB_TEMAS_INFRA": "Container & Infrastruktur",
+  "SUB_EXT_SEC": "Cybersicherheit & NGAC-Governance"
 }
