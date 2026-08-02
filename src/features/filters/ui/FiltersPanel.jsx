@@ -53,8 +53,8 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
         return;
       }
       
-      let isComment = trimmed.startsWith('//');
-      let content = isComment ? trimmed.substring(2).trim() : trimmed;
+      let isComment = trimmed.startsWith('//') || trimmed.startsWith('#');
+      let content = isComment ? trimmed.replace(/^(\/\/|#)+/, '').trim() : trimmed;
       
       let isRuleFormat = content.startsWith('+') || content.startsWith('-') || content.startsWith('!');
       if (isRuleFormat && /^[+\-!]+$/.test(content)) {
@@ -66,7 +66,6 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
          return;
       }
       
-      const active = !isComment;
       let type = 'exclude';
       let pattern = content;
       
@@ -76,29 +75,24 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
       } else if (content.startsWith('-') || content.startsWith('!')) {
         type = 'exclude';
         pattern = content.substring(1).trim();
-      } else {
-        if (!isComment) {
-          type = 'exclude';
-        } else {
-          parsed.push({ id: idx, type: 'comment', raw: line });
-          return;
-        }
       }
-      
+
+      if (!pattern) {
+        parsed.push({ id: idx, type: 'comment', raw: line });
+        return;
+      }
+
+      // Por defecto, TODAS las reglas válidas cargadas inician ACTIVAS (active: true)
+      const active = true;
+      const cleanRaw = `${type === 'include' ? '+' : '-'} ${pattern}`;
+
       // Deduplication logic
       if (activePatternMap.has(pattern)) {
-        // Pattern already exists
         const existingIdx = activePatternMap.get(pattern);
-        const existingRule = parsed[existingIdx];
-        
-        // If the existing rule is inactive and the new one is active, we upgrade it
-        if (active && !existingRule.active) {
-          parsed[existingIdx] = { id: existingRule.id, type, pattern, active, raw: line };
-        }
-        // Otherwise, we just drop this duplicate line (it's redundant)
+        parsed[existingIdx] = { id: parsed[existingIdx].id, type, pattern, active: true, raw: cleanRaw };
       } else {
         activePatternMap.set(pattern, parsed.length);
-        parsed.push({ id: idx, type, pattern, active, raw: line });
+        parsed.push({ id: idx, type, pattern, active: true, raw: cleanRaw });
       }
     });
     setRules(parsed);

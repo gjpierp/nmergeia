@@ -9,31 +9,45 @@ import { telemetry } from '../../../shared/lib/TelemetryService.js';
 
 const IGNORED_PATHS = [
   'node_modules', 
+  'node_modules/', 
   '.git', 
+  '.git/', 
   '.svn',
   '.hg',
   '.DS_Store', 
   'Thumbs.db',
   'dist', 
+  'dist/', 
   'dist_electron',
   'build', 
+  'build/', 
   'out',
   'bin',
   'obj',
   'target',
+  'target/',
+  'target(',
+  'target(/',
+  '(target)',
+  '(target)/',
   'vendor',
+  'vendor/',
   'coverage',
+  'coverage/',
   '.next', 
+  '.next/', 
   '.nuxt',
   '.svelte-kit',
   '.cache',
   '.parcel-cache',
   '.turbo',
   '.vscode', 
+  '.vscode/', 
   '.idea',
   '.docs', 
   '.docs/', 
   '.agents', 
+  '.agents/', 
   '.gemini', 
   '.history',
   'tmp',
@@ -68,12 +82,24 @@ const safeGlobPattern = (pat) => {
 
 const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes = [], rootName = dirHandle.name, state = null) => {
   if (!state) {
-      const expandedExcludes = new Set(IGNORED_PATHS.map(p => p.toLowerCase()));
-      excludes.forEach(pat => {
-          if (!pat) return;
-          const cleanPat = pat.endsWith('/') ? pat.slice(0, -1) : pat;
-          expandedExcludes.add(cleanPat.toLowerCase());
-      });
+      const expandedExcludes = new Set();
+      
+      const addPatternToExcludes = (pat) => {
+        if (!pat) return;
+        const lower = pat.toLowerCase().trim();
+        const clean = lower.endsWith('/') ? lower.slice(0, -1) : lower;
+        const noParens = clean.replace(/[\(\)]/g, '');
+
+        expandedExcludes.add(clean);
+        expandedExcludes.add(`${clean}/`);
+        if (noParens && noParens !== clean) {
+          expandedExcludes.add(noParens);
+          expandedExcludes.add(`${noParens}/`);
+        }
+      };
+
+      IGNORED_PATHS.forEach(addPatternToExcludes);
+      excludes.forEach(addPatternToExcludes);
 
       const safeExcludesList = Array.from(expandedExcludes).map(safeGlobPattern);
       const safeIncludesList = includes.map(safeGlobPattern);
@@ -112,22 +138,37 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
       }
 
       const entryNameLower = entry.name.toLowerCase();
+      const cleanName = entryNameLower.replace(/[\(\)]/g, '');
       const relativePath = `${path}${entry.name}`;
       const relLower = relativePath.toLowerCase();
 
       if (entry.kind === 'directory') {
-         // PODA INMEDIATA (Pruning): Si el nombre de la carpeta está en exclusiones, no entrar en ella
-         if (state.excludeSet.has(entryNameLower) || state.excludeSet.has(entry.name)) {
+         // PODA INMEDIATA (Pruning): Si el nombre de la carpeta coincide con cualquier regla de exclusión, omitir recursión
+         if (
+           state.excludeSet.has(entryNameLower) || 
+           state.excludeSet.has(`${entryNameLower}/`) ||
+           state.excludeSet.has(cleanName) ||
+           state.excludeSet.has(`${cleanName}/`) ||
+           entryNameLower.startsWith('target') ||
+           cleanName.startsWith('target') ||
+           entryNameLower === 'node_modules' ||
+           entryNameLower === 'dist' ||
+           entryNameLower === 'build'
+         ) {
             continue;
          }
          const isIgnored = state.igExclude.ignores(relativePath + '/') ||
+                           state.igExclude.ignores(relativePath) ||
                            (relativePath !== relLower && state.igExclude.ignores(relLower + '/'));
          if (isIgnored) continue;
          
          const subFiles = await _getFilesFromHandle(entry, `${relativePath}/`, excludes, includes, rootName, state);
          files.push(...subFiles);
       } else if (entry.kind === 'file') {
-         if (state.excludeSet.has(entryNameLower) || state.excludeSet.has(entry.name)) {
+         if (
+           state.excludeSet.has(entryNameLower) || 
+           state.excludeSet.has(cleanName)
+         ) {
             continue;
          }
          const isIgnored = state.igExclude.ignores(relativePath) ||
@@ -159,44 +200,57 @@ export const getFilesFromHandle = telemetry.measureExecutionTime('getFilesFromHa
 /**
  * Guarda o escribe contenido en una ruta relativa bajo el directorio dado.
  */
-export const saveFileToHandle = async (rootDirHandle, filePath, content) => {
-  let currentDir = rootDirHandle;
-  const pathParts = filePath.split('/');
-  const fileName = pathParts.pop();
-  
-  for (const part of pathParts) {
-    currentDir = await currentDir.getDirectoryHandle(part, { create: true });
+export const saveFileToHandle = async (dirHandle, relativePath, content) => {
+  try {
+    const parts = relativePath.split('/').filter(Boolean);
+    const fileName = parts.pop();
+    let currentHandle = dirHandle;
+
+    for (const part of parts) {
+      currentHandle = await currentHandle.getDirectoryHandle(part, { create: true });
+    }
+
+    const fileHandle = await currentHandle.getFileHandle(fileName, { create: true });
+    const isPermitted = await verifyPermission(fileHandle, true);
+    if (!isPermitted) throw new Error("Permiso de escritura denegado en el navegador.");
+
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+    return true;
+  } catch (err) {
+    console.error("Error al guardar archivo a traves del Handle:", err);
+    throw err;
   }
-  const targetHandle = await currentDir.getFileHandle(fileName, { create: true });
-  const writable = await targetHandle.createWritable();
-  await writable.write(content);
-  await writable.close();
 };
 
 /**
- * Elimina un archivo en una ruta relativa del directorio dado.
+ * Elimina un archivo o directorio relativo.
  */
-export const deleteFileFromHandle = async (rootDirHandle, filePath) => {
-  let currentDir = rootDirHandle;
-  const parts = filePath.split('/');
-  const fileName = parts.pop();
-  
-  for (const part of parts) {
-    currentDir = await currentDir.getDirectoryHandle(part, { create: false });
+export const deleteFileFromHandle = async (dirHandle, relativePath) => {
+  try {
+    const parts = relativePath.split('/').filter(Boolean);
+    const fileName = parts.pop();
+    let currentHandle = dirHandle;
+
+    for (const part of parts) {
+      currentHandle = await currentHandle.getDirectoryHandle(part);
+    }
+
+    await currentHandle.removeEntry(fileName);
+    return true;
+  } catch (err) {
+    console.error("Error al eliminar archivo a traves del Handle:", err);
+    throw err;
   }
-  await currentDir.removeEntry(fileName);
 };
 
 /**
- * Resuelve y extrae el objeto File nativo a partir de un archivo o un handle de archivo.
+ * Obtiene el objeto File a partir de un Handle.
  */
-export const getFileObject = async (fileOrHandle) => {
-  if (fileOrHandle.getFile) {
-    return await fileOrHandle.getFile();
+export const getFileObject = async (fileHandle) => {
+  if (fileHandle && typeof fileHandle.getFile === 'function') {
+    return await fileHandle.getFile();
   }
-  if (fileOrHandle.fileHandle && fileOrHandle.fileHandle.getFile) {
-    return await fileOrHandle.fileHandle.getFile();
-  }
-  return fileOrHandle;
+  return fileHandle;
 };
-

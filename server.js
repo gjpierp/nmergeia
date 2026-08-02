@@ -222,18 +222,21 @@ app.get('/api/filters/:filename', (req, res) => {
 // + *.jsx
 // -----------------------------------------------------
 
-- node_modules
-- dist
-- build
-- .git
+- node_modules/
+- dist/
+- build/
+- target/
+- target(/
+- (target)/
+- .git/
 - .env
-- .docs
-- .agents
-- .next
-- .vscode
-- coverage
+- .docs/
+- .agents/
+- .next/
+- .vscode/
+- coverage/
 - .DS_Store
-- vendor
+- vendor/
 `;
                  fs.writeFileSync(filePath, tpl, 'utf8');
             } else {

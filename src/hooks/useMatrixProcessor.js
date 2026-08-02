@@ -12,39 +12,44 @@ export const parseFilterRules = (filterText) => {
   const lines = filterText
     .split('\n')
     .map(l => l.trim())
-    .filter(l => l && !l.startsWith('//') && !l.startsWith('#'));
+    .filter(l => l);
 
   const excludes = [];
   const includes = [];
 
   for (const line of lines) {
-    if (line.startsWith('+')) {
-      const pattern = line.substring(1).trim();
+    let clean = line.startsWith('//') || line.startsWith('#') ? line.replace(/^(\/\/|#)+/, '').trim() : line;
+    if (!clean) continue;
+
+    if (clean.startsWith('+')) {
+      const pattern = clean.substring(1).trim();
       if (pattern) includes.push(pattern);
-    } else if (line.startsWith('-') || line.startsWith('!')) {
-      const pattern = line.substring(1).trim();
+    } else if (clean.startsWith('-') || clean.startsWith('!')) {
+      const pattern = clean.substring(1).trim();
       if (pattern) excludes.push(pattern);
     } else {
-      // Regla por defecto: líneas sin signo explícito son exclusiones (ej: .docs, node_modules)
-      excludes.push(line);
+      excludes.push(clean);
     }
   }
 
   return { excludes, includes };
 };
 
-export const DEFAULT_FILTER_CONTENT = `- node_modules
-- dist
-- build
-- .git
+export const DEFAULT_FILTER_CONTENT = `- node_modules/
+- dist/
+- build/
+- target/
+- target(/
+- (target)/
+- .git/
 - .env
-- .docs
-- .agents
-- .next
-- .vscode
-- coverage
+- .docs/
+- .agents/
+- .next/
+- .vscode/
+- coverage/
 - .DS_Store
-- vendor`;
+- vendor/`;
 
 export const getEffectiveFilterText = async (overrideTabFilterText, sessionFilterConfig) => {
   // 1. Filtro específico del tab (mayor prioridad)
