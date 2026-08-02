@@ -1,85 +1,73 @@
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
+## 🎯 1. Resumen Ejecutivo: Polars Rust SIMD Engine
 
-La presente guía detalla la implementación profesional de **Polars Rust & SIMD** en su **入门级**.
-Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
+**Polars** es la biblioteca de procesamiento de datos de última generación desarrollada en **Rust**. Ofrece un rendimiento extremadamente superior a Pandas gracias al uso de vectorización **SIMD** (Single Instruction, Multiple Data), procesamiento de múltiples hilos sin GIL (Global Interpreter Lock) y optimizaciones de consultas mediante su motor **Lazy Engine**.
 
-### 💡 Puntos Clave de este Nivel:
-- **Estructura Interna:** Configuración óptima para escenarios de producción.
-- **Rendimiento Cero-Copia:** Minimización de serialización y transferencia de datos en memoria.
-- **Seguridad & Gobernanza:** Integración directa con políticas Sentinel-NGAC y Row-Level Security (RLS).
-- **Paralelismo Escalable:** Gestión eficiente de hilos, procesos y clústeres.
+### 💡 Arquitectura Core & Invariantes:
+- **Apache Arrow Memory Format:** Formato de memoria columnar contigua en C++ / Rust para cero copias de transferencia.
+- **Instrucciones SIMD (AVX-512 / ARM Neon):** Procesamiento de múltiples elementos numéricos por cada ciclo de reloj de la CPU.
+- **Streaming Engine & Predicate Pushdown:** Filtrado y proyección proyectados directamente al nivel de lectura del archivo Parquet antes de cargar a RAM.
+- **Sin Bloqueo GIL (Python/Rust Binding):** Ejecución paralela pura utilizando todos los núcleos físicos de la CPU.
 
 ---
 
-## 🏗️ 2. Arquitectura de Componentes & Flujo Lógico
+## 🏗️ 2. Arquitectura de Ejecución Polars Lazy Engine
 
 ```mermaid
 flowchart TD
-    A["NMerge 客户端 / 应用"] -->|处理请求| B["Polars Rust & SIMD Engine (入门级)"]
-    B -->|动态分区| C["SIMD 内存管理器 / 直接缓冲区"]
-    C -->|结构化持久化| D["Parquet / Delta Storage Layer"]
-    B -->|安全审计| E["Sentinel-NGAC PDP Evaluator"]
+    Parquet["Archivos Parquet (Petabytes)"] -->|1. Lazy Scan (scan_parquet)| LazyFrame["Polars LazyFrame (DAG Lógico)"]
+    LazyFrame -->|2. Predicate Pushdown| Pushdown["Pushdown Filter (Ignora bloques irrelevantes)"]
+    Pushdown -->|3. Projection Pushdown| Projection["Projection Filter (Lee únicamente columnas necesarias)"]
+    Projection -->|4. SIMD Multi-threading| Engine["Polars SIMD Multi-threaded Engine (Rust)"]
+    Engine -->|5. Collect()| DataFrame["Polars DataFrame Final en RAM"]
 ```
 
 ---
 
-## 💻 3. Implementación de Código Estructurado
-
-A continuación se expone el patrón de diseño e implementación correspondiente al nivel **Inicial**:
+## 💻 3. Implementación Empresarial: Consultas Ultrarrápidas con Polars Lazy Engine en Python
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Polars Rust & SIMD (Inicial)
-# Autor: StackUpIA Software Labs
+# NMerge IA - Módulo de Especialidad: Polars Rust SIMD Engine
+# Procesamiento vectorizado masivo con LazyFrames y Predicate Pushdown
 # =====================================================================
 
-import sys
-import time
+import polars as pl
 
-class POLARS_Manager:
-    def __init__(self, config: dict):
-        self.config = config
-        self.level = "inicial"
-        self.is_active = True
+# 📌 1. Escaneo Lazy de Parquet (Cero carga inicial en memoria)
+lazy_df = pl.scan_parquet("/mnt/data/transactions_*.parquet")
 
-    def process_data_stream(self, data_batch: list) -> dict:
-        """
-        Procesa el lote de datos aplicando optimizaciones de nivel Inicial.
-        """
-        start_time = time.perf_counter()
-        
-        # Filtrado y transformación de alto rendimiento
-        result = [item for item in data_batch if item is not None]
-        
-        execution_time = (time.perf_counter() - start_time) * 1000
-        return {
-            "status": "SUCCESS",
-            "level": self.level,
-            "processed_count": len(result),
-            "latency_ms": round(execution_time, 3)
-        }
+# 📌 2. Construcción de Expresiones Vectorizadas SIMD
+query = (
+    lazy_df
+    .filter(pl.col("status") == "COMPLETED")
+    .filter(pl.col("amount") > 100.0)
+    .with_columns([
+        (pl.col("amount") * 0.15).alias("tax_amount"),
+        (pl.col("timestamp").dt.truncate("1d")).alias("tx_date")
+    ])
+    .group_by(["tx_date", "country_code"])
+    .agg([
+        pl.col("amount").sum().alias("total_revenue"),
+        pl.col("amount").mean().alias("avg_order_value"),
+        pl.col("user_id").n_unique().alias("unique_buyers")
+    ])
+    .sort("total_revenue", descending=True)
+)
 
-if __name__ == "__main__":
-    manager = POLARS_Manager({"mode": "production"})
-    res = manager.process_data_stream(["item_1", "item_2", "item_3"])
-    print(f"[{subtopic.name}] Resultado (Inicial): {res}")
+# 📌 3. Optimización del Grafo Lógico e Inspección del Plan de Ejecución
+print("📜 Plan de Ejecución Optimizado de Polars:")
+print(query.explain())
+
+# 📌 4. Ejecución del Streaming Engine (Procesamiento por bloques para archivos gigantes)
+result_df = query.collect(streaming=True)
+
+print("🚀 Resultado del Procesamiento SIMD de Polars:")
+print(result_df.head(10))
 ```
 
 ---
 
-## 🧪 4. Cobertura de Pruebas & Verificación
-
-Para garantizar la paridad del 100% en entornos empresariales, ejecute la suite de pruebas unitarias y de integración:
-
-```bash
-# Ejecutar verificación formal para Polars Rust & SIMD (inicial)
-npm run test -- --grep="polars_inicial"
-```
-
----
-
-## 🔒 5. Cumplimiento & Seguridad Sentinel-NGAC
-
-Todas las ejecuciones de **Polars Rust & SIMD** en este nivel están sujetas a la verificación del motor de políticas **Sentinel-NGAC**, asegurando que únicamente los roles con privilegio `TEMA_ACCESO` puedan ejecutar consultas o transformaciones avanzadas sobre la información.
+## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+Toda consulta ejecutada vía Polars cumple con las políticas de control de datos **Sentinel-NGAC**.
 
 © 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.

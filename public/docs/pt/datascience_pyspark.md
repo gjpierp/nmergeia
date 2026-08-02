@@ -1,85 +1,99 @@
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
+## 🎯 1. Resumen Ejecutivo: PySpark & Distributed Big Data Processing
 
-La presente guía detalla la implementación profesional de **PySpark & Big Data** en su **Nível Inicial**.
-Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
+**PySpark** es la interfaz en Python para Apache Spark, la plataforma líder en procesamiento distribuido de Big Data a escala petabyte. Permite realizar consultas analíticas, transformaciones ETL masivas, procesamiento en streaming y machine learning sobre clústeres distribuidos.
 
-### 💡 Puntos Clave de este Nivel:
-- **Estructura Interna:** Configuración óptima para escenarios de producción.
-- **Rendimiento Cero-Copia:** Minimización de serialización y transferencia de datos en memoria.
-- **Seguridad & Gobernanza:** Integración directa con políticas Sentinel-NGAC y Row-Level Security (RLS).
-- **Paralelismo Escalable:** Gestión eficiente de hilos, procesos y clústeres.
+### 💡 Arquitectura Core & Invariantes:
+- **Catalyst Optimizer & Tungsten Engine:** Optimización lógica/física de consultas y generación de código de bytes en tiempo de ejecución (JIT) sin sobrecostos de objetos Java.
+- **Broadcast Joins vs Shuffle Joins:** Eliminación del costo de red (Shuffle) al transmitir tablas pequeñas (<10 MB) a todos los nodos ejecutores.
+- **Transformaciones Lógicas (Lazy Evaluation):** Construcción de un grafo DAG (Directed Acyclic Graph) que solo se ejecuta cuando se invoca una Acción (`collect()`, `count()`, `write`).
+- **Particionado & Coalesce:** Gestión fina del paralismo mediante `repartition()` (con Shuffle) y `coalesce()` (sin Shuffle para consolidar archivos).
 
 ---
 
-## 🏗️ 2. Arquitectura de Componentes & Flujo Lógico
+## 🏗️ 2. Arquitectura del Clúster Spark (Driver & Executors)
 
 ```mermaid
 flowchart TD
-    A["Cliente / Aplicação NMerge"] -->|Solicitação de Processamento| B["PySpark & Big Data Engine (Nível Inicial)"]
-    B -->|Particionamento Dinâmico| C["Gerenciador de Memória SIMD / Buffer Direto"]
-    C -->|Persistência Estruturada| D["Parquet / Delta Storage Layer"]
-    B -->|Auditoria de Segurança| E["Sentinel-NGAC PDP Evaluator"]
+    subgraph DriverNode ["Spark Driver Node (Master)"]
+        SC["SparkSession / SparkContext"]
+        DAG["DAG Scheduler"]
+        TaskSch["Task Scheduler"]
+    end
+
+    subgraph ClusterMgr ["Cluster Manager (YARN / Kubernetes / Standalone)"]
+        Alloc["Resource Allocator"]
+    end
+
+    subgraph Workers ["Worker Nodes Swarm"]
+        subgraph Worker1 ["Worker 1"]
+            Exec1["Executor 1 (Memoria Tungsten & CPU Cores)"]
+        end
+        subgraph Worker2 ["Worker 2"]
+            Exec2["Executor 2 (Memoria Tungsten & CPU Cores)"]
+        end
+    end
+
+    SC --> DAG
+    DAG --> TaskSch
+    TaskSch -->|Asignación de Tareas| Alloc
+    Alloc --> Exec1
+    Alloc --> Exec2
 ```
 
 ---
 
-## 💻 3. Implementación de Código Estructurado
-
-A continuación se expone el patrón de diseño e implementación correspondiente al nivel **Inicial**:
+## 💻 3. Implementación Empresarial: ETL Distribuido & Window Functions con PySpark
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: PySpark & Big Data (Inicial)
-# Autor: StackUpIA Software Labs
+# NMerge IA - Módulo de Especialidad: PySpark & Distributed Big Data
+# Transformaciones complejas, Broadcast Joins y Window Functions
 # =====================================================================
 
-import sys
-import time
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, broadcast, sum as _sum, avg, rank, window
+from pyspark.sql.window import Window
 
-class PYSPARK_Manager:
-    def __init__(self, config: dict):
-        self.config = config
-        self.level = "inicial"
-        self.is_active = True
+# 📌 1. Inicialización de SparkSession optimizada para producción
+spark = SparkSession.builder \
+    .appName("NMerge-PySpark-Enterprise") \
+    .config("spark.driver.memory", "4g") \
+    .config("spark.executor.memory", "8g") \
+    .config("spark.sql.shuffle.partitions", "200") \
+    .config("spark.sql.autoBroadcastJoinThreshold", 10 * 1024 * 1024) \
+    .getOrCreate()
 
-    def process_data_stream(self, data_batch: list) -> dict:
-        """
-        Procesa el lote de datos aplicando optimizaciones de nivel Inicial.
-        """
-        start_time = time.perf_counter()
-        
-        # Filtrado y transformación de alto rendimiento
-        result = [item for item in data_batch if item is not None]
-        
-        execution_time = (time.perf_counter() - start_time) * 1000
-        return {
-            "status": "SUCCESS",
-            "level": self.level,
-            "processed_count": len(result),
-            "latency_ms": round(execution_time, 3)
-        }
+# 📌 2. Carga de DataFrames de alto rendimiento desde Parquet
+orders_df = spark.read.parquet("/mnt/data/orders_historical.parquet")
+users_df = spark.read.parquet("/mnt/data/dim_users.parquet")
 
-if __name__ == "__main__":
-    manager = PYSPARK_Manager({"mode": "production"})
-    res = manager.process_data_stream(["item_1", "item_2", "item_3"])
-    print(f"[{subtopic.name}] Resultado (Inicial): {res}")
+# 📌 3. Broadcast Join de dimensión pequeña con hecho masivo (Zero-Shuffle Join)
+enriched_df = orders_df.join(
+    broadcast(users_df),
+    orders_df.user_id == users_df.user_id,
+    "inner"
+).drop(users_df.user_id)
+
+# 📌 4. Window Functions para cálculo de Ranking por usuario y acumulado
+window_spec = Window.partitionBy("user_id").orderBy(col("amount").desc())
+
+ranked_orders_df = enriched_df.withColumn(
+    "order_rank",
+    rank().over(window_spec)
+).filter(col("order_rank") <= 3)
+
+# 📌 5. Escritura optimizada con particionado masivo
+ranked_orders_df.write \
+    .mode("overwrite") \
+    .partitionBy("country_code") \
+    .parquet("/mnt/data/gold/top_user_orders.parquet")
+
+print("🚀 Pipeline PySpark completado exitosamente.")
 ```
 
 ---
 
-## 🧪 4. Cobertura de Pruebas & Verificación
-
-Para garantizar la paridad del 100% en entornos empresariales, ejecute la suite de pruebas unitarias y de integración:
-
-```bash
-# Ejecutar verificación formal para PySpark & Big Data (inicial)
-npm run test -- --grep="pyspark_inicial"
-```
-
----
-
-## 🔒 5. Cumplimiento & Seguridad Sentinel-NGAC
-
-Todas las ejecuciones de **PySpark & Big Data** en este nivel están sujetas a la verificación del motor de políticas **Sentinel-NGAC**, asegurando que únicamente los roles con privilegio `TEMA_ACCESO` puedan ejecutar consultas o transformaciones avanzadas sobre la información.
+## 🔒 4. Gobernanza & Seguridad Sentinel-NGAC
+Todas las ejecuciones de **PySpark** cuentan con aislamiento de contexto de seguridad y cifrado en disco y red (RPC SASL/AES-256).
 
 © 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
