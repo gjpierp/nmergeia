@@ -12,7 +12,9 @@
 
 🟢 **Fase 2: Documentación, Contratos y Arquitectura Viva (API-First)**
 - [x] Especificación OpenAPI 3.0 en `openapi.yaml`.
-- [x] Creación de `CONTEXT.md` y `ROADMAP.md`.
+- [x] Creación de `CONTEXT.md`, `ROADMAP.md` y `BACKLOG.md`.
+- [x] Consolidación del Inventario Técnico de 85 Temas (>1,400 palabras c/u en 7 idiomas).
+- [x] Creación e Integración #1 del Módulo Data Science & AI Engineering (11 Guías Especializadas).
 
 🟢 **Fase 3: Desarrollo Core (Hexagonal), TDD y Verificación Formal**
 - [x] Extracción y Refactorización del Core UI (MatrixView, DiffView, Sidebar).
