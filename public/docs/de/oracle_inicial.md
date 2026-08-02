@@ -1,17 +1,10 @@
-# Arquitectura Empresarial
+## 🎯 1. Oracle Database Enterprise Architecture & Multitenant (CDB/PDB)
 
-> [!IMPORTANT]
-> **Nivel:** Inicial  
-> **Rol:** DBA Junior  
+**Oracle Database Enterprise Edition** is the leading relational engine in global banking and telecommunications. It features a decoupled architecture between **Instance** (SGA/PGA memory + Background Processes) and **Database** (physical files), alongside a containerized **Multitenant (CDB/PDB)** architecture.
 
-Oracle es el motor relacional de mayor adopción en el entorno bancario.
+### 💡 Core Architecture & Invariants:
+- **System Global Area (SGA):** Shared memory containing Shared Pool, Buffer Cache, Redo Log Buffer, Large Pool.
+- **Program Global Area (PGA):** Private session memory for sorting and hash joins.
+- **Background Processes:** DBWn, LGWR, CKPT, SMON, PMON.
 
-## 1. Instancias vs Bases de Datos
-En Oracle, una "Instancia" (Procesos de Memoria + Hilos) es independiente de la "Base de Datos" (Archivos físicos).
-
-```mermaid
-flowchart TD
-A["SGA - Memoria Compartida"] --> B["Archivos de Datos .dbf"]
-A --> C["Archivos Redo Log"]
-A --> D["Archivos de Control"]
-```
+© 2026 NMerge IA. All rights reserved.

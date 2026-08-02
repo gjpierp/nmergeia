@@ -1,15 +1,5 @@
-# RAC (Real Application Clusters)
+## 🎯 1. High Availability: Oracle RAC, Data Guard & Flashback
 
-> [!IMPORTANT]
-> **Costo Estimado:** Cientos de miles de dólares.  
+For Tier-0 mission-critical architectures, **Oracle Database Enterprise** delivers 99.999% availability with **Real Application Clusters (RAC)**, **Active Data Guard**, and **Flashback Database**.
 
-RAC permite que MÚLTIPLES instancias en distintos servidores físicos accedan concurrentemente a los MISMOS archivos de base de datos en un almacenamiento SAN compartido.
-
-```mermaid
-flowchart TD
-A["App Server"] --> B(Nodo 1: Instancia A)
-A --> C(Nodo 2: Instancia B)
-B --> D["(SAN Storage Compartido)"]
-C --> D
-```
-Si el Nodo 1 se incendia, las conexiones fallan instantáneamente al Nodo 2 (Transparent Application Failover).
+© 2026 NMerge IA. All rights reserved.

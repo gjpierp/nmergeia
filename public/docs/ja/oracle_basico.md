@@ -1,13 +1,5 @@
-# Tablespaces y Usuarios
+## 🎯 1. Storage Structures & PL/SQL Fundamentals
 
-En Oracle, no hay "bases de datos" por proyecto como en MySQL o Postgres. Hay **Schemas** (ligados a un Usuario) que viven dentro de **Tablespaces**.
+In **Oracle Database Enterprise**, physical and logical storage is structured into a 5-level hierarchy: **Database -> Tablespace -> Datafile -> Extent -> Oracle Data Block**.
 
-```sql
--- Crear un tablespace (Disco)
-CREATE TABLESPACE inventario_tbs 
-DATAFILE 'inventario01.dbf' SIZE 1G AUTOEXTEND ON;
-
--- Crear un usuario y asignarle el tablespace
-CREATE USER usr_inventario IDENTIFIED BY password_seguro
-DEFAULT TABLESPACE inventario_tbs;
-```
+© 2026 NMerge IA. All rights reserved.

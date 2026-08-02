@@ -1,18 +1,5 @@
-# PL/SQL y Rendimiento
+## 🎯 1. Advanced PL/SQL Packages, Collections & Bulk Operations
 
-PL/SQL es el lenguaje procedimental incrustado en el motor Oracle. Su velocidad es insuperable porque se ejecuta en el mismo proceso de memoria que los datos.
+In high-throughput enterprise environments, **Oracle Database** utilizes **PL/SQL Collections**, **`BULK COLLECT`**, and **`FORALL`** to eliminate context switching penalties between SQL and PL/SQL engines.
 
-```sql
-CREATE OR REPLACE PROCEDURE actualizar_salarios(p_departamento IN NUMBER) IS
-BEGIN
-    UPDATE empleados 
-    SET salario = salario * 1.10 
-    WHERE id_dept = p_departamento;
-    COMMIT;
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-END;
-/
-```
+© 2026 NMerge IA. All rights reserved.
