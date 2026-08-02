@@ -107,7 +107,6 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
       <div style={{ flex: 1, padding: '2rem', boxSizing: 'border-box' }}>
         <MarkdownViewer 
           filename={filename}
-          title={`${translatedTitle} ${!singleFile ? `- Nivel ${currentTab.label}` : ''}`}
           requiredRole="TEMA_ACCESO"
         />
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
