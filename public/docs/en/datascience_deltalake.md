@@ -1,85 +1,35 @@
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
+## 🎯 1. Executive Summary: Delta Lake Architecture
 
-La presente guía detalla la implementación profesional de **Delta Lake Architecture** en su **Initial Level**.
-Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
+**Delta Lake** is the open-source storage layer that brings **ACID transactions**, Time Travel, schema enforcement, and real-time compaction to Data Lakes (S3, ADLS, GCS), building an enterprise **Lakehouse architecture**.
 
-### 💡 Puntos Clave de este Nivel:
-- **Estructura Interna:** Configuración óptima para escenarios de producción.
-- **Rendimiento Cero-Copia:** Minimización de serialización y transferencia de datos en memoria.
-- **Seguridad & Gobernanza:** Integración directa con políticas Sentinel-NGAC y Row-Level Security (RLS).
-- **Paralelismo Escalable:** Gestión eficiente de hilos, procesos y clústeres.
+### 💡 Core Architecture & Invariants:
+- **ACID Transactions via Delta Log (`_delta_log/`):** Audit trail log with Optimistic Concurrency Control.
+- **Time Travel & Auditing:** Query exact historical snapshots via `versionAsOf` or `timestampAsOf`.
+- **Medallion Architecture (Bronze -> Silver -> Gold):** Raw ingestion (Bronze), cleaned/deduplicated (Silver), and aggregated metrics (Gold).
+- **Z-Ordering & Data Skipping:** Multi-dimensional indexing for high-speed BI queries.
 
 ---
 
-## 🏗️ 2. Arquitectura de Componentes & Flujo Lógico
+## 🏗️ 2. Medallion Lakehouse Architecture (Delta Lake Engine)
 
 ```mermaid
-flowchart TD
-    A["NMerge Client / Application"] -->|Processing Request| B["Delta Lake Architecture Engine (Initial Level)"]
-    B -->|Dynamic Partitioning| C["SIMD Memory Manager / Direct Buffer"]
-    C -->|Structured Persistence| D["Parquet / Delta Storage Layer"]
-    B -->|Security Audit| E["Sentinel-NGAC PDP Evaluator"]
+flowchart LR
+    subgraph Sources ["Data Sources"]
+        Kafka["Apache Kafka Stream"]
+        CDC["PostgreSQL CDC"]
+    end
+
+    subgraph Lakehouse ["Delta Lake Storage"]
+        Bronze["🥉 Bronze Layer (Raw Append)"]
+        Silver["🥈 Silver Layer (Cleaned / Upsert)"]
+        Gold["🥇 Gold Layer (Business Aggregates / Z-Order)"]
+    end
+
+    Kafka -->|Structured Streaming| Bronze
+    Bronze -->|Merge Upsert| Silver
+    Silver -->|Z-Order| Gold
 ```
 
 ---
 
-## 💻 3. Implementación de Código Estructurado
-
-A continuación se expone el patrón de diseño e implementación correspondiente al nivel **Inicial**:
-
-```python
-# =====================================================================
-# NMerge IA - Módulo de Especialidad: Delta Lake Architecture (Inicial)
-# Autor: StackUpIA Software Labs
-# =====================================================================
-
-import sys
-import time
-
-class DELTALAKE_Manager:
-    def __init__(self, config: dict):
-        self.config = config
-        self.level = "inicial"
-        self.is_active = True
-
-    def process_data_stream(self, data_batch: list) -> dict:
-        """
-        Procesa el lote de datos aplicando optimizaciones de nivel Inicial.
-        """
-        start_time = time.perf_counter()
-        
-        # Filtrado y transformación de alto rendimiento
-        result = [item for item in data_batch if item is not None]
-        
-        execution_time = (time.perf_counter() - start_time) * 1000
-        return {
-            "status": "SUCCESS",
-            "level": self.level,
-            "processed_count": len(result),
-            "latency_ms": round(execution_time, 3)
-        }
-
-if __name__ == "__main__":
-    manager = DELTALAKE_Manager({"mode": "production"})
-    res = manager.process_data_stream(["item_1", "item_2", "item_3"])
-    print(f"[{subtopic.name}] Resultado (Inicial): {res}")
-```
-
----
-
-## 🧪 4. Cobertura de Pruebas & Verificación
-
-Para garantizar la paridad del 100% en entornos empresariales, ejecute la suite de pruebas unitarias y de integración:
-
-```bash
-# Ejecutar verificación formal para Delta Lake Architecture (inicial)
-npm run test -- --grep="deltalake_inicial"
-```
-
----
-
-## 🔒 5. Cumplimiento & Seguridad Sentinel-NGAC
-
-Todas las ejecuciones de **Delta Lake Architecture** en este nivel están sujetas a la verificación del motor de políticas **Sentinel-NGAC**, asegurando que únicamente los roles con privilegio `TEMA_ACCESO` puedan ejecutar consultas o transformaciones avanzadas sobre la información.
-
-© 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
+© 2026 NMerge IA. All rights reserved.

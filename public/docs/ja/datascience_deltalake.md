@@ -1,85 +1,129 @@
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
+## 🎯 1. Resumen Ejecutivo: Delta Lake Architecture
 
-La presente guía detalla la implementación profesional de **Delta Lake Architecture** en su **入門レベル**.
-Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
+**Delta Lake** es la capa de almacenamiento de código abierto que convierte los Data Lakes (S3, ADLS, GCS) en una arquitectura **Lakehouse empresarial**. Aporta transacciones ACID, viajes en el tiempo (Time Travel), evolución de esquemas y compactación en tiempo real manteniendo el formato de archivo abierto Parquet.
 
-### 💡 Puntos Clave de este Nivel:
-- **Estructura Interna:** Configuración óptima para escenarios de producción.
-- **Rendimiento Cero-Copia:** Minimización de serialización y transferencia de datos en memoria.
-- **Seguridad & Gobernanza:** Integración directa con políticas Sentinel-NGAC y Row-Level Security (RLS).
-- **Paralelismo Escalable:** Gestión eficiente de hilos, procesos y clústeres.
+### 💡 Arquitectura Core & Invariantes:
+- **Transacciones ACID con Delta Log (`_delta_log/`):** Registro de auditoría commit por commit basado en archivos JSON con concurrencia optimista (Optimistic Concurrency Control).
+- **Viaje en el Tiempo (Time Travel & Auditing):** Consulta de versiones históricas exactas mediante timestamp (`VERSION AS OF` o `TIMESTAMP AS OF`).
+- **Arquitectura Medallón (Bronze -> Silver -> Gold):** Ingesta cruda (Bronze), limpieza y deduplicación (Silver) y agregaciones de negocio optimizadas (Gold).
+- **Z-Ordering & Data Skipping:** Indexación multidimensional para aceleración de consultas sin sobrecostos de mantenimiento.
 
 ---
 
-## 🏗️ 2. Arquitectura de Componentes & Flujo Lógico
+## 🏗️ 2. Arquitectura Lakehouse Medallón (Delta Lake Engine)
 
 ```mermaid
-flowchart TD
-    A["NMerge クライアント / アプリ"] -->|処理リクエスト| B["Delta Lake Architecture Engine (入門レベル)"]
-    B -->|動的パーティショニング| C["SIMD メモリマネージャー / ダイレクトバッファ"]
-    C -->|構造化永続性| D["Parquet / Delta Storage Layer"]
-    B -->|セキュリティ監査| E["Sentinel-NGAC PDP Evaluator"]
+flowchart LR
+    subgraph Sources ["Fuentes de Ingesta"]
+        Kafka["Apache Kafka Event Stream"]
+        CDC["Bases de Datos CDC (Postgres/Oracle)"]
+    end
+
+    subgraph Lakehouse ["Delta Lake Lakehouse (Storage Layer)"]
+        Bronze["🥉 Capa Bronze (Raw Ingestion / Append-Only)"]
+        Silver["🥈 Capa Silver (Cleaned, Deduplicated, Schema Enforced)"]
+        Gold["🥇 Capa Gold (Business Aggregates / Z-Ordered)"]
+    end
+
+    subgraph Analytics ["Consumidores & BI"]
+        BI["Dashboards PowerBI / Superset"]
+        ML["Modelos MLOps / PySpark ML"]
+    end
+
+    Kafka -->|Structured Streaming| Bronze
+    CDC -->|Batch / Stream| Bronze
+    Bronze -->|Merge & Cleanse| Silver
+    Silver -->|Z-Order / Optimize| Gold
+    Gold -->|Fast SQL Queries| BI
+    Gold -->|Feature Store| ML
 ```
 
 ---
 
-## 💻 3. Implementación de Código Estructurado
-
-A continuación se expone el patrón de diseño e implementación correspondiente al nivel **Inicial**:
+## 💻 3. Implementación Empresarial: Ingesta Delta Lake, MERGE (Upsert) & Time Travel (PySpark / Delta-Spark)
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Delta Lake Architecture (Inicial)
-# Autor: StackUpIA Software Labs
+# NMerge IA - Módulo de Especialidad: Delta Lake Architecture
+# Operaciones ACID, MERGE (Upsert), Z-Ordering y Time Travel en PySpark
 # =====================================================================
 
-import sys
-import time
+from pyspark.sql import SparkSession
+from delta.tables import DeltaTable
+from pyspark.sql.functions import col, current_timestamp, expr
 
-class DELTALAKE_Manager:
-    def __init__(self, config: dict):
-        self.config = config
-        self.level = "inicial"
-        self.is_active = True
+# 📌 1. Inicialización de Sesión Spark con soporte nativo de Delta Lake
+spark = SparkSession.builder \
+    .appName("NMerge-DeltaLake-Enterprise") \
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
+    .getOrCreate()
 
-    def process_data_stream(self, data_batch: list) -> dict:
-        """
-        Procesa el lote de datos aplicando optimizaciones de nivel Inicial.
-        """
-        start_time = time.perf_counter()
+delta_table_path = "/mnt/lakehouse/silver/customer_orders"
+
+# 📌 2. Operación MERGE (Upsert Transaccional ACID)
+def upsert_to_delta_silver(microbatch_df, batch_id):
+    """
+    Realiza una operación MERGE atómica en la Capa Silver:
+    Actualiza registros existentes si el timestamp es más reciente, o inserta nuevos.
+    """
+    if DeltaTable.isDeltaTable(spark, delta_table_path):
+        target_delta = DeltaTable.forPath(spark, delta_table_path)
         
-        # Filtrado y transformación de alto rendimiento
-        result = [item for item in data_batch if item is not None]
-        
-        execution_time = (time.perf_counter() - start_time) * 1000
-        return {
-            "status": "SUCCESS",
-            "level": self.level,
-            "processed_count": len(result),
-            "latency_ms": round(execution_time, 3)
-        }
+        target_delta.alias("target").merge(
+            source=microbatch_df.alias("source"),
+            condition="target.order_id = source.order_id"
+        ).whenMatchedUpdate(
+            condition="source.updated_at > target.updated_at",
+            set={
+                "customer_id": "source.customer_id",
+                "amount": "source.amount",
+                "status": "source.status",
+                "updated_at": "source.updated_at"
+            }
+        ).whenNotMatchedInsert(
+            values={
+                "order_id": "source.order_id",
+                "customer_id": "source.customer_id",
+                "amount": "source.amount",
+                "status": "source.status",
+                "updated_at": "source.updated_at",
+                "created_at": "source.created_at"
+            }
+        ).execute()
+        print(f"✅ Batch {batch_id} integrado exitosamente con MERGE en Delta Lake.")
+    else:
+        # Iniciar tabla Delta en caso de primera escritura
+        microbatch_df.write.format("delta").mode("overwrite").save(delta_table_path)
 
-if __name__ == "__main__":
-    manager = DELTALAKE_Manager({"mode": "production"})
-    res = manager.process_data_stream(["item_1", "item_2", "item_3"])
-    print(f"[{subtopic.name}] Resultado (Inicial): {res}")
+# 📌 3. Optimización Z-Ordering & Compactación de Archivos (Small File Problem)
+def optimize_and_zorder():
+    """Ejecuta OPTIMIZE y Z-ORDER BY para acelerar lecturas BI."""
+    delta_table = DeltaTable.forPath(spark, delta_table_path)
+    delta_table.optimize().executeZOrderBy("customer_id")
+    print("🚀 Tabla Delta compactada y Z-Ordered por customer_id.")
+
+# 📌 4. Consulta Time Travel (Auditoría Histórica)
+def query_time_travel(version: int):
+    """Consulta el estado exacto de los datos en una versión previa."""
+    df_version = spark.read.format("delta").option("versionAsOf", version).load(delta_table_path)
+    print(f"📜 Registros en la Versión {version} de Delta Lake:")
+    df_version.show(5)
+    return df_version
 ```
 
 ---
 
 ## 🧪 4. Cobertura de Pruebas & Verificación
 
-Para garantizar la paridad del 100% en entornos empresariales, ejecute la suite de pruebas unitarias y de integración:
-
 ```bash
-# Ejecutar verificación formal para Delta Lake Architecture (inicial)
-npm run test -- --grep="deltalake_inicial"
+# Ejecutar verificación formal para Delta Lake Architecture
+npm run test -- --grep="deltalake_acid"
 ```
 
 ---
 
-## 🔒 5. Cumplimiento & Seguridad Sentinel-NGAC
-
-Todas las ejecuciones de **Delta Lake Architecture** en este nivel están sujetas a la verificación del motor de políticas **Sentinel-NGAC**, asegurando que únicamente los roles con privilegio `TEMA_ACCESO` puedan ejecutar consultas o transformaciones avanzadas sobre la información.
+## 🔒 5. Cumplimiento & Gobernanza Sentinel-NGAC
+Todas las tablas Delta están protegidas por controles de acceso finos **Sentinel-NGAC** e integración nativa con políticas de auditoría en la capa de metadatos de almacenamiento.
 
 © 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.

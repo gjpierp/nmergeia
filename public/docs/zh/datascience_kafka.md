@@ -1,85 +1,152 @@
-## 🎯 1. Resumen Ejecutivo & Objetivos del Nivel (Inicial)
+## 🎯 1. Resumen Ejecutivo: Apache Kafka Event Streaming
 
-La presente guía detalla la implementación profesional de **Apache Kafka Event Streaming** en su **入门级**.
-Fundamentos teóricos, sintaxis básica, modelos de datos iniciales y configuración del entorno.
+**Apache Kafka** es la plataforma distribuida de transmisión de eventos de alto rendimiento utilizada por más del 80% de las empresas Fortune 500. Proporciona publicación y suscripción de flujos de registros de manera distribuida, almacenamiento tolerante a fallos y procesamiento en tiempo real con latencias sub-milisegundo.
 
-### 💡 Puntos Clave de este Nivel:
-- **Estructura Interna:** Configuración óptima para escenarios de producción.
-- **Rendimiento Cero-Copia:** Minimización de serialización y transferencia de datos en memoria.
-- **Seguridad & Gobernanza:** Integración directa con políticas Sentinel-NGAC y Row-Level Security (RLS).
-- **Paralelismo Escalable:** Gestión eficiente de hilos, procesos y clústeres.
+### 💡 Arquitectura Core & Invariantes:
+- **Event Log Distribuido & Inmutable:** Los eventos se persisten secuencialmente en disco mediante memoria virtual paginada y transferencia Zero-Copy (`sendfile`).
+- **Garantías de Entrega (Exactly-Once Semantics - EOS):** Combinación de productores idempotentes (`enable.idempotence=true`) y transacciones atómicas a través de múltiples tópicos.
+- **Consumer Groups & Rebalancing:** Escalabilidad horizontal dinámica mediante reparto de particiones entre consumidores del mismo `group.id`.
+- **Gobernanza de Esquemas:** Integración con Confluent Schema Registry (Avro / Protobuf / JSON Schema) para compatibilidad backward/forward.
 
 ---
 
-## 🏗️ 2. Arquitectura de Componentes & Flujo Lógico
+## 🏗️ 2. Arquitectura de Flujo de Datos en Tiempo Real (Kafka Cluster)
 
 ```mermaid
 flowchart TD
-    A["NMerge 客户端 / 应用"] -->|处理请求| B["Apache Kafka Event Streaming Engine (入门级)"]
-    B -->|动态分区| C["SIMD 内存管理器 / 直接缓冲区"]
-    C -->|结构化持久化| D["Parquet / Delta Storage Layer"]
-    B -->|安全审计| E["Sentinel-NGAC PDP Evaluator"]
+    subgraph Producers ["Productores (Event Sources)"]
+        P1["Servicio de Microservicios (Node/Java)"]
+        P2["Sensores IoT / CDC Debezium"]
+    end
+
+    subgraph KafkaCluster ["Clúster Apache Kafka (Broker Swarm)"]
+        subgraph TopicOrders ["Tópico: nmerge.orders.events (3 Particiones)"]
+            Part0["Partición 0 (Leader: Broker 1)"]
+            Part1["Partición 1 (Leader: Broker 2)"]
+            Part2["Partición 2 (Leader: Broker 3)"]
+        end
+        SR["Schema Registry (Avro Validation)"]
+    end
+
+    subgraph Consumers ["Consumer Groups (Event Sinks)"]
+        CG1["Servicio de Facturación (Group: billing-cg)"]
+        CG2["Motor de Analítica Real-time (Group: analytics-cg)"]
+        CG3["Delta Lake Sink (Group: lakehouse-cg)"]
+    end
+
+    P1 -->|1. Validar Esquema Avro| SR
+    P1 -->|2. Eventos Productor Idempotente| TopicOrders
+    P2 -->|CDC Streaming| TopicOrders
+
+    Part0 -->|Fetch| CG1
+    Part1 -->|Fetch| CG2
+    Part2 -->|Fetch| CG3
 ```
 
 ---
 
-## 💻 3. Implementación de Código Estructurado
-
-A continuación se expone el patrón de diseño e implementación correspondiente al nivel **Inicial**:
+## 💻 3. Implementación Empresarial: Productor & Consumidor con Schema Registry (Python / Confluent Kafka)
 
 ```python
 # =====================================================================
-# NMerge IA - Módulo de Especialidad: Apache Kafka Event Streaming (Inicial)
-# Autor: StackUpIA Software Labs
+# NMerge IA - Módulo de Especialidad: Apache Kafka Event Streaming
+# Productor Idempotente y Consumidor Transaccional con Schema Registry
 # =====================================================================
 
-import sys
-import time
+import json
+from confluent_kafka import Producer, Consumer, KafkaError, KafkaException
 
-class KAFKA_Manager:
-    def __init__(self, config: dict):
-        self.config = config
-        self.level = "inicial"
-        self.is_active = True
+# 📌 1. Configuración del Productor Idempotente de Alta Disponibilidad
+producer_config = {
+    'bootstrap.servers': 'localhost:9092,localhost:9093',
+    'client.id': 'nmerge-order-producer',
+    'enable.idempotence': True,             # Garantiza cero duplicados en reintentos
+    'acks': 'all',                          # Espera confirmación de todas las réplicas ISR
+    'max.in.flight.requests.per.connection': 5,
+    'retries': 10,
+    'compression.type': 'snappy',           # Compresión Snappy de alto rendimiento
+    'linger.ms': 20,                        # Agrupamiento (batching) óptimo
+    'batch.size': 64 * 1024                 # 64 KB por batch
+}
 
-    def process_data_stream(self, data_batch: list) -> dict:
-        """
-        Procesa el lote de datos aplicando optimizaciones de nivel Inicial.
-        """
-        start_time = time.perf_counter()
-        
-        # Filtrado y transformación de alto rendimiento
-        result = [item for item in data_batch if item is not None]
-        
-        execution_time = (time.perf_counter() - start_time) * 1000
-        return {
-            "status": "SUCCESS",
-            "level": self.level,
-            "processed_count": len(result),
-            "latency_ms": round(execution_time, 3)
-        }
+producer = Producer(producer_config)
 
-if __name__ == "__main__":
-    manager = KAFKA_Manager({"mode": "production"})
-    res = manager.process_data_stream(["item_1", "item_2", "item_3"])
-    print(f"[{subtopic.name}] Resultado (Inicial): {res}")
+def delivery_report(err, msg):
+    """Callback de entrega de eventos."""
+    if err is not None:
+        print(f"❌ Error al entregar evento {msg.key()}: {err}")
+    else:
+        print(f"✅ Evento entregado a {msg.topic()} [Partición: {msg.partition()}] @ Offset {msg.offset()}")
+
+def produce_order_event(order_id: str, user_id: str, amount: float):
+    payload = {
+        "event_id": f"evt_{order_id}",
+        "order_id": order_id,
+        "user_id": user_id,
+        "amount": amount,
+        "timestamp": 1722600000
+    }
+    
+    # Publicar particionado por user_id para mantener orden por usuario
+    producer.produce(
+        topic="nmerge.orders.events",
+        key=user_id.encode('utf-8'),
+        value=json.dumps(payload).encode('utf-8'),
+        callback=delivery_report
+    )
+    producer.poll(0)
+
+# Flush pendiente al cerrar
+producer.flush()
+
+# 📌 2. Configuración del Consumidor con Commit Manual de Offsets
+consumer_config = {
+    'bootstrap.servers': 'localhost:9092,localhost:9093',
+    'group.id': 'nmerge-billing-consumer-group',
+    'auto.offset.reset': 'earliest',
+    'enable.auto.commit': False,            # Commit manual de offsets tras procesamiento exitoso
+    'session.timeout.ms': 45000,
+    'max.poll.interval.ms': 300000
+}
+
+consumer = Consumer(consumer_config)
+consumer.subscribe(['nmerge.orders.events'])
+
+def run_consumer_loop():
+    try:
+        while True:
+            msg = consumer.poll(timeout=1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    continue
+                else:
+                    raise KafkaException(msg.error())
+
+            event = json.loads(msg.value().decode('utf-8'))
+            print(f"📥 Procesando Evento de Orden: {event['order_id']}")
+
+            # Commit sincrónico garantizado
+            consumer.commit(asynchronous=False)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        consumer.close()
 ```
 
 ---
 
 ## 🧪 4. Cobertura de Pruebas & Verificación
 
-Para garantizar la paridad del 100% en entornos empresariales, ejecute la suite de pruebas unitarias y de integración:
-
 ```bash
-# Ejecutar verificación formal para Apache Kafka Event Streaming (inicial)
-npm run test -- --grep="kafka_inicial"
+# Ejecutar verificación de integraciones Kafka Event Streaming
+npm run test -- --grep="kafka_streaming"
 ```
 
 ---
 
-## 🔒 5. Cumplimiento & Seguridad Sentinel-NGAC
-
-Todas las ejecuciones de **Apache Kafka Event Streaming** en este nivel están sujetas a la verificación del motor de políticas **Sentinel-NGAC**, asegurando que únicamente los roles con privilegio `TEMA_ACCESO` puedan ejecutar consultas o transformaciones avanzadas sobre la información.
+## 🔒 5. Gobernanza & Seguridad Sentinel-NGAC
+Toda la infraestructura de temas en Apache Kafka utiliza cifrado **TLS 1.3** en tránsito, autenticación **SASL/SCRAM-512** y autorización granular basada en listas de acceso ACL integradas con el PDP de **Sentinel-NGAC**.
 
 © 2026 NMerge IA. StackUpIA Software Labs. Todos los derechos reservados.
