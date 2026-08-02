@@ -44,10 +44,10 @@ end
 subgraph analytics_node ["Logical Replica Analytics"]
 L1["Data Warehouse / Redshift"]
 end
-P -->|"WAL Streaming (Binario)"| WAL
+P -->|"WAL Streaming Binario "| WAL
 WAL -->|"Replicacion Fisica asincrona"| S1
 WAL -->|"Replicacion Fisica asincrona"| S2
-P -->|"Decodificacion Logica (Pub-Sub)"| L1
+P -->|"Decodificacion Logica Pub-Sub "| L1
 ```
 
 ### Replicación Física (Streaming Replication)

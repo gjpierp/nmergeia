@@ -1,4 +1,4 @@
-## 🎯 1. Resumen Ejecutivo: Polars Rust SIMD Engine
+## 🎯 1. Polars Rust SIMD Engine
 
 **Polars** es la biblioteca de procesamiento de datos de última generación desarrollada en **Rust**. Ofrece un rendimiento extremadamente superior a Pandas gracias al uso de vectorización **SIMD** (Single Instruction, Multiple Data), procesamiento de múltiples hilos sin GIL (Global Interpreter Lock) y optimizaciones de consultas mediante su motor **Lazy Engine**.
 
@@ -14,11 +14,11 @@
 
 ```mermaid
 flowchart TD
-    Parquet["Archivos Parquet (Petabytes)"] -->|1. Lazy Scan (scan_parquet)| LazyFrame["Polars LazyFrame (DAG Lógico)"]
+    Parquet["Archivos Parquet (Petabytes)"] -->|1. Lazy Scan scan_parquet | LazyFrame["Polars LazyFrame (DAG Lógico)"]
     LazyFrame -->|2. Predicate Pushdown| Pushdown["Pushdown Filter (Ignora bloques irrelevantes)"]
     Pushdown -->|3. Projection Pushdown| Projection["Projection Filter (Lee únicamente columnas necesarias)"]
     Projection -->|4. SIMD Multi-threading| Engine["Polars SIMD Multi-threaded Engine (Rust)"]
-    Engine -->|5. Collect()| DataFrame["Polars DataFrame Final en RAM"]
+    Engine -->|5. Collect| DataFrame["Polars DataFrame Final en RAM"]
 ```
 
 ---

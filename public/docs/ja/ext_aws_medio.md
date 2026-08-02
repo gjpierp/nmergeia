@@ -14,7 +14,7 @@ API Gateway actúa como la puerta principal de tu casa. Expone endpoints HTTP (`
 ```mermaid
 flowchart LR
 Hacker["Atacante"] -->|1M Peticiones| API["API Gateway"]
-API -->|"Rechaza el 99% (Throttling)"| /dev/null
+API -->|"Rechaza el 99% Throttling "| /dev/null
 API -->|Peticiones Legítimas| Lambda["Lambda (Salvada)"]
 ```
 

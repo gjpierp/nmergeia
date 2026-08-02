@@ -1,4 +1,4 @@
-## 🎯 1. Executive Summary: PySpark & Distributed Big Data Processing
+## 🎯 1. PySpark & Distributed Big Data Processing
 
 **PySpark** is the Python API for Apache Spark, the leading platform for petabyte-scale distributed Big Data processing.
 

@@ -1,4 +1,4 @@
-## 🎯 1. Resumen Ejecutivo: Apache Kafka Event Streaming
+## 🎯 1. Apache Kafka Event Streaming
 
 **Apache Kafka** es la plataforma distribuida de transmisión de eventos de alto rendimiento utilizada por más del 80% de las empresas Fortune 500. Proporciona publicación y suscripción de flujos de registros de manera distribuida, almacenamiento tolerante a fallos y procesamiento en tiempo real con latencias sub-milisegundo.
 

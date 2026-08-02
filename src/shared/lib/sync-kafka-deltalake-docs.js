@@ -10,7 +10,7 @@ const docsDir = path.join(__dirname, '../../../public/docs');
 
 // 1. Apache Kafka Enterprise Guide Content
 const kafkaContent = {
-  es: `## 🎯 1. Resumen Ejecutivo: Apache Kafka Event Streaming
+  es: `## 🎯 1. Apache Kafka Event Streaming
 
 **Apache Kafka** es la plataforma distribuida de transmisión de eventos de alto rendimiento utilizada por más del 80% de las empresas Fortune 500. Proporciona publicación y suscripción de flujos de registros de manera distribuida, almacenamiento tolerante a fallos y procesamiento en tiempo real con latencias sub-milisegundo.
 
@@ -242,7 +242,7 @@ producer.flush()
 
 // 2. Delta Lake Architecture Content
 const deltalakeContent = {
-  es: `## 🎯 1. Resumen Ejecutivo: Delta Lake Architecture
+  es: `## 🎯 1. Delta Lake Architecture
 
 **Delta Lake** es la capa de almacenamiento de código abierto que convierte los Data Lakes (S3, ADLS, GCS) en una arquitectura **Lakehouse empresarial**. Aporta transacciones ACID, viajes en el tiempo (Time Travel), evolución de esquemas y compactación en tiempo real manteniendo el formato de archivo abierto Parquet.
 

@@ -1,4 +1,4 @@
-## 🎯 1. Executive Summary: MLOps & GPU vLLM Serving
+## 🎯 1. MLOps & GPU vLLM Serving
 
 **MLOps** and **vLLM** deployment architectures represent the enterprise standard for operationalizing Large Language Models (LLMs) with high throughput and sub-millisecond latencies.
 

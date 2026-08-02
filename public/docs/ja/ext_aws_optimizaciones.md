@@ -24,9 +24,9 @@ Si lo colocas frente a DynamoDB, tu código no cambia, pero las lecturas repetid
 ```mermaid
 flowchart LR
 Lambda["AWS Lambda"] -->|GetItem producto-1| DAX["Cluster DAX (Caché RAM)"]
-DAX -->|"Si no existe (Cache Miss)"| DB["(DynamoDB Disco)"]
+DAX -->|"Si no existe Cache Miss "| DB["(DynamoDB Disco)"]
 DB -->|Devuelve y Guarda| DAX
-DAX -->|"Respuesta Ultra-Rápida (0.2ms)"| Lambda
+DAX -->|"Respuesta Ultra-Rápida 0.2ms "| Lambda
 ```
 
 ## 3. Optimizando el Runtime (Node.js vs Rust)

@@ -14,7 +14,7 @@ Controller -->|Extrae req.body| Service["Capa de Servicio"]
 Service -->|Consulta| DB["(Base de Datos)"]
 DB --> Service
 Service -->|Resultado Puro| Controller
-Controller -->|"res.status(200)"| Cliente
+Controller -->|"res.status 200 "| Cliente
 ```
 
 ## 2. El Corazón de Express: Los Middlewares

@@ -1,4 +1,4 @@
-## 🎯 1. Resumen Ejecutivo: Delta Lake Architecture
+## 🎯 1. Delta Lake Architecture
 
 **Delta Lake** es la capa de almacenamiento de código abierto que convierte los Data Lakes (S3, ADLS, GCS) en una arquitectura **Lakehouse empresarial**. Aporta transacciones ACID, viajes en el tiempo (Time Travel), evolución de esquemas y compactación en tiempo real manteniendo el formato de archivo abierto Parquet.
 

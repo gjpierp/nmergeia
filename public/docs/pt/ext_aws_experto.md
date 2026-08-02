@@ -13,9 +13,9 @@ flowchart TD
 API["API Gateway"] --> LambdaAuth["Lambda Crear Usuario"]
 LambdaAuth -->|Publica Evento UsuarioCreado| Broker{Bus de Eventos}
 LambdaAuth -.->|Responde INMEDIATO 201| Usuario
-Broker -->|"Notifica (Fan-Out)"| Queue1["Cola SQS (Emails)"]
-Broker -->|"Notifica (Fan-Out)"| Queue2["Cola SQS (Pagos)"]
-Broker -->|"Notifica (Fan-Out)"| Queue3["Cola SQS (Reportes)"]
+Broker -->|"Notifica Fan-Out "| Queue1["Cola SQS (Emails)"]
+Broker -->|"Notifica Fan-Out "| Queue2["Cola SQS (Pagos)"]
+Broker -->|"Notifica Fan-Out "| Queue3["Cola SQS (Reportes)"]
 Queue1 --> LambdaEmail["Lambda Enviar Correo"]
 Queue2 --> LambdaPago["Lambda Procesar Pago"]
 ```

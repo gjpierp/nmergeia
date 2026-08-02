@@ -12,8 +12,8 @@ Zustand y Redux son perfectos para UI (Si un panel está abierto, el tema actual
 flowchart TD
 React["Componente UI"] -->|Pide Datos posts| QueryClient["React Query Cache"]
 QueryClient -->|Verifica Caché| CacheHit{Datos Frescos}
-CacheHit -->|"Sí (Stale Time no caducado)"| React
-CacheHit -->|"No (Stale / Vacío)"| API["Backend API"]
+CacheHit -->|"Sí Stale Time no caducado "| React
+CacheHit -->|"No Stale / Vacío "| API["Backend API"]
 API -->|Respuesta HTTP| QueryClient
 QueryClient -->|Guarda en Caché y Notifica| React
 ```

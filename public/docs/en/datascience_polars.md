@@ -1,4 +1,4 @@
-## 🎯 1. Executive Summary: Polars Rust SIMD Engine
+## 🎯 1. Polars Rust SIMD Engine
 
 **Polars** is the lightning-fast DataFrames library written in **Rust**. It outperforms Pandas by utilizing **SIMD** vectorization, GIL-free multi-threading, and Lazy query optimization.
 

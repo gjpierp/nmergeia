@@ -1,4 +1,4 @@
-## 🎯 1. Resumen Ejecutivo: PySpark & Distributed Big Data Processing
+## 🎯 1. PySpark & Distributed Big Data Processing
 
 **PySpark** es la interfaz en Python para Apache Spark, la plataforma líder en procesamiento distribuido de Big Data a escala petabyte. Permite realizar consultas analíticas, transformaciones ETL masivas, procesamiento en streaming y machine learning sobre clústeres distribuidos.
 

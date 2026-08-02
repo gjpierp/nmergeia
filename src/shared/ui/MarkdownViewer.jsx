@@ -54,6 +54,12 @@ const MermaidChart = ({ chart, theme }) => {
           if (currentType === 'flowchart' || currentType === 'graph') {
             str = str.replace(/^\s*graph\s+/gm, 'flowchart ');
 
+            // Limpieza de paréntesis dentro de etiquetas de enlace (ej: -->|5. Collect()| -> -->|5. Collect|)
+            str = str.replace(/-->\|([^|]*?)\((.*?)\)([^|]*?)\|/g, (match, p1, p2, p3) => {
+              const cleanInside = p2 ? ` ${p2} ` : '';
+              return `-->|${p1.trim()}${cleanInside}${p3.trim()}|`;
+            });
+
             let subCount = 0;
             str = str.replace(/^\s*subgraph\s+([a-zA-Z0-9_-]+)?\s*\[(.*?)\]/gm, (match, id, label) => {
               subCount++;

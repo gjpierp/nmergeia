@@ -1,4 +1,4 @@
-## 🎯 1. Resumen Ejecutivo: MLOps & GPU vLLM Serving
+## 🎯 1. MLOps & GPU vLLM Serving
 
 **MLOps (Machine Learning Operations)** y las arquitecturas de despliegue de **vLLM** representan el estándar para operacionalizar modelos de lenguaje (LLMs) e Inteligencia Artificial en entornos de producción con alta concurrencia y baja latencia.
 
