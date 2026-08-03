@@ -69,27 +69,27 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
   return (
     <div 
       ref={headerRef}
-      className={`page-header-container ${isHiddenOnMobile ? 'header-hidden-mobile' : 'header-visible'}`}
+      className={`page-header-container ${sticky && isHiddenOnMobile ? 'header-hidden-mobile' : 'header-visible'}`}
       style={{
         display: 'flex',
         flexDirection: centered ? 'column' : 'row',
         alignItems: 'center',
         justifyContent: centered ? 'center' : 'space-between',
         width: '100%',
-        paddingBottom: isHiddenOnMobile ? '0px' : '16px',
-        marginBottom: isHiddenOnMobile ? '0px' : '16px',
-        borderBottom: isHiddenOnMobile ? 'none' : '1px solid var(--border-light)',
+        paddingBottom: '16px',
+        marginBottom: '16px',
+        borderBottom: '1px solid var(--border-light)',
         boxSizing: 'border-box',
         position: sticky ? 'sticky' : 'relative',
-        top: 0,
-        zIndex: 90,
+        top: sticky ? 0 : 'auto',
+        zIndex: sticky ? 90 : 1,
         background: 'var(--bg-primary)',
-        transition: 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease',
-        transform: isHiddenOnMobile ? 'translateY(-100%)' : 'translateY(0)',
-        opacity: isHiddenOnMobile ? 0 : 1,
-        maxHeight: isHiddenOnMobile ? '0px' : '600px',
-        overflow: isHiddenOnMobile ? 'hidden' : 'visible',
-        pointerEvents: isHiddenOnMobile ? 'none' : 'auto'
+        transition: sticky ? 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease' : 'none',
+        transform: (sticky && isHiddenOnMobile) ? 'translateY(-100%)' : 'translateY(0)',
+        opacity: (sticky && isHiddenOnMobile) ? 0 : 1,
+        maxHeight: (sticky && isHiddenOnMobile) ? '0px' : 'none',
+        overflow: (sticky && isHiddenOnMobile) ? 'hidden' : 'visible',
+        pointerEvents: (sticky && isHiddenOnMobile) ? 'none' : 'auto'
       }}
     >
       <div style={{ 
