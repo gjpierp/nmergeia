@@ -106,6 +106,22 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
         ) : (
           <Logo height={logoSize || "38px"} alt="NMerge IA - StackUpIA Logo" />
         )}
+        {centered && badgeText && (
+          <span style={{
+            fontSize: '0.75rem',
+            fontWeight: '700',
+            padding: '4px 14px',
+            borderRadius: '20px',
+            background: 'var(--badge-bg)',
+            color: 'var(--accent-secondary)',
+            border: '1px solid var(--border-light)',
+            marginTop: '-4px',
+            marginBottom: '4px',
+            display: 'inline-block'
+          }}>
+            {badgeText}
+          </span>
+        )}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: centered ? 'center' : 'flex-start', textAlign: centered ? 'center' : 'left' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: centered ? 'center' : 'flex-start', gap: '10px', flexWrap: 'wrap' }}>
             <h1 style={{
@@ -120,7 +136,7 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
             }}>
               {title}
             </h1>
-            {badgeText && (
+            {!centered && badgeText && (
               <span style={{
                 fontSize: '0.72rem',
                 fontWeight: '700',
