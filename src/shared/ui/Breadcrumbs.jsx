@@ -38,10 +38,19 @@ export const Breadcrumbs = ({ items = [] }) => {
         gap: '4px',
         fontSize: '0.75rem',
         color: 'var(--text-tertiary)',
-        marginBottom: '8px',
+        marginBottom: '16px',
         marginTop: '0px',
+        padding: '10px 20px',
+        marginLeft: '-20px',
+        marginRight: '-20px',
         flexWrap: 'wrap',
-        fontFamily: '"Outfit", sans-serif'
+        fontFamily: '"Outfit", sans-serif',
+        position: 'sticky',
+        top: 0,
+        zIndex: 95,
+        background: 'var(--bg-primary)',
+        borderBottom: '1px solid var(--border-light)',
+        boxSizing: 'border-box'
       }}
     >
       <script type="application/ld+json">

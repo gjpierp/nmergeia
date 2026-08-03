@@ -83,7 +83,7 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
         position: sticky ? 'sticky' : 'relative',
         top: sticky ? 0 : 'auto',
         zIndex: sticky ? 90 : 1,
-        background: 'var(--bg-primary)',
+        background: sticky ? 'var(--bg-primary)' : 'transparent',
         transition: sticky ? 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease' : 'none',
         transform: (sticky && isHiddenOnMobile) ? 'translateY(-100%)' : 'translateY(0)',
         opacity: (sticky && isHiddenOnMobile) ? 0 : 1,

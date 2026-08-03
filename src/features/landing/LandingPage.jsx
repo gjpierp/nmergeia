@@ -58,13 +58,12 @@ export const LandingPage = () => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      height: '100%',
-      padding: '30px 20px 80px 20px',
+      padding: '0px 20px 80px 20px',
       background: 'radial-gradient(circle at top, var(--bg-tertiary) 0%, var(--bg-primary) 70%)',
       color: 'var(--text-primary)',
       fontFamily: '"Outfit", sans-serif',
-      overflowY: 'auto',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      width: '100%'
     }}>
       <Helmet>
         <title>NMerge IA | Comparación de Código Local-First, Diffing 3D & Fusión con IA</title>
@@ -81,14 +80,15 @@ export const LandingPage = () => {
       {/* Standardized Main Container (1000px Max Width matching design system) */}
       <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         
+        <Breadcrumbs items={[{ label: 'Inicio' }]} />
         <PageHeader 
           title="Comparación de Código Local-First y Fusión por IA"
           subtitle="Plataforma Profesional de Comparación de Directorios, Motor Myers LCS y Gobernanza Sentinel-NGAC"
           badgeText="100% PRIVADO & LOCAL"
           logoSize="300px"
           centered={true}
+          sticky={false}
         />
-        <Breadcrumbs items={[{ label: 'Inicio' }]} />
 
         {/* Hero Action Card */}
         <div style={{
