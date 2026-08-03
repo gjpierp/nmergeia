@@ -766,7 +766,7 @@ function App() {
                 e.currentTarget.style.display = 'none';
               }}
             /> 
-            {t('app_title')}
+            NMerge IA
           </h1>
         </div>
         
@@ -861,7 +861,7 @@ function App() {
 
       <footer className="app-footer">
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.65rem' }}>
-          <span>&copy; 2026 {t('app_title')}. StackUpIA Software Labs</span>
+          <span>&copy; 2026 NMerge IA. StackUpIA Software Labs</span>
           <span style={{ opacity: 0.4 }}>•</span>
           <a href="#privacy" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>{t('nav_privacy') || 'Privacidad'}</a>
           <span style={{ opacity: 0.4 }}>•</span>

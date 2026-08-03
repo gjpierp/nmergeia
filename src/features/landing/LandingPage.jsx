@@ -81,8 +81,6 @@ export const LandingPage = () => {
       {/* Standardized Main Container (1000px Max Width matching design system) */}
       <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
         
-        {/* Standardized Header UI: Breadcrumbs + PageHeader */}
-        <Breadcrumbs items={[{ label: 'Inicio' }]} />
         <PageHeader 
           title="Comparación de Código Local-First y Fusión por IA"
           subtitle="Plataforma Profesional de Comparación de Directorios, Motor Myers LCS y Gobernanza Sentinel-NGAC"
@@ -90,6 +88,7 @@ export const LandingPage = () => {
           logoSize="300px"
           centered={true}
         />
+        <Breadcrumbs items={[{ label: 'Inicio' }]} />
 
         {/* Hero Action Card */}
         <div style={{
