@@ -87,7 +87,8 @@ export const LandingPage = () => {
           title="Comparación de Código Local-First y Fusión por IA"
           subtitle="Plataforma Profesional de Comparación de Directorios, Motor Myers LCS y Gobernanza Sentinel-NGAC"
           badgeText="100% PRIVADO & LOCAL"
-          logoSize="152px"
+          logoSize="300px"
+          centered={true}
         />
 
         {/* Hero Action Card */}

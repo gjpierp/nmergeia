@@ -9,7 +9,7 @@ import { TopicLogo } from './TopicLogo.jsx';
  * En pantallas pequeñas (Mobile/Tablet < 1024px) se oculta suavemente al hacer scroll hacia abajo
  * (dejando visibles solo las pestañas) y reaparece al hacer scroll hacia arriba.
  */
-export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = true, logoSize }) => {
+export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = true, logoSize, centered = false }) => {
   const headerRef = useRef(null);
   const [scrollDirection, setScrollDirection] = useState('up');
   const [isMobile, setIsMobile] = useState(false);
@@ -72,11 +72,12 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
       className={`page-header-container ${isHiddenOnMobile ? 'header-hidden-mobile' : 'header-visible'}`}
       style={{
         display: 'flex',
+        flexDirection: centered ? 'column' : 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: centered ? 'center' : 'space-between',
         width: '100%',
-        paddingBottom: isHiddenOnMobile ? '0px' : '8px',
-        marginBottom: isHiddenOnMobile ? '0px' : '10px',
+        paddingBottom: isHiddenOnMobile ? '0px' : '16px',
+        marginBottom: isHiddenOnMobile ? '0px' : '16px',
         borderBottom: isHiddenOnMobile ? 'none' : '1px solid var(--border-light)',
         boxSizing: 'border-box',
         position: sticky ? 'sticky' : 'relative',
@@ -86,27 +87,36 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
         transition: 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease',
         transform: isHiddenOnMobile ? 'translateY(-100%)' : 'translateY(0)',
         opacity: isHiddenOnMobile ? 0 : 1,
-        maxHeight: isHiddenOnMobile ? '0px' : '400px',
+        maxHeight: isHiddenOnMobile ? '0px' : '600px',
         overflow: isHiddenOnMobile ? 'hidden' : 'visible',
         pointerEvents: isHiddenOnMobile ? 'none' : 'auto'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: centered ? 'column' : 'row', 
+        alignItems: 'center', 
+        justifyContent: centered ? 'center' : 'flex-start',
+        gap: centered ? '16px' : '16px', 
+        textAlign: centered ? 'center' : 'left',
+        width: '100%' 
+      }}>
         {topicId ? (
           <TopicLogo topicId={topicId} size={logoSize || "40px"} alt={title} />
         ) : (
           <Logo height={logoSize || "38px"} alt="NMerge IA - StackUpIA Logo" />
         )}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: centered ? 'center' : 'flex-start', textAlign: centered ? 'center' : 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: centered ? 'center' : 'flex-start', gap: '10px', flexWrap: 'wrap' }}>
             <h1 style={{
-              fontSize: '2.25rem',
+              fontSize: centered ? '2.5rem' : '2.25rem',
               fontWeight: '800',
               lineHeight: '1.2',
               margin: 0,
               letterSpacing: '-0.02em',
               color: 'var(--text-primary)',
-              fontFamily: 'var(--font-main, "Outfit", sans-serif)'
+              fontFamily: 'var(--font-main, "Outfit", sans-serif)',
+              textAlign: centered ? 'center' : 'left'
             }}>
               {title}
             </h1>
@@ -126,11 +136,12 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
           </div>
           {subtitle && (
             <p style={{
-              fontSize: '0.88rem',
+              fontSize: '0.95rem',
               color: 'var(--text-secondary)',
-              margin: '4px 0 0 0',
+              margin: '6px 0 0 0',
               fontWeight: '400',
-              fontFamily: '"Outfit", sans-serif'
+              fontFamily: '"Outfit", sans-serif',
+              textAlign: centered ? 'center' : 'left'
             }}>
               {subtitle}
             </p>
@@ -139,7 +150,7 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
       </div>
 
       {rightAction && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: centered ? '12px' : '0' }}>
           {rightAction}
         </div>
       )}
