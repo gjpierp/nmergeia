@@ -84,9 +84,10 @@ export const LandingPage = () => {
         {/* Standardized Header UI: Breadcrumbs + PageHeader */}
         <Breadcrumbs items={[{ label: 'Inicio' }]} />
         <PageHeader 
-          title="NMerge IA: Comparación de Código Local-First y Fusión por IA"
+          title="Comparación de Código Local-First y Fusión por IA"
           subtitle="Plataforma Profesional de Comparación de Directorios, Motor Myers LCS y Gobernanza Sentinel-NGAC"
           badgeText="100% PRIVADO & LOCAL"
+          logoSize="152px"
         />
 
         {/* Hero Action Card */}

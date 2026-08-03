@@ -9,7 +9,7 @@ import { TopicLogo } from './TopicLogo.jsx';
  * En pantallas pequeñas (Mobile/Tablet < 1024px) se oculta suavemente al hacer scroll hacia abajo
  * (dejando visibles solo las pestañas) y reaparece al hacer scroll hacia arriba.
  */
-export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = true }) => {
+export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = true, logoSize }) => {
   const headerRef = useRef(null);
   const [scrollDirection, setScrollDirection] = useState('up');
   const [isMobile, setIsMobile] = useState(false);
@@ -86,16 +86,16 @@ export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topi
         transition: 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease',
         transform: isHiddenOnMobile ? 'translateY(-100%)' : 'translateY(0)',
         opacity: isHiddenOnMobile ? 0 : 1,
-        maxHeight: isHiddenOnMobile ? '0px' : '200px',
+        maxHeight: isHiddenOnMobile ? '0px' : '400px',
         overflow: isHiddenOnMobile ? 'hidden' : 'visible',
         pointerEvents: isHiddenOnMobile ? 'none' : 'auto'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
         {topicId ? (
-          <TopicLogo topicId={topicId} size="40px" alt={title} />
+          <TopicLogo topicId={topicId} size={logoSize || "40px"} alt={title} />
         ) : (
-          <Logo height="38px" alt="NMerge IA - StackUpIA Logo" />
+          <Logo height={logoSize || "38px"} alt="NMerge IA - StackUpIA Logo" />
         )}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
