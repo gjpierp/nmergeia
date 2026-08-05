@@ -23,7 +23,7 @@ export const DocsPanel = () => {
     }}>
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Biblioteca Técnica & Documentación', path: '/docs' }]} />
-        <PageHeader title="Documentación Técnica e i18n" subtitle="Arquitectura de Comparación, Algoritmos Myers LCS y Gobernanza de Acceso NGAC" />
+        <PageHeader icon="menu_book" title="Documentación Técnica e i18n" subtitle="Arquitectura de Comparación, Algoritmos Myers LCS y Gobernanza de Acceso NGAC" />
 
         <AppAdInjectedContent interval={3}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>

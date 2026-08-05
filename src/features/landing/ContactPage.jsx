@@ -95,20 +95,11 @@ export const ContactPage = () => {
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Contacto & Soporte', path: '/contact' }]} />
         
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <Logo height="42px" alt="NMerge IA - Logo de Contacto" />
-            <div>
-              <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {isEn ? 'Contact & Technical Support' : 'Contacto & Soporte Técnico'}
-              </h1>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {isEn ? 'User support, corporate inquiries, and local ticket management' : 'Atención al usuario, gestión local de tickets y soporte'}
-              </span>
-            </div>
-          </div>
-          {messagesList.length > 0 && (
+        <PageHeader 
+          icon="contact_support"
+          title={isEn ? 'Contact & Technical Support' : 'Contacto & Soporte Técnico'} 
+          subtitle={isEn ? 'User support, corporate inquiries, and local ticket management' : 'Atención al usuario, gestión local de tickets y soporte'} 
+        />  {messagesList.length > 0 && (
             <button 
               className="btn secondary-btn small-btn"
               onClick={() => setShowAdminTickets(!showAdminTickets)}

@@ -26,20 +26,11 @@ export const AboutPage = () => {
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)', path: '/about' }]} />
         
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <Logo height="42px" alt="NMerge IA - Logo Sobre Nosotros" />
-            <div>
-              <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {isEn ? 'About Us (EEAT) & Architecture' : 'Sobre Nosotros (EEAT) & Arquitectura'}
-              </h1>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {isEn ? 'Meet the engineering team behind NMerge IA and our mission' : 'Conozca al equipo detrás de NMerge IA y nuestra misión'}
-              </span>
-            </div>
-          </div>
-        </div>
+        <PageHeader 
+          icon="info"
+          title={isEn ? 'About Us (EEAT) & Architecture' : 'Sobre Nosotros (EEAT) & Arquitectura'} 
+          subtitle={isEn ? 'Meet the engineering team behind NMerge IA and our mission' : 'Conozca al equipo detrás de NMerge IA y nuestra misión'} 
+        />
 
         {!isEn ? (
           <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>

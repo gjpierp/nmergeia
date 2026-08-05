@@ -21,7 +21,7 @@ export const EulaPage = () => {
       </Helmet>
 
       <Breadcrumbs items={[{ label: 'EULA (Licencia de Software)', path: '/eula' }]} />
-      <PageHeader title="Acuerdo de Licencia de Usuario Final (EULA)" subtitle="Contrato de Licencia de Software, Ejecución Local-First y Gobernanza de Acceso" />
+      <PageHeader icon="description" title="Acuerdo de Licencia de Usuario Final (EULA)" subtitle="Contrato de Licencia de Software, Ejecución Local-First y Gobernanza de Acceso" />
 
       <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
         Este Acuerdo de Licencia de Usuario Final ("EULA") es un contrato legalmente vinculante entre usted (persona física o entidad corporativa) y <strong>StackUpIA Software Labs / NMerge Technologies</strong> para el uso del software ejecutable y la aplicación web NMerge IA.

@@ -21,7 +21,7 @@ export const LegalNoticePage = () => {
       </Helmet>
 
       <Breadcrumbs items={[{ label: 'Aviso Legal', path: '/legal-notice' }]} />
-      <PageHeader title="Aviso Legal e Información Corporativa" subtitle="Regulaciones Generales, Propiedad Intelectual, Licencia y Transparencia de Operaciones" />
+      <PageHeader icon="gavel" title="Aviso Legal e Información Corporativa" subtitle="Regulaciones Generales, Propiedad Intelectual, Licencia y Transparencia de Operaciones" />
 
       <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>
         Identificación del titular del sitio web, régimen de responsabilidad, legislación aplicable y condiciones legales de uso de la plataforma NMerge IA.

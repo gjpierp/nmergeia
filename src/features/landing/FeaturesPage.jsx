@@ -38,6 +38,7 @@ export const FeaturesPage = () => {
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Características Técnicas', path: '/features' }]} />
         <PageHeader 
+          icon="star"
           title="Características y Capacidades de Ingeniería" 
           subtitle="Arquitectura Avanzada de Comparación de Código, Fusión por IA y Gobernanza Cero Confianza" 
         />

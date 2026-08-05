@@ -26,20 +26,11 @@ export const PrivacyPage = () => {
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Política de Privacidad', path: '/privacy' }]} />
         
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <Logo height="40px" alt="NMerge IA - Logo de Privacidad" />
-            <div>
-              <h1 style={{ fontSize: '2rem', fontWeight: '800', margin: 0, color: 'var(--text-primary)' }}>
-                {isEn ? 'Privacy Policy & Data Protection Disclosure' : 'Política de Privacidad y Protección de Datos (GDPR/CCPA)'}
-              </h1>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-                {isEn ? 'Last updated: August 2026' : 'Última actualización: Agosto 2026'}
-              </span>
-            </div>
-          </div>
-        </div>
+        <PageHeader 
+          icon="security"
+          title={isEn ? 'Privacy Policy & Data Protection Disclosure' : 'Política de Privacidad y Protección de Datos (GDPR/CCPA)'} 
+          subtitle={isEn ? 'Last updated: August 2026' : 'Última actualización: Agosto 2026'} 
+        />
 
         {!isEn ? (
           <div className="section-card" style={{ padding: '35px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.7' }}>

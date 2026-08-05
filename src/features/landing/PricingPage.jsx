@@ -22,7 +22,7 @@ export const PricingPage = () => {
     }}>
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Planes y Precios', path: '/pricing' }]} />
-        <PageHeader title="Planes y Precios" subtitle="Modelo Transparente de Licenciamiento Local-First & Opciones para Desarrolladores y Equipos" />
+        <PageHeader icon="payments" title="Planes y Precios" subtitle="Modelo Transparente de Licenciamiento Local-First & Opciones para Desarrolladores y Equipos" />
         
         <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', fontSize: '0.95rem', lineHeight: '1.7' }}>
           La plataforma NMerge IA garantiza un modelo de licenciamiento transparente basado en el valor técnico real sin suscripciones recurrentes ni costos ocultos.
