@@ -174,109 +174,156 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     };
 
     const navigateDiff = (direction) => {
-        if (!diffEditorRef.current) return;
-        const changes = diffEditorRef.current.getLineChanges();
-        if (!changes || changes.length === 0) return;
-        
-        const modEditor = diffEditorRef.current.getModifiedEditor();
-        const currentLine = modEditor.getPosition()?.lineNumber || 1;
-        
-        let targetChange = null;
-        if (direction === 'first') {
-            targetChange = changes[0];
-        } else if (direction === 'last') {
-            targetChange = changes[changes.length - 1];
-        } else if (direction === 'current') {
-            targetChange = changes.find(c => {
-               const modStart = c.modifiedStartLineNumber === 0 ? c.modifiedStartLineNumber + 1 : c.modifiedStartLineNumber;
-               const modEnd = c.modifiedEndLineNumber === 0 ? c.modifiedStartLineNumber + 1 : c.modifiedEndLineNumber;
-               return currentLine >= modStart && currentLine <= modEnd;
-            });
-            if (!targetChange) targetChange = changes.find(c => (c.modifiedStartLineNumber || 1) >= currentLine) || changes[0];
-        } else if (direction === 'next') {
-            targetChange = changes.find(c => (c.modifiedStartLineNumber || 1) > currentLine);
-            if (!targetChange) targetChange = changes[0];
-        } else {
-            targetChange = [...changes].reverse().find(c => (c.modifiedStartLineNumber || 1) < currentLine);
-            if (!targetChange) targetChange = changes[changes.length - 1];
-        }
-        
-        if (targetChange) {
-            const line = targetChange.modifiedStartLineNumber || targetChange.originalStartLineNumber || 1;
-            modEditor.setPosition({ lineNumber: line, column: 1 });
-            modEditor.revealLineInCenter(line);
-            diffEditorRef.current.getOriginalEditor().revealLineInCenter(line);
+        try {
+            if (!diffEditorRef.current) return;
+            const changes = diffEditorRef.current.getLineChanges();
+            if (!changes || changes.length === 0) return;
+            
+            const modEditor = diffEditorRef.current.getModifiedEditor();
+            const origEditor = diffEditorRef.current.getOriginalEditor();
+            if (!modEditor || !origEditor) return;
+
+            const modModel = modEditor.getModel();
+            const origModel = origEditor.getModel();
+            if (!modModel || !origModel) return;
+
+            const currentLine = modEditor.getPosition()?.lineNumber || 1;
+            
+            let targetChange = null;
+            if (direction === 'first') {
+                targetChange = changes[0];
+            } else if (direction === 'last') {
+                targetChange = changes[changes.length - 1];
+            } else if (direction === 'current') {
+                targetChange = changes.find(c => {
+                   const modStart = c.modifiedStartLineNumber === 0 ? 1 : c.modifiedStartLineNumber;
+                   const modEnd = c.modifiedEndLineNumber === 0 ? modStart : c.modifiedEndLineNumber;
+                   return currentLine >= modStart && currentLine <= modEnd;
+                });
+                if (!targetChange) targetChange = changes.find(c => (c.modifiedStartLineNumber || 1) >= currentLine) || changes[0];
+            } else if (direction === 'next') {
+                targetChange = changes.find(c => (c.modifiedStartLineNumber || 1) > currentLine);
+                if (!targetChange) targetChange = changes[0];
+            } else {
+                targetChange = [...changes].reverse().find(c => (c.modifiedStartLineNumber || 1) < currentLine);
+                if (!targetChange) targetChange = changes[changes.length - 1];
+            }
+            
+            if (targetChange) {
+                const maxModLine = modModel && typeof modModel.getLineCount === 'function' ? modModel.getLineCount() : 99999;
+                const maxOrigLine = origModel && typeof origModel.getLineCount === 'function' ? origModel.getLineCount() : 99999;
+                const modLine = Math.max(1, Math.min(targetChange.modifiedStartLineNumber || targetChange.originalStartLineNumber || 1, maxModLine));
+                const origLine = Math.max(1, Math.min(targetChange.originalStartLineNumber || targetChange.modifiedStartLineNumber || 1, maxOrigLine));
+                
+                modEditor.setPosition({ lineNumber: modLine, column: 1 });
+                modEditor.revealLineInCenter(modLine);
+                origEditor.revealLineInCenter(origLine);
+            }
+        } catch (err) {
+            console.error('[DiffView] Error en navigateDiff:', err);
         }
     };
 
     const transferCurrentDiff = (direction) => {
-        if (!diffEditorRef.current) return;
-        const changes = diffEditorRef.current.getLineChanges();
-        if (!changes || changes.length === 0) return;
-    
-        const origEditor = diffEditorRef.current.getOriginalEditor();
-        const modEditor = diffEditorRef.current.getModifiedEditor();
-        const currentLine = modEditor.getPosition()?.lineNumber || 1;
-    
-        let currentChange = changes.find(c => {
-           const modStart = c.modifiedStartLineNumber === 0 ? c.modifiedStartLineNumber + 1 : c.modifiedStartLineNumber;
-           const modEnd = c.modifiedEndLineNumber === 0 ? c.modifiedStartLineNumber + 1 : c.modifiedEndLineNumber;
-           return currentLine >= modStart && currentLine <= modEnd;
-        });
-        if (!currentChange) {
-            currentChange = changes.find(c => (c.modifiedStartLineNumber || 1) >= currentLine) || changes[0];
-        }
+        try {
+            if (!diffEditorRef.current) return;
+            const changes = diffEditorRef.current.getLineChanges();
+            if (!changes || changes.length === 0) return;
         
-        const origModel = origEditor.getModel();
-        const modModel = modEditor.getModel();
-    
-        if (direction === 'to_dest') {
-            const origLines = [];
-            if (currentChange.originalEndLineNumber > 0) {
-                for (let i = currentChange.originalStartLineNumber; i <= currentChange.originalEndLineNumber; i++) {
-                    origLines.push(origModel.getLineContent(i));
-                }
-            }
-            
-            let range;
-            let text = origLines.join('\n');
-            if (currentChange.modifiedEndLineNumber === 0) {
-                range = { startLineNumber: currentChange.modifiedStartLineNumber + 1, startColumn: 1, endLineNumber: currentChange.modifiedStartLineNumber + 1, endColumn: 1 };
-                text = text + '\n';
-            } else {
-                range = {
-                    startLineNumber: currentChange.modifiedStartLineNumber, startColumn: 1,
-                    endLineNumber: currentChange.modifiedEndLineNumber, endColumn: modModel.getLineMaxColumn(currentChange.modifiedEndLineNumber)
-                };
-            }
-            modEditor.executeEdits("diff", [{ range, text }]);
-        } else {
-            const modLines = [];
-            if (currentChange.modifiedEndLineNumber > 0) {
-                for (let i = currentChange.modifiedStartLineNumber; i <= currentChange.modifiedEndLineNumber; i++) {
-                    modLines.push(modModel.getLineContent(i));
-                }
-            }
-            
-            let range;
-            let text = modLines.join('\n');
-            if (currentChange.originalEndLineNumber === 0) {
-                range = { startLineNumber: currentChange.originalStartLineNumber + 1, startColumn: 1, endLineNumber: currentChange.originalStartLineNumber + 1, endColumn: 1 };
-                text = text + '\n';
-            } else {
-                range = {
-                    startLineNumber: currentChange.originalStartLineNumber, startColumn: 1,
-                    endLineNumber: currentChange.originalEndLineNumber, endColumn: origModel.getLineMaxColumn(currentChange.originalEndLineNumber)
-                };
-            }
-            origEditor.executeEdits("diff", [{ range, text }]);
-        }
+            const origEditor = diffEditorRef.current.getOriginalEditor();
+            const modEditor = diffEditorRef.current.getModifiedEditor();
+            if (!origEditor || !modEditor) return;
 
-        const newMod = modEditor.getValue();
-        const newOrig = origEditor.getValue();
-        setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
+            const origModel = origEditor.getModel();
+            const modModel = modEditor.getModel();
+            if (!origModel || !modModel) return;
+
+            const currentLine = modEditor.getPosition()?.lineNumber || 1;
         
-        pendingNavigationRef.current = 'next';
+            let currentChange = changes.find(c => {
+               const modStart = c.modifiedStartLineNumber === 0 ? 1 : c.modifiedStartLineNumber;
+               const modEnd = c.modifiedEndLineNumber === 0 ? modStart : c.modifiedEndLineNumber;
+               return currentLine >= modStart && currentLine <= modEnd;
+            });
+            if (!currentChange) {
+                currentChange = changes.find(c => (c.modifiedStartLineNumber || 1) >= currentLine) || changes[0];
+            }
+            if (!currentChange) return;
+
+            const maxOrigLine = origModel && typeof origModel.getLineCount === 'function' ? origModel.getLineCount() : 99999;
+            const maxModLine = modModel && typeof modModel.getLineCount === 'function' ? modModel.getLineCount() : 99999;
+
+            if (direction === 'to_dest') {
+                const origLines = [];
+                if (currentChange.originalEndLineNumber > 0) {
+                    const startL = Math.max(1, Math.min(currentChange.originalStartLineNumber, maxOrigLine));
+                    const endL = Math.max(startL, Math.min(currentChange.originalEndLineNumber, maxOrigLine));
+                    for (let i = startL; i <= endL; i++) {
+                        origLines.push(origModel.getLineContent(i));
+                    }
+                }
+                
+                let range;
+                let text = origLines.join('\n');
+                if (currentChange.modifiedEndLineNumber === 0) {
+                    const targetL = Math.max(1, Math.min(currentChange.modifiedStartLineNumber + 1, maxModLine + 1));
+                    if (targetL > maxModLine) {
+                        range = { startLineNumber: maxModLine, startColumn: modModel.getLineMaxColumn(maxModLine), endLineNumber: maxModLine, endColumn: modModel.getLineMaxColumn(maxModLine) };
+                        text = '\n' + text;
+                    } else {
+                        range = { startLineNumber: targetL, startColumn: 1, endLineNumber: targetL, endColumn: 1 };
+                        text = text + '\n';
+                    }
+                } else {
+                    const startL = Math.max(1, Math.min(currentChange.modifiedStartLineNumber, maxModLine));
+                    const endL = Math.max(startL, Math.min(currentChange.modifiedEndLineNumber, maxModLine));
+                    range = {
+                        startLineNumber: startL, startColumn: 1,
+                        endLineNumber: endL, endColumn: modModel.getLineMaxColumn(endL)
+                    };
+                }
+                modEditor.executeEdits("diff", [{ range, text }]);
+            } else {
+                const modLines = [];
+                if (currentChange.modifiedEndLineNumber > 0) {
+                    const startL = Math.max(1, Math.min(currentChange.modifiedStartLineNumber, maxModLine));
+                    const endL = Math.max(startL, Math.min(currentChange.modifiedEndLineNumber, maxModLine));
+                    for (let i = startL; i <= endL; i++) {
+                        modLines.push(modModel.getLineContent(i));
+                    }
+                }
+                
+                let range;
+                let text = modLines.join('\n');
+                if (currentChange.originalEndLineNumber === 0) {
+                    const targetL = Math.max(1, Math.min(currentChange.originalStartLineNumber + 1, maxOrigLine + 1));
+                    if (targetL > maxOrigLine) {
+                        range = { startLineNumber: maxOrigLine, startColumn: origModel.getLineMaxColumn(maxOrigLine), endLineNumber: maxOrigLine, endColumn: origModel.getLineMaxColumn(maxOrigLine) };
+                        text = '\n' + text;
+                    } else {
+                        range = { startLineNumber: targetL, startColumn: 1, endLineNumber: targetL, endColumn: 1 };
+                        text = text + '\n';
+                    }
+                } else {
+                    const startL = Math.max(1, Math.min(currentChange.originalStartLineNumber, maxOrigLine));
+                    const endL = Math.max(startL, Math.min(currentChange.originalEndLineNumber, maxOrigLine));
+                    range = {
+                        startLineNumber: startL, startColumn: 1,
+                        endLineNumber: endL, endColumn: origModel.getLineMaxColumn(endL)
+                    };
+                }
+                origEditor.executeEdits("diff", [{ range, text }]);
+            }
+
+            const newMod = modEditor.getValue();
+            const newOrig = origEditor.getValue();
+            setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
+            
+            pendingNavigationRef.current = 'next';
+        } catch (err) {
+            console.error('[DiffView] Error en transferCurrentDiff:', err);
+            if (addToast) addToast(`Error al transferir código: ${err.message}`, 'error');
+        }
     };
   
     const transferAllDiffs = (direction) => {
@@ -315,56 +362,69 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     };
 
     const handleSaveAndNext = async (isOriginFile) => {
-        const handle = isOriginFile 
-            ? (tab.originHandle || originHandle) 
-            : (tab.destHandle || (destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null));
+        try {
+            const handle = isOriginFile 
+                ? (tab.originHandle || originHandle) 
+                : (tab.destHandle || (destSlots && destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null));
 
-        let content = isOriginFile ? tab.original : tab.modified;
-        if (diffEditorRef.current) {
-            content = isOriginFile 
-                ? diffEditorRef.current.getOriginalEditor().getValue() 
-                : diffEditorRef.current.getModifiedEditor().getValue();
-        }
+            let content = isOriginFile ? tab.original : tab.modified;
+            if (diffEditorRef.current) {
+                content = isOriginFile 
+                    ? diffEditorRef.current.getOriginalEditor().getValue() 
+                    : diffEditorRef.current.getModifiedEditor().getValue();
+            }
 
-        await saveFile(handle, tab.filePath, false, content, false, tab.id, isOriginFile);
-        
-        const matrixTab = tabs.find(t => t.type === 'matrix');
-        if (matrixTab) {
-            let allFiles = new Set([
-                ...matrixTab.processedOrigin.map(f => getRelativePath(f.webkitRelativePath, matrixTab.originHandle.name)),
-                ...matrixTab.processedDestSlots.flatMap(slot => slot.handle ? slot.files.map(f => getRelativePath(f.webkitRelativePath, slot.handle.name)) : [])
-            ]);
-            let sortedFiles = Array.from(allFiles).sort();
-            let currentIndex = sortedFiles.indexOf(tab.filePath);
+            await saveFile(handle, tab.filePath, false, content, false, tab.id, isOriginFile);
             
-            let nextFile = null;
-            for (let i = currentIndex + 1; i < sortedFiles.length; i++) {
-                const path = sortedFiles[i];
-                const oFile = matrixTab.processedOrigin.find(f => getRelativePath(f.webkitRelativePath, matrixTab.originHandle.name) === path);
-                const slot = matrixTab.processedDestSlots[0];
-                if (slot && slot.handle) {
-                    const dFile = slot.files.find(f => getRelativePath(f.webkitRelativePath, slot.handle.name) === path);
-                    let isDiff = (!oFile && dFile) || (oFile && dFile && oFile.size !== dFile.size);
-                    if (!isDiff && oFile && dFile) {
-                        const key = `${slot.id}-${path}`;
-                        const eq = fileEqualityMap[key];
-                        const status = typeof eq === 'object' ? eq.status : eq;
-                        if (status === 'different') isDiff = true;
-                    }
-                    if (isDiff) {
-                        nextFile = { oFile, dFile, slotIdx: 0 };
-                        break;
+            const matrixTab = tabs ? tabs.find(t => t.type === 'matrix') : null;
+            if (matrixTab) {
+                const originFiles = matrixTab.processedOrigin || [];
+                const destSlotsArr = matrixTab.processedDestSlots || [];
+                const originHandleName = matrixTab.originHandle ? matrixTab.originHandle.name : '';
+
+                let allFiles = new Set([
+                    ...originFiles.map(f => f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : (f.name || f.name)),
+                    ...destSlotsArr.flatMap(slot => slot && slot.handle ? (slot.files || []).map(f => f.webkitRelativePath ? getRelativePath(f.webkitRelativePath, slot.handle.name) : f.name) : [])
+                ]);
+                let sortedFiles = Array.from(allFiles).sort();
+                let currentIndex = sortedFiles.indexOf(tab.filePath);
+                
+                let nextFile = null;
+                for (let i = currentIndex + 1; i < sortedFiles.length; i++) {
+                    const path = sortedFiles[i];
+                    const oFile = originFiles.find(f => (f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : f.name) === path);
+                    const slot = destSlotsArr[0];
+                    if (slot) {
+                        const slotHandleName = slot.handle ? slot.handle.name : '';
+                        const dFile = (slot.files || []).find(f => (f.webkitRelativePath && slotHandleName ? getRelativePath(f.webkitRelativePath, slotHandleName) : f.name) === path);
+                        let isDiff = (!oFile && dFile) || (oFile && dFile && oFile.size !== dFile.size);
+                        if (!isDiff && oFile && dFile) {
+                            const key = `${slot.id}-${path}`;
+                            const eq = fileEqualityMap ? fileEqualityMap[key] : null;
+                            const status = typeof eq === 'object' ? eq?.status : eq;
+                            if (status === 'different') isDiff = true;
+                        }
+                        if (isDiff) {
+                            nextFile = { oFile, dFile, slotIdx: 0 };
+                            break;
+                        }
                     }
                 }
-            }
-            if (nextFile) {
-                closeTab(tab.id);
-                addToast(t('diff_toast_save_next'), "success");
-                openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
+                if (nextFile) {
+                    closeTab(tab.id);
+                    if (addToast) addToast(t('diff_toast_save_next'), "success");
+                    openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
+                } else {
+                    closeTab(tab.id);
+                    if (addToast) addToast(t('diff_toast_save_finished'), "success");
+                }
             } else {
                 closeTab(tab.id);
-                addToast(t('diff_toast_save_finished'), "success");
+                if (addToast) addToast(t('diff_toast_save_finished'), "success");
             }
+        } catch (err) {
+            console.error('[DiffView] Error en handleSaveAndNext:', err);
+            if (addToast) addToast(`Error al guardar y navegar: ${err.message}`, 'error');
         }
     };
 
@@ -682,44 +742,62 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                                 });
 
                                 const updateSelectedDiffFromEditor = (activeSubEditor, isModifiedSide) => {
-                                    const changes = editor.getLineChanges();
-                                    if (!changes || changes.length === 0) {
-                                        setDiffContent(null);
-                                        return;
-                                    }
-                                    
-                                    const pos = activeSubEditor.getPosition();
-                                    if (!pos) return;
-                                    
-                                    const currentLine = pos.lineNumber;
-                                    
-                                    const activeChange = changes.find(change => {
-                                        if (isModifiedSide) {
-                                            return currentLine >= change.modifiedStartLineNumber && currentLine <= (change.modifiedEndLineNumber || change.modifiedStartLineNumber);
-                                        } else {
-                                            return currentLine >= change.originalStartLineNumber && currentLine <= (change.originalEndLineNumber || change.originalStartLineNumber);
-                                        }
-                                    });
-                                    
-                                    if (activeChange) {
-                                        const origModel = editor.getOriginalEditor().getModel();
-                                        const modModel = editor.getModifiedEditor().getModel();
-                                        
-                                        const oLines = [];
-                                        const mLines = [];
-                                        
-                                        if (activeChange.originalEndLineNumber > 0) {
-                                            for(let i = activeChange.originalStartLineNumber; i <= activeChange.originalEndLineNumber; i++) oLines.push(origModel.getLineContent(i));
-                                        }
-                                        if (activeChange.modifiedEndLineNumber > 0) {
-                                            for(let i = activeChange.modifiedStartLineNumber; i <= activeChange.modifiedEndLineNumber; i++) mLines.push(modModel.getLineContent(i));
-                                        }
-                                        
-                                        setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
-                                    } else {
-                                        setDiffContent(null);
-                                    }
-                                };
+                                     try {
+                                         if (!editor || !editor.getLineChanges) return;
+                                         const changes = editor.getLineChanges();
+                                         if (!changes || changes.length === 0) {
+                                             setDiffContent(null);
+                                             return;
+                                         }
+                                         
+                                         const pos = activeSubEditor?.getPosition();
+                                         if (!pos) return;
+                                         
+                                         const currentLine = pos.lineNumber;
+                                         
+                                         const activeChange = changes.find(change => {
+                                             if (isModifiedSide) {
+                                                 const start = change.modifiedStartLineNumber === 0 ? 1 : change.modifiedStartLineNumber;
+                                                 const end = change.modifiedEndLineNumber === 0 ? start : change.modifiedEndLineNumber;
+                                                 return currentLine >= start && currentLine <= end;
+                                             } else {
+                                                 const start = change.originalStartLineNumber === 0 ? 1 : change.originalStartLineNumber;
+                                                 const end = change.originalEndLineNumber === 0 ? start : change.originalEndLineNumber;
+                                                 return currentLine >= start && currentLine <= end;
+                                             }
+                                         });
+                                         
+                                         if (activeChange) {
+                                             const origModel = editor.getOriginalEditor()?.getModel();
+                                             const modModel = editor.getModifiedEditor()?.getModel();
+                                             if (!origModel || !modModel) return;
+
+                                             const maxOrig = origModel && typeof origModel.getLineCount === 'function' ? origModel.getLineCount() : 99999;
+                                             const maxMod = modModel && typeof modModel.getLineCount === 'function' ? modModel.getLineCount() : 99999;
+                                             
+                                             const oLines = [];
+                                             const mLines = [];
+                                             
+                                             if (activeChange.originalEndLineNumber > 0) {
+                                                 const startL = Math.max(1, Math.min(activeChange.originalStartLineNumber, maxOrig));
+                                                 const endL = Math.max(startL, Math.min(activeChange.originalEndLineNumber, maxOrig));
+                                                 for (let i = startL; i <= endL; i++) oLines.push(origModel.getLineContent(i));
+                                             }
+                                             if (activeChange.modifiedEndLineNumber > 0) {
+                                                 const startL = Math.max(1, Math.min(activeChange.modifiedStartLineNumber, maxMod));
+                                                 const endL = Math.max(startL, Math.min(activeChange.modifiedEndLineNumber, maxMod));
+                                                 for (let i = startL; i <= endL; i++) mLines.push(modModel.getLineContent(i));
+                                             }
+                                             
+                                             setDiffContent({ origin: oLines.join('\n'), dest: mLines.join('\n') });
+                                         } else {
+                                             setDiffContent(null);
+                                         }
+                                     } catch (err) {
+                                         console.error('[DiffView] Error en updateSelectedDiffFromEditor:', err);
+                                         setDiffContent(null);
+                                     }
+                                 };
 
                                 const updateSelectedDiff = () => updateSelectedDiffFromEditor(editor.getModifiedEditor(), true);
 
