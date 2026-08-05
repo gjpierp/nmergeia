@@ -10,10 +10,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Redirección Obligatoria HTTP -> HTTPS (301 Permanent Redirect para Googlebot & SSL Compliance)
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  
+  const host = req.headers.host || '';
+  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  
+  // Si la petición viene por HTTP no seguro en entorno de producción o proxy externo
+  if (proto === 'http' && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+    return res.redirect(301, `https://${host}${req.url}`);
+  }
   next();
 });
+
 app.use(cors());
 app.use(express.json());
 

@@ -99,6 +99,10 @@ routes.forEach(({ path: routePath, dirName }) => {
 
   let pageHtml = baseHtml;
   
+  // Replace canonical URL & OG URL for target route
+  pageHtml = pageHtml.replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${fullUrl}"`);
+  pageHtml = pageHtml.replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${fullUrl}"`);
+
   // Replace JSON-LD BreadcrumbList for target route
   pageHtml = pageHtml.replace(
     /"@type": "BreadcrumbList",[\s\S]*?"itemListElement": \[[\s\S]*?\]/,
