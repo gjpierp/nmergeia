@@ -14,7 +14,7 @@ export const DocsPanel = () => {
       alignItems: 'center',
       justifyContent: 'flex-start',
       height: '100%',
-      padding: '40px 20px',
+      padding: '0px 20px 80px 20px',
       background: 'radial-gradient(circle at top, var(--bg-tertiary) 0%, var(--bg-primary) 70%)',
       color: 'var(--text-primary)',
       fontFamily: '"Outfit", sans-serif',

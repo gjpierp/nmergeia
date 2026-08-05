@@ -8,7 +8,7 @@ export const CookiePolicyPage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="legal-page-container" style={{ padding: '40px 20px', width: '100%',  color: 'var(--text-primary)', fontFamily: '"Outfit", sans-serif', overflowY: 'auto' }}>
+    <div className="legal-page-container" style={{ padding: '0px 20px 80px 20px', width: '100%',  color: 'var(--text-primary)', fontFamily: '"Outfit", sans-serif', overflowY: 'auto' }}>
       <Breadcrumbs items={[{ label: 'Política de Cookies (CMP)', path: '/cookie-policy' }]} />
       <PageHeader title="Política de Cookies y Tecnologías de Rastreo (CMP)" subtitle="Cumplimiento del Marco TCF v2.2 de IAB Europe, ePrivacy y Estándar GDPR" />
       <p className="last-updated" style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '25px' }}>

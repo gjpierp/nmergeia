@@ -160,7 +160,7 @@ export const FaqPage = ({ appLanguage }) => {
       height: '100%',
       width: '100%',
       
-      padding: '30px 20px',
+      padding: '0px 20px 80px 20px',
       boxSizing: 'border-box',
       color: 'var(--text-primary)',
       fontFamily: '"Outfit", sans-serif',
