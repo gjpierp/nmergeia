@@ -99,7 +99,7 @@ export const ContactPage = () => {
           icon="contact_support"
           title={isEn ? 'Contact & Technical Support' : 'Contacto & Soporte Técnico'} 
           subtitle={isEn ? 'User support, corporate inquiries, and local ticket management' : 'Atención al usuario, gestión local de tickets y soporte'} 
-        />  {messagesList.length > 0 && (
+          rightAction={messagesList.length > 0 ? (
             <button 
               className="btn secondary-btn small-btn"
               onClick={() => setShowAdminTickets(!showAdminTickets)}
@@ -108,8 +108,8 @@ export const ContactPage = () => {
               <span className="material-symbols-rounded">confirmation_number</span>
               {showAdminTickets ? 'Ocultar Tickets' : `Tickets Registrados (${messagesList.length})`}
             </button>
-          )}
-        </div>
+          ) : null}
+        />
 
         {showAdminTickets ? (
           /* Panel de Administración Local de Tickets Recibidos */

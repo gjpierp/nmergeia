@@ -352,8 +352,8 @@ app.get('/sitemap.xml', (req, res) => {
     xml += `        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n`;
 
     ALL_MENU_ROUTES.forEach(page => {
-        let hashPath = page.path === '/' ? '' : `#${page.path.replace(/^\//, '')}`;
-        const loc = hashPath ? `${DOMAIN}/${hashPath}` : `${DOMAIN}/`;
+        const cleanPath = page.path === '/' ? '' : (page.path.startsWith('/') ? page.path : `/${page.path}`);
+        const loc = `${DOMAIN}${cleanPath || '/'}`;
         xml += `  <url>\n`;
         xml += `    <loc>${loc}</loc>\n`;
         xml += `    <lastmod>${TODAY}</lastmod>\n`;
@@ -361,8 +361,8 @@ app.get('/sitemap.xml', (req, res) => {
         xml += `    <priority>${page.priority || '0.7'}</priority>\n`;
 
         LANGUAGES.forEach(lang => {
-            const langUrl = hashPath 
-                ? `${DOMAIN}/?lang=${lang}${hashPath}`
+            const langUrl = cleanPath 
+                ? `${DOMAIN}${cleanPath}?lang=${lang}`
                 : `${DOMAIN}/?lang=${lang}`;
             xml += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${langUrl}"/>\n`;
         });
