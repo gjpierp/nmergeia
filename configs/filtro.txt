@@ -6,17 +6,17 @@
 // REGLAS DE EXCLUSIÓN (Ignorar):
 // Las líneas que empiecen con '-' o '!' serán ignoradas.
 // Ejemplos:
-// - node_modules
-// - build
-// - .env
-// - .git
+- node_modules
+- build
+- .env
+- .git
 //
 // REGLAS DE INCLUSIÓN (Solo comparar estos):
 // Las líneas que empiecen con '+' serán incluidas (las demás se omitirán).
 // Ejemplos:
-// + src/
-// + *.js
-// + *.jsx
++ src/
++ *.js
++ *.jsx
 // -----------------------------------------------------
 
 // Exclude
@@ -31,7 +31,6 @@
 - .github/
 - .history/
 - .gemini/
-- node_modules/
 - target/
 - .mvn/
 
@@ -40,3 +39,7 @@
 - *.png
 
 - .docs/
+- handoffs/
+- releases/
+- scratch/
+- test*

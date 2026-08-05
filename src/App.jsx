@@ -22,7 +22,7 @@ import { useEqualityWorker } from './hooks/useEqualityWorker.js';
 import { MatrixView } from './features/matrix/MatrixView.jsx';
 import { MainScreen } from './features/matrix/ui/MainScreen.jsx';
 import { HistoryScreen } from './features/history/ui/HistoryScreen.jsx';
-import { CommandTerminal } from './features/terminal/CommandTerminal.jsx';
+const CommandTerminal = React.lazy(() => import('./features/terminal/CommandTerminal.jsx').then(m => ({ default: m.CommandTerminal })));
 import { initContentProtection } from './shared/lib/contentProtection.js';
 import { LandingPage } from './features/landing/LandingPage.jsx';
 import { PrivacyPage } from './features/landing/PrivacyPage.jsx';
@@ -236,12 +236,12 @@ const tabToMenuCode = {
 };
 
 const NgacGuard = ({ tab, children }) => {
+  const allowedMenus = useAppStore(s => s.allowedMenus);
+
   // En desarrollo o entorno local, deshabilitar lista blanca y restricciones de Sentinel
   if (import.meta.env.DEV || process.env.NODE_ENV !== 'production') {
     return children;
   }
-
-  const allowedMenus = useAppStore(s => s.allowedMenus);
   
   // En la aplicación ejecutable desktop, permitir siempre las funciones core del comparador
   const isCoreTab = ['main', 'diff', 'filters', 'history', 'terminal', 'register', 'login', 'landing', 'settings', 'configuracion'].includes(tab)
@@ -258,8 +258,19 @@ const NgacGuard = ({ tab, children }) => {
 function App() {
   // Hooks de lógica de negocio
   const { t } = useTranslation();
-  const { processFiles, openDiffTab, closeTab, saveFile, handleDelete, handleTransfer, handleTransferFolder, handleClear } = useMatrixProcessor();
-  const { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect } = useFileHandles();
+  const { 
+    processFiles, 
+    openDiffTab, 
+    closeTab, 
+    saveFile, 
+    handleDelete, 
+    handleTransfer, 
+    handleTransferFolder, 
+    handleTransferAllToDest,
+    handleTransferAllToOrigin,
+    handleClear 
+  } = useMatrixProcessor();
+  const { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect, swapFolders } = useFileHandles();
   const { loadProfile, saveCurrentProfile, renameProfile, deleteProfile } = useProfiles();
   const initializeLicense = useMonetizationStore(s => s.initializeLicense);
   useEqualityWorker();
@@ -420,6 +431,9 @@ function App() {
       handleTransferFolder={handleTransferFolder}
       handleDelete={handleDelete}
       handleTransfer={handleTransfer}
+      handleTransferAllToDest={handleTransferAllToDest}
+      handleTransferAllToOrigin={handleTransferAllToOrigin}
+      swapFolders={swapFolders}
       openDiffTab={openDiffTab}
     />
   );
@@ -659,6 +673,7 @@ function App() {
           processFiles={processFiles}
           setOriginDirect={setOriginDirect}
           setDestDirect={setDestDirect}
+          swapFolders={swapFolders}
         />
       );
     }

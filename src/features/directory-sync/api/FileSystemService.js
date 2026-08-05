@@ -77,7 +77,7 @@ export const verifyPermission = async (fileHandle, userTriggered = false) => {
 
 const safeGlobPattern = (pat) => {
   if (!pat) return '';
-  return pat.replace(/([\(\)\[\]])/g, '\\$1');
+  return pat.replace(/([()\[\]])/g, '\\$1');
 };
 
 const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes = [], rootName = dirHandle.name, state = null) => {
@@ -88,7 +88,7 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
         if (!pat) return;
         const lower = pat.toLowerCase().trim();
         const clean = lower.endsWith('/') ? lower.slice(0, -1) : lower;
-        const noParens = clean.replace(/[\(\)]/g, '');
+        const noParens = clean.replace(/[()]/g, '');
 
         expandedExcludes.add(clean);
         expandedExcludes.add(`${clean}/`);
@@ -138,7 +138,7 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
       }
 
       const entryNameLower = entry.name.toLowerCase();
-      const cleanName = entryNameLower.replace(/[\(\)]/g, '');
+      const cleanName = entryNameLower.replace(/[()]/g, '');
       const relativePath = `${path}${entry.name}`;
       const relLower = relativePath.toLowerCase();
 

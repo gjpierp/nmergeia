@@ -9,7 +9,7 @@ export const MENU_TREE = [
   { id: 105, code: 'MNU_NMERGEIA_LANDING', label: 'Inicio', path: '/', icon: 'home', priority: '1.0', changefreq: 'daily' },
   { id: 106, code: 'MNU_NMERGEIA_FEATURES', label: 'Características', path: '/features', icon: 'star', priority: '0.8', changefreq: 'monthly' },
   { id: 107, code: 'MNU_NMERGEIA_PRICING', label: 'Planes y Precios', path: '/pricing', icon: 'payments', priority: '0.8', changefreq: 'monthly' },
-  { id: 108, code: 'MNU_NMERGEIA_DOCS', label: 'Biblioteca Técnica', path: '/docs', icon: 'menu_book', priority: '0.8', changefreq: 'weekly' },
+  { id: 108, code: 'MNU_NMERGEIA_DOCS', label: 'Documentación del Sistema', path: '/docs', icon: 'menu_book', priority: '0.8', changefreq: 'weekly' },
   { id: 109, code: 'MNU_NMERGEIA_FAQ', label: 'Preguntas Frecuentes', path: '/faq', icon: 'help_outline', priority: '0.8', changefreq: 'weekly' },
   {
     id: 110, code: 'CAT_NMERGEIA_WORKSPACE', label: 'Plataforma Principal', icon: 'desktop_windows',

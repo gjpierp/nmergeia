@@ -80,8 +80,7 @@ export default defineConfig({
       'Access-Control-Allow-Private-Network': 'true'
     },
     watch: {
-      usePolling: true,
-      interval: 100
+      ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**']
     },
     proxy: {
       '/api': {

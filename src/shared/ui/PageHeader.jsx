@@ -9,7 +9,7 @@ import { TopicLogo } from './TopicLogo.jsx';
  * En pantallas pequeñas (Mobile/Tablet < 1024px) se oculta suavemente al hacer scroll hacia abajo
  * (dejando visibles solo las pestañas) y reaparece al hacer scroll hacia arriba.
  */
-export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = true, logoSize, centered = false }) => {
+export const PageHeader = ({ icon, title, subtitle, badgeText, rightAction, topicId, sticky = false, logoSize, centered = false }) => {
   const headerRef = useRef(null);
   const [scrollDirection, setScrollDirection] = useState('up');
   const [isMobile, setIsMobile] = useState(false);

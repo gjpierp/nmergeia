@@ -33,6 +33,7 @@ describe('MonetizationStore', () => {
 
   it('verifies license successfully and saves it to localStorage', async () => {
     global.fetch.mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ valid: true })
     });
 
@@ -44,6 +45,7 @@ describe('MonetizationStore', () => {
 
   it('fails verification on invalid license and does not save to localStorage', async () => {
     global.fetch.mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ valid: false, message: 'Invalid key' })
     });
 
@@ -56,6 +58,7 @@ describe('MonetizationStore', () => {
   it('initializes license from localStorage when valid', async () => {
     localStorage.setItem('nmerge_license_key', 'stored-valid-key');
     global.fetch.mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ valid: true })
     });
 
@@ -66,6 +69,7 @@ describe('MonetizationStore', () => {
   it('removes license from localStorage on initialization if invalid', async () => {
     localStorage.setItem('nmerge_license_key', 'stored-invalid-key');
     global.fetch.mockResolvedValueOnce({
+      ok: true,
       json: async () => ({ valid: false })
     });
 

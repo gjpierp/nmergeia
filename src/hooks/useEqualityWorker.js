@@ -109,7 +109,7 @@ export const useEqualityWorker = () => {
                                 }
 
                                 if (nativeOFile.size !== nativeDFile.size) {
-                                    newMap[key] = { status: 'different', added: 0, deleted: 0 };
+                                    newMap[key] = { status: 'different', added: 1, deleted: 1 };
                                     return;
                                 }
 
@@ -118,16 +118,18 @@ export const useEqualityWorker = () => {
                                     if (oHash === dHash) {
                                         newMap[key] = { status: 'identical', added: 0, deleted: 0 };
                                     } else {
-                                        newMap[key] = { status: 'different', added: 0, deleted: 0 };
+                                        newMap[key] = { status: 'different', added: 1, deleted: 1 };
                                     }
                                 } else {
                                     const [oText, dText] = await Promise.all([nativeOFile.text(), nativeDFile.text()]);
-                                    const normalize = t => t.replace(/^\uFEFF/, '').replace(/\s+/g, ' ').trim();
-                                    if (normalize(oText) === normalize(dText)) {
+                                    const cleanText = t => t.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
+                                    if (oText === dText || cleanText(oText) === cleanText(dText)) {
                                         newMap[key] = { status: 'identical', added: 0, deleted: 0 };
                                     } else {
                                         const stats = countLineChanges(oText, dText);
-                                        newMap[key] = { status: 'different', added: stats.added, deleted: stats.deleted };
+                                        const added = stats.added || (oText.length !== dText.length ? 1 : 0);
+                                        const deleted = stats.deleted || (oText.length !== dText.length ? 1 : 0);
+                                        newMap[key] = { status: 'different', added: Math.max(1, added), deleted };
                                     }
                                 }
                             } catch(e) {

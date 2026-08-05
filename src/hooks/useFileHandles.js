@@ -85,5 +85,39 @@ export const useFileHandles = () => {
         setHasProcessed(false);
     };
 
-    return { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect };
+    const swapFolders = (slotIdToSwap = null) => {
+        const state = useAppStore.getState();
+        const originHandle = state.originHandle;
+        const originPath = state.originPath;
+        const destSlots = state.destSlots;
+
+        if (!destSlots || destSlots.length === 0) return;
+
+        const targetIndex = slotIdToSwap 
+            ? destSlots.findIndex(s => s.id === slotIdToSwap) 
+            : 0;
+
+        if (targetIndex === -1) return;
+
+        const targetSlot = destSlots[targetIndex];
+        const newOriginHandle = targetSlot.handle;
+        const newOriginPath = targetSlot.path;
+
+        const newDestHandle = originHandle;
+        const newDestPath = originPath;
+
+        setOriginHandle(newOriginHandle || null);
+        setOriginPath(newOriginPath || '');
+
+        setDestSlots(prev => prev.map((s, idx) => 
+            idx === targetIndex 
+                ? { ...s, handle: newDestHandle || null, path: newDestPath || '' } 
+                : s
+        ));
+
+        setHasProcessed(false);
+        addToast("Carpetas de Origen y Destino invertidas exitosamente.", "success");
+    };
+
+    return { openOrigin, openDest, addDestSlot, removeDestSlot, setOriginDirect, setDestDirect, swapFolders };
 };

@@ -3,7 +3,7 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://nmergeia.com/</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es"/>
@@ -16,7 +16,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#features</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#features"/>
@@ -29,7 +29,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#pricing</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#pricing"/>
@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#docs</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#docs"/>
@@ -55,7 +55,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#faq</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#faq"/>
@@ -68,7 +68,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#main</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#main"/>
@@ -81,7 +81,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#filters</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#filters"/>
@@ -94,7 +94,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#history</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#history"/>
@@ -107,7 +107,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#terminal</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#terminal"/>
@@ -120,7 +120,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience"/>
@@ -133,7 +133,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-13-llm-rag</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-13-llm-rag"/>
@@ -146,7 +146,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-14-ai-agents</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-14-ai-agents"/>
@@ -159,7 +159,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience/pyspark</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/pyspark"/>
@@ -172,7 +172,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience/kafka</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/kafka"/>
@@ -185,7 +185,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience/deltalake</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/deltalake"/>
@@ -198,7 +198,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience/mlops</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/mlops"/>
@@ -211,7 +211,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/datascience/polars</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/datascience/polars"/>
@@ -224,7 +224,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/postgres</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/postgres"/>
@@ -237,7 +237,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/oracle</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/oracle"/>
@@ -250,7 +250,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-09-migracion-db</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-09-migracion-db"/>
@@ -263,7 +263,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-07-rls-gobernanza</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-07-rls-gobernanza"/>
@@ -276,7 +276,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/docker</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/docker"/>
@@ -289,7 +289,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-02-docker-multistage</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-02-docker-multistage"/>
@@ -302,7 +302,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-04-iac-terraform</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-04-iac-terraform"/>
@@ -315,7 +315,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-17-kubernetes</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-17-kubernetes"/>
@@ -328,7 +328,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-18-cloud-native</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-18-cloud-native"/>
@@ -341,7 +341,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-aws</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-aws"/>
@@ -354,7 +354,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ngac</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ngac"/>
@@ -367,7 +367,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-05-rbac-abac-ngac</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-05-rbac-abac-ngac"/>
@@ -380,7 +380,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-06-ngac-menus</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-06-ngac-menus"/>
@@ -393,7 +393,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-08-devsecops-vault</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-08-devsecops-vault"/>
@@ -406,7 +406,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-pentest</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-pentest"/>
@@ -419,7 +419,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-react</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-react"/>
@@ -432,7 +432,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-vue</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-vue"/>
@@ -445,7 +445,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/ext-node</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/ext-node"/>
@@ -458,7 +458,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-03-git-avanzado</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-03-git-avanzado"/>
@@ -471,7 +471,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-10-etl-saga</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-10-etl-saga"/>
@@ -484,7 +484,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-11-saas-multitenant</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-11-saas-multitenant"/>
@@ -497,7 +497,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-12-resiliencia-backend</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-12-resiliencia-backend"/>
@@ -510,7 +510,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-15-arquitecturas-software</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-15-arquitecturas-software"/>
@@ -523,7 +523,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#temas/tema-16-toma-requerimientos</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#temas/tema-16-toma-requerimientos"/>
@@ -536,7 +536,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#about</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#about"/>
@@ -549,7 +549,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#contact</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#contact"/>
@@ -562,7 +562,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#privacy</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#privacy"/>
@@ -575,7 +575,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#terms</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#terms"/>
@@ -588,7 +588,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#cookie-policy</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#cookie-policy"/>
@@ -601,7 +601,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#legal-notice</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#legal-notice"/>
@@ -614,7 +614,7 @@
   </url>
   <url>
     <loc>https://nmergeia.com/#eula</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/?lang=es#eula"/>

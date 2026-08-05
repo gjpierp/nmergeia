@@ -14,7 +14,8 @@ export const MainScreen = ({
   saveCurrentProfile,
   processFiles,
   setOriginDirect,
-  setDestDirect
+  setDestDirect,
+  swapFolders
 }) => {
   const { t } = useTranslation();
   const [isDraggingOrigin, setIsDraggingOrigin] = useState(false);
@@ -140,6 +141,9 @@ export const MainScreen = ({
             <button className="btn secondary-btn config-action-btn" onClick={() => openDest(slot.id, 'files')} data-tooltip={t('tooltip_select_files')}>
               <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>insert_drive_file</span>
             </button>
+            <button className="btn secondary-btn config-action-btn" onClick={() => swapFolders && swapFolders(slot.id)} data-tooltip={t('tooltip_swap_folders') || "Invertir Origen y Destino"}>
+              <span className="material-symbols-rounded" style={{ fontSize: '1.2rem', color: '#0284c7' }}>swap_vert</span>
+            </button>
             {destSlots.length > 1 && (
               <button className="btn clear-btn config-action-btn" onClick={() => removeDestSlot(slot.id)} style={{ border: '1px solid #ef4444', color: '#ef4444' }} data-tooltip={t('tooltip_remove_destination')}>
                 <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>close</span>
@@ -155,6 +159,9 @@ export const MainScreen = ({
         </button>
         <button className="btn secondary-btn" data-tooltip={t('tooltip_add_destination')} onClick={addDestSlot}>
           <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>add</span>
+        </button>
+        <button className="btn secondary-btn" data-tooltip={t('tooltip_swap_folders') || "Invertir Origen y Destino"} onClick={() => swapFolders && swapFolders()} disabled={isProcessing || (!originHandle && destSlots.every(s => !s.handle))}>
+          <span className="material-symbols-rounded" style={{ fontSize: '1.2rem', color: '#0284c7' }}>swap_vert</span>
         </button>
         <button className="btn secondary-btn" data-tooltip={t('tooltip_save_profile')} onClick={saveCurrentProfile}>
           <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>save</span>

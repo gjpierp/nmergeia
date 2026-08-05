@@ -128,17 +128,25 @@ export const OrbitalGlobeLanguageSelector = ({
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
 
-    // 5. Globo Esférico Central
+    // 5. Globo Esférico Central con Textura Procesal Local (0ms latency, 100% offline)
     const globeRadius = 0.5;
     const globeGeo = new THREE.SphereGeometry(globeRadius, 48, 48);
-    const textureLoader = new THREE.TextureLoader();
     
-    // Configurar textura fallback en caso de error CORS o carga offline
-    const earthTexture = textureLoader.load(globeTextureUrl, undefined, undefined, () => {
-      // Fallback simple a color oscuro si falla la textura de internet
-      globeMat.color.setHex(0x131316);
-      globeMat.needsUpdate = true;
-    });
+    const procCanvas = document.createElement('canvas');
+    procCanvas.width = 512;
+    procCanvas.height = 256;
+    const pCtx = procCanvas.getContext('2d');
+    if (pCtx) {
+      pCtx.fillStyle = '#0b0f19';
+      pCtx.fillRect(0, 0, 512, 256);
+      pCtx.fillStyle = '#1e293b';
+      for (let i = 0; i < 250; i++) {
+        pCtx.beginPath();
+        pCtx.arc(Math.random() * 512, Math.random() * 256, Math.random() * 3 + 1, 0, Math.PI * 2);
+        pCtx.fill();
+      }
+    }
+    const earthTexture = new THREE.CanvasTexture(procCanvas);
 
     const globeMat = new THREE.MeshStandardMaterial({
       map: earthTexture,

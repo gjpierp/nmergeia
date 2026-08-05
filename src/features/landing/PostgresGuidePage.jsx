@@ -49,7 +49,7 @@ export const PostgresGuidePage = () => {
         </p>
       </div>
 
-      <div style={{ width: '100%', width: '100%',  display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         
         {/* Guía Básica */}
         <section style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '2rem' }}>

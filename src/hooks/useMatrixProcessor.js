@@ -18,8 +18,8 @@ export const parseFilterRules = (filterText) => {
   const includes = [];
 
   for (const line of lines) {
-    let clean = line.startsWith('//') || line.startsWith('#') ? line.replace(/^(\/\/|#)+/, '').trim() : line;
-    if (!clean) continue;
+    if (line.startsWith('//') || line.startsWith('#')) continue;
+    const clean = line;
 
     if (clean.startsWith('+')) {
       const pattern = clean.substring(1).trim();
@@ -497,15 +497,30 @@ export const useMatrixProcessor = () => {
 
   const handleDelete = async (baseHandle, filePath, isOrigin = false, silent = false) => {
       try {
-          if (!baseHandle) return;
-          const conf = await showModal('confirm', 'Eliminar', `¿Seguro que quieres eliminar "${filePath}" del ${isOrigin ? 'origen' : 'destino'}?`);
+          let handleToUse = baseHandle;
+          if (!handleToUse) {
+              const actualTab = tabs.find(t => t.id === activeTab && t.type === 'matrix');
+              if (isOrigin) {
+                  handleToUse = actualTab ? actualTab.originHandle : originHandle;
+              } else {
+                  handleToUse = actualTab && actualTab.processedDestSlots && actualTab.processedDestSlots[0] 
+                      ? actualTab.processedDestSlots[0].handle 
+                      : (destSlots[0] ? destSlots[0].handle : null);
+              }
+          }
+          if (!handleToUse) {
+              if (!silent) addToast("No se encontró el directorio correspondiente para borrar el archivo.", "error");
+              return;
+          }
+          const conf = await showModal('confirm', 'Eliminar Archivo', `¿Seguro que quieres eliminar "${filePath}" del ${isOrigin ? 'origen' : 'destino'}?`);
           if (!conf) return;
           
-          await deleteFileFromHandle(baseHandle, filePath);
+          await deleteFileFromHandle(handleToUse, filePath);
           addToast("Archivo eliminado con éxito.", "success");
           processFiles(true);
       } catch (_e) {
-          if (!silent) addToast("Error al eliminar el archivo.", "error");
+          console.error("Error al borrar archivo:", _e);
+          if (!silent) addToast("Error al eliminar el archivo: " + (_e.message || "Permiso denegado o archivo no encontrado"), "error");
       }
   };
 
@@ -521,12 +536,16 @@ export const useMatrixProcessor = () => {
   const handleTransferFolder = async (folderPath, direction, e) => {
       e.stopPropagation();
       const isToDest = direction === 'to_dest';
-      if (!window.confirm(`¿Seguro que quieres copiar TODA la carpeta "${folderPath}" hacia ${isToDest ? 'el destino' : 'el origen'}?`)) return;
+      if (!window.confirm(`¿Seguro que quieres copiar la carpeta "${folderPath}" hacia ${isToDest ? 'el destino' : 'el origen'}? (Solo se transferirán archivos con diferencias o inexistentes)`)) return;
 
       const actualTab = tabs.find(t => t.id === activeTab && t.type === 'matrix');
       const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
       const currentProcessedOrigin = actualTab ? (actualTab.processedOrigin || []) : (processedOrigin || []);
       const currentProcessedDestSlots = actualTab ? (actualTab.processedDestSlots || []) : (processedDestSlots || []);
+      const fileEqualityMap = useAppStore.getState().fileEqualityMap || {};
+
+      let totalTransferred = 0;
+      let totalSkipped = 0;
 
       if (isToDest) {
          if (!currentOriginHandle) return;
@@ -535,7 +554,24 @@ export const useMatrixProcessor = () => {
              const relPath = getRelativePath(f.webkitRelativePath, currentOriginHandle.name);
              for (const slot of currentProcessedDestSlots) {
                  if (slot.handle && slot.handle.type !== 'files') {
+                     const destFile = slot.files ? slot.files.find(df => getRelativePath(df.webkitRelativePath, slot.handle.name) === relPath) : null;
+                     const key = `${slot.id}-${relPath}`;
+                     const eqState = fileEqualityMap[key];
+                     const status = typeof eqState === 'object' ? eqState?.status : eqState;
+
+                     // Saltar archivos que ya son idénticos en el destino
+                     const isIdentical = destFile && (
+                         status === 'equal' || 
+                         (!status && f.size !== undefined && destFile.size !== undefined && f.size === destFile.size && f.lastModified === destFile.lastModified)
+                     );
+
+                     if (isIdentical) {
+                         totalSkipped++;
+                         continue;
+                     }
+
                      await handleTransfer(f, slot.handle, relPath, true);
+                     totalTransferred++;
                  }
              }
          }
@@ -546,17 +582,122 @@ export const useMatrixProcessor = () => {
                  slot.files.forEach(f => {
                      const relPath = getRelativePath(f.webkitRelativePath, slot.handle.name);
                      if (relPath.startsWith(folderPath + '/')) {
-                         filesToTransfer.push({ file: f, relPath });
+                         filesToTransfer.push({ file: f, relPath, slotId: slot.id });
                      }
                  });
              }
          });
          for (const item of filesToTransfer) {
              if (currentOriginHandle) {
+                 const originFile = currentProcessedOrigin.find(of => getRelativePath(of.webkitRelativePath, currentOriginHandle.name) === item.relPath);
+                 const key = `${item.slotId}-${item.relPath}`;
+                 const eqState = fileEqualityMap[key];
+                 const status = typeof eqState === 'object' ? eqState?.status : eqState;
+
+                 // Saltar archivos que ya son idénticos en el origen
+                 const isIdentical = originFile && (
+                     status === 'equal' || 
+                     (!status && item.file.size !== undefined && originFile.size !== undefined && item.file.size === originFile.size && item.file.lastModified === originFile.lastModified)
+                 );
+
+                 if (isIdentical) {
+                     totalSkipped++;
+                     continue;
+                 }
+
                  await handleTransfer(item.file, currentOriginHandle, item.relPath, true);
+                 totalTransferred++;
              }
          }
       }
+
+      useAppStore.getState().addToast(`Sincronización de carpeta finalizada: ${totalTransferred} archivo(s) transferido(s), ${totalSkipped} idéntico(s) ignorado(s).`, "success");
+      processFiles(true);
+  };
+
+  const handleTransferAllToDest = async () => {
+      if (!window.confirm("¿Seguro que deseas transferir TODOS los archivos con diferencias o inexistentes hacia el Destino? (Los archivos iguales no sufrirán modificaciones)")) return;
+
+      const actualTab = tabs.find(t => t.id === activeTab && t.type === 'matrix');
+      const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
+      const currentProcessedOrigin = actualTab ? (actualTab.processedOrigin || []) : (processedOrigin || []);
+      const currentProcessedDestSlots = actualTab ? (actualTab.processedDestSlots || []) : (processedDestSlots || []);
+      const fileEqualityMap = useAppStore.getState().fileEqualityMap || {};
+
+      if (!currentOriginHandle) return;
+
+      let totalTransferred = 0;
+      let totalSkipped = 0;
+
+      for (const f of currentProcessedOrigin) {
+          const relPath = getRelativePath(f.webkitRelativePath, currentOriginHandle.name);
+          for (const slot of currentProcessedDestSlots) {
+              if (slot.handle && slot.handle.type !== 'files') {
+                  const destFile = slot.files ? slot.files.find(df => getRelativePath(df.webkitRelativePath, slot.handle.name) === relPath) : null;
+                  const key = `${slot.id}-${relPath}`;
+                  const eqState = fileEqualityMap[key];
+                  const status = typeof eqState === 'object' ? eqState?.status : eqState;
+
+                  const isIdentical = destFile && (
+                      status === 'equal' || 
+                      (!status && f.size !== undefined && destFile.size !== undefined && f.size === destFile.size && f.lastModified === destFile.lastModified)
+                  );
+
+                  if (isIdentical) {
+                      totalSkipped++;
+                      continue;
+                  }
+
+                  await handleTransfer(f, slot.handle, relPath, true);
+                  totalTransferred++;
+              }
+          }
+      }
+
+      useAppStore.getState().addToast(`Transferencia masiva completada: ${totalTransferred} archivo(s) transferido(s) al destino, ${totalSkipped} idéntico(s) ignorado(s).`, "success");
+      processFiles(true);
+  };
+
+  const handleTransferAllToOrigin = async () => {
+      if (!window.confirm("¿Seguro que deseas transferir TODOS los archivos con diferencias o inexistentes desde el Destino hacia el Origen? (Los archivos iguales no sufrirán modificaciones)")) return;
+
+      const actualTab = tabs.find(t => t.id === activeTab && t.type === 'matrix');
+      const currentOriginHandle = actualTab ? actualTab.originHandle : originHandle;
+      const currentProcessedOrigin = actualTab ? (actualTab.processedOrigin || []) : (processedOrigin || []);
+      const currentProcessedDestSlots = actualTab ? (actualTab.processedDestSlots || []) : (processedDestSlots || []);
+      const fileEqualityMap = useAppStore.getState().fileEqualityMap || {};
+
+      if (!currentOriginHandle) return;
+
+      let totalTransferred = 0;
+      let totalSkipped = 0;
+
+      for (const slot of currentProcessedDestSlots) {
+          if (slot.files && slot.handle) {
+              for (const f of slot.files) {
+                  const relPath = getRelativePath(f.webkitRelativePath, slot.handle.name);
+                  const originFile = currentProcessedOrigin.find(of => getRelativePath(of.webkitRelativePath, currentOriginHandle.name) === relPath);
+                  const key = `${slot.id}-${relPath}`;
+                  const eqState = fileEqualityMap[key];
+                  const status = typeof eqState === 'object' ? eqState?.status : eqState;
+
+                  const isIdentical = originFile && (
+                      status === 'equal' || 
+                      (!status && f.size !== undefined && originFile.size !== undefined && f.size === originFile.size && f.lastModified === originFile.lastModified)
+                  );
+
+                  if (isIdentical) {
+                      totalSkipped++;
+                      continue;
+                  }
+
+                  await handleTransfer(f, currentOriginHandle, relPath, true);
+                  totalTransferred++;
+              }
+          }
+      }
+
+      useAppStore.getState().addToast(`Transferencia masiva completada: ${totalTransferred} archivo(s) transferido(s) al origen, ${totalSkipped} idéntico(s) ignorado(s).`, "success");
       processFiles(true);
   };
 
@@ -568,6 +709,8 @@ export const useMatrixProcessor = () => {
       handleDelete,
       handleTransfer,
       handleTransferFolder,
+      handleTransferAllToDest,
+      handleTransferAllToOrigin,
       handleClear
   };
 };

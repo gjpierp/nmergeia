@@ -84,8 +84,7 @@ export const SettingsPage = () => {
         color: 'var(--text-primary)',
         fontFamily: '"Outfit", sans-serif',
         textAlign: 'left',
-        boxSizing: 'border-box',
-        width: '100%'
+        boxSizing: 'border-box'
       }}>
       <Helmet>
         <title>Configuración & Preferencias | NMergeIA</title>

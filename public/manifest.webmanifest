@@ -1,11 +1,37 @@
 {
-  "name": "NMerge IA - Diffing & Merge Engine",
+  "name": "NMerge IA - Advanced Local-First File Merging, Directory Synchronization & Semantic Code Diff Engine",
   "short_name": "NMerge IA",
-  "description": "Herramienta profesional de comparación de carpetas y fusión semántica de código con IA local-first.",
-  "start_url": "/",
+  "description": "NMerge IA es la plataforma web profesional y aplicación nativa de escritorio diseñada para la comparación ultrarrápida de directorios locales, resolución inteligente de diferencias (diff/merge), gestión de perfiles de exclusión y sincronización de código fuente. Construida bajo el principio Local-First y arquitectura Zero-Trust, garantiza que el 100% de los archivos procesados permanezcan de forma totalmente privada dentro de la computadora del usuario sin subir código a la nube ni exponer puertos locales. Integra visualización interactiva con Monaco Editor, filtrado avanzado por expresiones regulares y soporte multilingüe en 7 idiomas principales (español, inglés, francés, portugués, alemán, chino y japonés).",
+  "start_url": "/?utm_source=pwa_manifest&utm_medium=pwa",
+  "scope": "/",
+  "id": "com.antigravity.nmerge.ia.pwa",
   "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
+  "dir": "ltr",
+  "lang": "es-ES",
+  "categories": [
+    "developer_tools",
+    "productivity",
+    "utilities",
+    "code_editor",
+    "file_management",
+    "diff_engine",
+    "software_engineering",
+    "data_science"
+  ],
+  "i18n": {
+    "en": {
+      "name": "NMerge IA - Local-First Directory Compare & Code Diff Engine",
+      "description": "Professional web and desktop application for ultra-fast local directory comparison, file diff/merge, exclusion profiles management, and code synchronization. 100% Local-First and air-gapped security."
+    },
+    "es": {
+      "name": "NMerge IA - Comparador de Directorios y Fusión Semántica de Código",
+      "description": "Plataforma web y de escritorio para comparación rápida de carpetas locales, resolución de diferencias y sincronización de código sin subir archivos a servidores externos."
+    }
+  },
   "icons": [
     {
       "src": "/icon.png",
@@ -16,7 +42,94 @@
     {
       "src": "/favicon.png",
       "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/logo.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Matriz de Comparación y Estado de Directorios NMerge IA"
+    },
+    {
+      "src": "/assets/icon.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Visor de Diferencias Monaco Diff Lado a Lado"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Comparador Principal",
+      "short_name": "Comparador",
+      "description": "Abre la matriz principal de comparación de directorios y archivos de origen/destino",
+      "url": "/#main",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Gestor de Filtros",
+      "short_name": "Filtros",
+      "description": "Configura reglas de exclusión por expresiones regulares y patrones de carpetas",
+      "url": "/#filters",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Historial de Análisis",
+      "short_name": "Historial",
+      "description": "Consulta perfiles de comparación previos guardados localmente",
+      "url": "/#history",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Consola Integrada",
+      "short_name": "Terminal",
+      "description": "Accede a la terminal interactiva para comandos automáticos de sincronización",
+      "url": "/#terminal",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Biblioteca Técnica",
+      "short_name": "Documentación",
+      "description": "Explora más de 85 guías técnicas sobre PostgreSQL, Docker, Data Science y MLOps",
+      "url": "/#docs",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/#main",
+      "accept": {
+        "text/plain": [".txt", ".log", ".filtro"],
+        "text/javascript": [".js", ".jsx", ".mjs", ".cjs"],
+        "text/typescript": [".ts", ".tsx"],
+        "application/json": [".json"],
+        "text/x-python": [".py"],
+        "text/x-sql": [".sql"],
+        "text/markdown": [".md"],
+        "text/yaml": [".yml", ".yaml"],
+        "text/css": [".css"],
+        "text/html": [".html"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    { "protocol": "web+nmerge", "url": "/#main?uri=%s" },
+    { "protocol": "web+diff", "url": "/#diff?uri=%s" }
+  ],
+  "related_applications": [
+    {
+      "platform": "windows",
+      "url": "https://nmergeia.com/releases/NMerge-Setup-1.2.2.exe"
+    }
+  ],
+  "prefer_related_applications": false
 }

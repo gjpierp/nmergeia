@@ -1,7 +1,7 @@
 {
   "name": "NMerge",
   "private": true,
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
@@ -25,7 +25,7 @@
     "appId": "com.antigravity.nmerge",
     "productName": "NMerge",
     "directories": {
-      "output": "dist_electron"
+      "output": "dist_portable"
     },
     "files": [
       "dist/**/*",
@@ -46,7 +46,6 @@
     "win": {
       "icon": "src/assets/icon.ico",
       "target": [
-        "nsis",
         "portable"
       ]
     },

@@ -60,19 +60,18 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
         <title>NMerge | {translatedTitle} {!singleFile ? `(${currentTab.label})` : ''}</title>
       </Helmet>
 
+      <Breadcrumbs items={breadcrumbsItems} />
+
       <div style={{ 
         padding: '0.75rem 1.5rem 0', 
         background: 'var(--bg-secondary)', 
-        borderBottom: '1px solid var(--border-color)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10
+        borderBottom: '1px solid var(--border-color)'
       }}>
-        <Breadcrumbs items={breadcrumbsItems} />
         <PageHeader 
           topicId={topicId}
           title={translatedTitle} 
           subtitle={`${translatedTitle} - Guía Técnica Profesional ${!singleFile ? `(Nivel ${currentTab.label})` : ''}`} 
+          sticky={false}
         />
 
         {!singleFile && tabs.length > 0 && (

@@ -2,13 +2,9 @@ User-agent: *
 Allow: /
 Allow: /sitemap.xml
 Allow: /ads.txt
-Disallow: /manifest.webmanifest
-Disallow: /*.webmanifest
-Disallow: /sw.js
-Disallow: /registerSW.js
-Disallow: /workbox-*.js
+Allow: /politica-de-privacidad.html
 
 User-agent: Mediapartners-Google
 Allow: /
 
-Sitemap: https://nmergeia.com/sitemap.xml
+Sitemap: https://nmergeia.local/sitemap.xml

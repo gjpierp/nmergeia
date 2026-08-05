@@ -2,31 +2,38 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-console.log('🚀 === INICIANDO PIPELINE DE COMPILACIÓN Y OFUSCACIÓN DE EXECUTIVE NMERGE .EXE ===');
+console.log('🚀 === INICIANDO PIPELINE DE COMPILACIÓN Y OFUSCACIÓN DE EXECUTIVE NMERGE PORTÁTIL .EXE ===');
 
 try {
-  // 1. Compilar Frontend Vite
-  console.log('\n📦 1. Compilando bundle Vite (Frontend)...');
+  // Inyectar Certificado de Firma Digital StackUpIA
+  const certPath = 'C:\\Local\\.agents\\certs\\stackupia_gerardo_cert.pfx';
+  if (fs.existsSync(certPath)) {
+    process.env.WIN_CSC_LINK = certPath;
+    process.env.WIN_CSC_KEY_PASSWORD = 'StackUpIA2026';
+    console.log('🔐 Certificado digital de StackUpIA detectado e inyectado correctamente.');
+  }
+
+  // 1. Compilar Frontend Vite para Aplicación Principal
+  console.log('\n📦 1. Compilando bundle Vite (Frontend - Plataforma Principal)...');
   process.env.VITE_IS_DESKTOP = 'true';
   execSync('npx vite build', { stdio: 'inherit' });
 
-  // (Se eliminó el respaldo temporal ya que ahora usamos mapping directo en package.json)
-
-  // 3. Ejecutar script de ofuscación sobre dist/ y los archivos principales
-  console.log('\n🔒 3. Ejecutando ofuscación de código JavaScript...');
+  // 2. Ejecutar script de ofuscación sobre dist/ y los archivos principales
+  console.log('\n🔒 2. Ejecutando ofuscación de código JavaScript...');
   execSync('node obfuscate.js', { stdio: 'inherit' });
 
-  // (Se eliminó la sobreescritura de los archivos root, electron-builder mapeará desde dist/)
+  // 3. Preparar directorio de recursos y empaquetar ejecutable portátil
+  console.log('\n⚙️ 3. Generando ejecutable portátil .exe con Electron Builder e iconos...');
+  const resourcesDir = path.join('node_modules', 'electron', 'dist', 'resources');
+  if (!fs.existsSync(resourcesDir)) {
+    fs.mkdirSync(resourcesDir, { recursive: true });
+  }
 
-  // 4. Empaquetar ejecutable con electron-builder
-  console.log('\n⚙️ 4. Generando instalador autoejecutable .exe con Electron Builder e iconos...');
-  try {
-    execSync('cmd /c "taskkill /f /im NMerge*.exe /im electron.exe 2>nul & timeout /t 1 /nobreak >nul & rmdir /s /q dist_electron\\win-unpacked 2>nul || ver >nul"', { stdio: 'ignore' });
-  } catch (_) {}
-  execSync('npx electron-builder --win', { stdio: 'inherit' });
+  execSync('npx electron-builder --win --prepackaged node_modules/electron/dist', { stdio: 'inherit' });
 
-  console.log('\n✅ === COMPILACIÓN .EXE OFUSCADA FINALIZADA CON ÉXITO ===');
-  console.log('  📁 Los binarios autoejecutables se han generado en: dist_electron/');
+  console.log('\n✅ === COMPILACIÓN PORTÁTIL .EXE OFUSCADA Y FIRMADA FINALIZADA CON ÉXITO ===');
+  console.log('  📁 El ejecutable portátil autoejecutable de la Plataforma Principal se encuentra en:');
+  console.log('     dist_portable/NMerge 1.2.2.exe');
 } catch (error) {
   console.error('\n❌ ERROR EN EL PIPELINE DE COMPILACIÓN:', error.message);
   process.exitCode = 1;

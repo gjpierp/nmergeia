@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     container_name: nmerge-app
     restart: unless-stopped
-    ports:
-      - "8880:8880"
     environment:
       - PORT=8880
       - NODE_ENV=development

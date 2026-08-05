@@ -159,7 +159,6 @@ export const FaqPage = ({ appLanguage }) => {
       flexDirection: 'column',
       height: '100%',
       width: '100%',
-      width: '100%',
       
       padding: '30px 20px',
       boxSizing: 'border-box',

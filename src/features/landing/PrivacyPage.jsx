@@ -23,7 +23,7 @@ export const PrivacyPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
+      <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Política de Privacidad' }]} />
         
         {/* Header */}

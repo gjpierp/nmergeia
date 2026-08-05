@@ -333,6 +333,10 @@ import { ALL_MENU_ROUTES } from './src/shared/lib/routesManifest.js';
 
 app.get('/sitemap.xml', (req, res) => {
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
     const pathDist = path.join(__dirname, 'dist', 'sitemap.xml');
     const pathPublic = path.join(__dirname, 'public', 'sitemap.xml');
     if (fs.existsSync(pathDist)) return res.sendFile(pathDist);
@@ -370,6 +374,16 @@ app.get('/sitemap.xml', (req, res) => {
     return res.status(200).send(xml);
 });
 
+// Serve static legal pages with HTML MIME type
+app.get(['/politica-de-privacidad.html', '/politica-de-privacidad'], (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    const pathDist = path.join(__dirname, 'dist', 'politica-de-privacidad.html');
+    const pathPublic = path.join(__dirname, 'public', 'politica-de-privacidad.html');
+    if (fs.existsSync(pathDist)) return res.sendFile(pathDist);
+    if (fs.existsSync(pathPublic)) return res.sendFile(pathPublic);
+    return res.status(404).send('Política de privacidad no encontrada');
+});
+
 // Serve robots.txt & ads.txt with text/plain MIME type
 app.get(['/robots.txt', '/ads.txt', '/filtro.txt'], (req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -405,9 +419,35 @@ app.use(express.static(path.join(__dirname, 'dist'), {
     }
 }));
 
-// SPA Fallback
+// SPA Fallback con Degradación Grácil (Graceful Degradation)
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+    if (fs.existsSync(indexPath)) {
+        return res.sendFile(indexPath);
+    }
+    res.status(503).send(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>NMerge - Compilación Requerida</title>
+            <style>
+                body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                .card { background: #1e293b; padding: 40px; border-radius: 16px; max-width: 500px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+                h1 { color: #38bdf8; margin-top: 0; }
+                code { background: #0f172a; color: #38bdf8; padding: 4px 8px; border-radius: 6px; }
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>🚀 NMerge - Inicialización Requerida</h1>
+                <p>La carpeta de producción <code>dist/index.html</code> aún no ha sido construida en el host local.</p>
+                <p>Ejecuta el siguiente comando en la terminal para compilar la interfaz:</p>
+                <p><code>npm run build</code></p>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
 const PORT = process.env.PORT || 3001;
@@ -416,14 +456,25 @@ const certPath = 'C:\\Local\\certs';
 const keyFile = path.join(certPath, 'server.key');
 const certFile = path.join(certPath, 'server.crt');
 
+app.listen(PORT, () => {
+    console.info(`Server (HTTP) running on http://localhost:${PORT}`);
+});
+
 if (fs.existsSync(keyFile) && fs.existsSync(certFile)) {
-    const options = {
-        key: fs.readFileSync(keyFile),
-        cert: fs.readFileSync(certFile)
-    };
-    https.createServer(options, app).listen(PORT, () => {
-        console.info(`Server (HTTPS) running securely on port ${PORT}`);
-    });
-} else {
-    app.listen(PORT, () => console.info(`Server (HTTP) running on port ${PORT}`));
+    try {
+        const options = {
+            key: fs.readFileSync(keyFile),
+            cert: fs.readFileSync(certFile)
+        };
+        const HTTPS_PORT = process.env.HTTPS_PORT || 3002;
+        const httpsServer = https.createServer(options, app);
+        httpsServer.on('error', (e) => {
+            console.warn(`HTTPS Fallback (Puerto ${HTTPS_PORT} ocupado o no disponible):`, e.message);
+        });
+        httpsServer.listen(HTTPS_PORT, () => {
+            console.info(`Server (HTTPS) running securely on https://localhost:${HTTPS_PORT}`);
+        });
+    } catch (e) {
+        console.warn("HTTPS certificate error fallback:", e.message);
+    }
 }

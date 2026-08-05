@@ -33,23 +33,28 @@ export const Breadcrumbs = ({ items = [] }) => {
     <nav 
       aria-label="Breadcrumb"
       style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 90,
         display: 'flex',
         alignItems: 'center',
-        gap: '4px',
-        fontSize: '0.75rem',
+        justifyContent: 'space-between',
+        gap: '8px',
+        fontSize: '0.8rem',
         color: 'var(--text-tertiary)',
         marginBottom: '16px',
         marginTop: '0px',
-        padding: '10px 20px',
-        marginLeft: '-20px',
-        marginRight: '-20px',
+        padding: '10px 16px',
+        marginLeft: '0px',
+        marginRight: '0px',
         flexWrap: 'wrap',
         fontFamily: '"Outfit", sans-serif',
-        position: 'sticky',
-        top: 0,
-        zIndex: 95,
-        background: 'var(--bg-primary)',
-        borderBottom: '1px solid var(--border-light)',
+        background: 'var(--bg-glass, rgba(10, 15, 27, 0.92))',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--border-light, rgba(6, 182, 212, 0.2))',
+        borderRadius: '0 0 10px 10px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
         boxSizing: 'border-box'
       }}
     >
@@ -97,19 +102,27 @@ export const Breadcrumbs = ({ items = [] }) => {
             style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
           >
             <span style={{ opacity: 0.4, fontSize: '0.7rem' }}>/</span>
-            {item.tabId ? (
+            {item.tabId || item.path ? (
               <a 
                 itemProp="item"
-                href={`#${item.tabId}`}
+                href={item.path || `#${item.tabId}`}
                 className="breadcrumb-item-link"
-                onClick={(e) => { e.preventDefault(); setActiveTab(item.tabId); }}
+                onClick={(e) => { 
+                  if (item.tabId) {
+                    e.preventDefault(); 
+                    setActiveTab(item.tabId); 
+                  }
+                }}
                 style={{ cursor: 'pointer', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}
               >
                 <span itemProp="name">{item.label}</span>
               </a>
             ) : (
-              <span itemProp="name" style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
-                {item.label}
+              <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <link itemProp="item" href={`https://nmergeia.com/#${encodeURIComponent(item.label.toLowerCase().replace(/\s+/g, '-'))}`} />
+                <span itemProp="name" style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
+                  {item.label}
+                </span>
               </span>
             )}
             <meta itemProp="position" content={`${idx + 2}`} />

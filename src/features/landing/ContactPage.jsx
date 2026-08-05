@@ -92,7 +92,7 @@ export const ContactPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
-      <div style={{ width: '100%', width: '100%',  textAlign: 'left' }}>
+      <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Contacto & Soporte' }]} />
         
         {/* Header */}
@@ -154,12 +154,13 @@ export const ContactPage = () => {
           {/* Left Column: Direct Info */}
           <div className="section-card" style={{ padding: '30px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)', lineHeight: '1.6' }}>
             <h3 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: 0 }}>
-              {isEn ? 'Corporate Info & Ticketing' : 'Información & Gestión de Tickets'}
+              {isEn ? 'Corporate Info & Ticketing' : 'Información & Arquitectura de Soporte Técnico'}
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              {isEn 
-                ? 'NMerge IA processes user inquiries via local ticket registration (API & SQLite database) and asynchronous webhook dispatching.'
-                : 'NMerge IA procesa las consultas de usuarios mediante registro de tickets locales en base de datos (API Node.js) y despacho de webhooks.'}
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.7', margin: '0 0 12px 0' }}>
+              NMerge IA implementa un sistema unificado de atención al cliente y registro de incidencias técnicas gobernado por la API de tickets integrada en la plataforma.
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.7', margin: '0 0 12px 0' }}>
+              Cada consulta recibida genera un identificador único (Ticket ID) que se almacena localmente en la base de datos de administración y se despacha de forma asíncrona hacia nuestros centros de soporte técnico. Este mecanismo previene el traspaso de información confidencial de la empresa y permite un seguimiento transparente de las solicitudes de los usuarios.
             </p>
 
             <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -167,16 +168,16 @@ export const ContactPage = () => {
                 <span className="material-symbols-rounded" style={{ color: '#10b981' }}>confirmation_number</span>
                 <div>
                   <strong style={{ display: 'block', fontSize: '0.9rem' }}>{isEn ? 'Ticket System API' : 'Sistema de Tickets Local'}</strong>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>/api/contact (Backend Node.js)</span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Endpoint /api/contact (Backend Node.js & Express)</span>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span className="material-symbols-rounded" style={{ color: '#3b82f6' }}>support_agent</span>
                 <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem' }}>{isEn ? 'Technical SLA' : 'Tiempo de Respuesta'}</strong>
+                  <strong style={{ display: 'block', fontSize: '0.9rem' }}>{isEn ? 'Technical SLA' : 'Compromiso de Respuesta (SLA)'}</strong>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    {isEn ? 'Under 24 to 48 business hours' : 'Menos de 24 a 48 horas hábiles'}
+                    {isEn ? 'Under 24 to 48 business hours' : 'Atención prioritaria en menos de 24 a 48 horas hábiles'}
                   </span>
                 </div>
               </div>
@@ -184,19 +185,20 @@ export const ContactPage = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span className="material-symbols-rounded" style={{ color: '#f59e0b' }}>domain</span>
                 <div>
-                  <strong style={{ display: 'block', fontSize: '0.9rem' }}>{isEn ? 'Developing Body' : 'Entidad Desarrolladora'}</strong>
+                  <strong style={{ display: 'block', fontSize: '0.9rem' }}>{isEn ? 'Developing Body' : 'Entidad Desarrolladora & Titular'}</strong>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>StackUpIA Software Labs S.A.</span>
                 </div>
               </div>
             </div>
 
             <h4 style={{ marginTop: '25px', marginBottom: '10px', color: 'var(--text-primary)' }}>
-              {isEn ? 'Quick Help & FAQ' : 'Centro de Ayuda Rápidas'}
+              {isEn ? 'SLA Commitments & Data Governance' : 'Gobernanza de Datos y Compromisos de Soporte'}
             </h4>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-              {isEn
-                ? 'Check out our FAQ page for quick answers on local file processing and Pro licensing.'
-                : '¿Tiene dudas sobre procesamiento local o licencias Pro? Puede consultar la sección de FAQ.'}
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.7', margin: '0 0 12px 0' }}>
+              Las consultas relacionadas con licencias corporativas, auditorías de seguridad en código o solicitudes de portabilidad de datos según normativas GDPR y CCPA son procesadas directamente por nuestro equipo de Oficiales de Protección de Datos.
+            </p>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.7', margin: 0 }}>
+              Puede remitir solicitudes formales al correo electrónico dpo@stackupia.com o utilizar la consola de tickets adjunta.
             </p>
             <button className="btn secondary-btn" onClick={() => setActiveTab('faq')} style={{ marginTop: '10px', fontSize: '0.85rem' }}>
               {isEn ? 'View FAQ Page' : 'Ver Preguntas Frecuentes (FAQ)'}
