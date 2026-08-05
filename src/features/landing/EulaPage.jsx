@@ -20,7 +20,7 @@ export const EulaPage = () => {
         <meta name="description" content="Acuerdo de Licencia de Usuario Final (EULA), condiciones de concesión de software, privacidad Local-First y términos de uso para NMerge IA." />
       </Helmet>
 
-      <Breadcrumbs items={[{ label: 'EULA (Licencia de Software)' }]} />
+      <Breadcrumbs items={[{ label: 'EULA (Licencia de Software)', path: '/eula' }]} />
       <PageHeader title="Acuerdo de Licencia de Usuario Final (EULA)" subtitle="Contrato de Licencia de Software, Ejecución Local-First y Gobernanza de Acceso" />
 
       <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '25px' }}>

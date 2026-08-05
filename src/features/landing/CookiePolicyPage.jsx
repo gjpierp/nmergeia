@@ -9,7 +9,7 @@ export const CookiePolicyPage = () => {
 
   return (
     <div className="legal-page-container" style={{ padding: '40px 20px', width: '100%',  color: 'var(--text-primary)', fontFamily: '"Outfit", sans-serif', overflowY: 'auto' }}>
-      <Breadcrumbs items={[{ label: 'Política de Cookies (CMP)' }]} />
+      <Breadcrumbs items={[{ label: 'Política de Cookies (CMP)', path: '/cookie-policy' }]} />
       <PageHeader title="Política de Cookies y Tecnologías de Rastreo (CMP)" subtitle="Cumplimiento del Marco TCF v2.2 de IAB Europe, ePrivacy y Estándar GDPR" />
       <p className="last-updated" style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '25px' }}>
         Última actualización y auditoría de privacidad: Agosto 2026 | Versión 2.4 de Consentimiento Granular

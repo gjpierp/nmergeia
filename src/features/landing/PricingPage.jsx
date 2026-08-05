@@ -21,7 +21,7 @@ export const PricingPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ width: '100%', textAlign: 'left' }}>
-        <Breadcrumbs items={[{ label: 'Planes y Precios' }]} />
+        <Breadcrumbs items={[{ label: 'Planes y Precios', path: '/pricing' }]} />
         <PageHeader title="Planes y Precios" subtitle="Modelo Transparente de Licenciamiento Local-First & Opciones para Desarrolladores y Equipos" />
         
         <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', fontSize: '0.95rem', lineHeight: '1.7' }}>

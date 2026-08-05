@@ -10,6 +10,25 @@ export const Breadcrumbs = ({ items = [] }) => {
 
   if (!items || items.length === 0) return null;
 
+  const baseUrl = typeof window !== 'undefined' && window.location && window.location.origin.startsWith('http') 
+    ? window.location.origin 
+    : 'https://nmergeia.com';
+
+  // Filter out any redundant 'Inicio' item if passed in items
+  const cleanItems = items.filter(item => item.label && item.label.toLowerCase() !== 'inicio');
+
+  const getItemUrl = (item) => {
+    if (item.path) {
+      const cleanPath = item.path.startsWith('/') ? item.path : `/${item.path}`;
+      return `${baseUrl}${cleanPath}`;
+    }
+    if (item.tabId) {
+      return `${baseUrl}/${item.tabId.replace(/^temas\//, 'temas/')}`;
+    }
+    const slug = encodeURIComponent(item.label.toLowerCase().replace(/\s+/g, '-'));
+    return `${baseUrl}/${slug}`;
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -18,13 +37,13 @@ export const Breadcrumbs = ({ items = [] }) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://nmergeia.com/"
+        "item": `${baseUrl}/`
       },
-      ...items.map((item, index) => ({
+      ...cleanItems.map((item, index) => ({
         "@type": "ListItem",
         "position": index + 2,
         "name": item.label,
-        "item": item.path ? `https://nmergeia.com/#${item.path.replace(/^\//, '')}` : `https://nmergeia.com/#${item.tabId || ''}`
+        "item": getItemUrl(item)
       }))
     ]
   };
@@ -35,7 +54,7 @@ export const Breadcrumbs = ({ items = [] }) => {
       style={{
         position: 'sticky',
         top: 0,
-        zIndex: 90,
+        zIndex: 100,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -49,7 +68,7 @@ export const Breadcrumbs = ({ items = [] }) => {
         marginRight: '0px',
         flexWrap: 'wrap',
         fontFamily: '"Outfit", sans-serif',
-        background: 'var(--bg-glass, rgba(10, 15, 27, 0.92))',
+        background: 'var(--bg-glass, rgba(10, 15, 27, 0.95))',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         borderBottom: '1px solid var(--border-light, rgba(6, 182, 212, 0.2))',
@@ -83,7 +102,7 @@ export const Breadcrumbs = ({ items = [] }) => {
         >
           <a 
             itemProp="item" 
-            href="/"
+            href={`${baseUrl}/`}
             className="breadcrumb-item-link"
             onClick={(e) => { e.preventDefault(); setActiveTab('landing'); }}
             style={{ cursor: 'pointer', color: 'var(--accent-primary)', textDecoration: 'none', transition: 'color 0.2s' }}
@@ -93,19 +112,21 @@ export const Breadcrumbs = ({ items = [] }) => {
           <meta itemProp="position" content="1" />
         </li>
 
-        {items.map((item, idx) => (
-          <li 
-            key={idx}
-            itemProp="itemListElement" 
-            itemScope 
-            itemType="https://schema.org/ListItem"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-          >
-            <span style={{ opacity: 0.4, fontSize: '0.7rem' }}>/</span>
-            {item.tabId || item.path ? (
+        {cleanItems.map((item, idx) => {
+          const itemUrl = getItemUrl(item);
+          const isLast = idx === cleanItems.length - 1;
+          return (
+            <li 
+              key={idx}
+              itemProp="itemListElement" 
+              itemScope 
+              itemType="https://schema.org/ListItem"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            >
+              <span style={{ opacity: 0.4, fontSize: '0.7rem' }}>/</span>
               <a 
                 itemProp="item"
-                href={item.path || `#${item.tabId}`}
+                href={itemUrl}
                 className="breadcrumb-item-link"
                 onClick={(e) => { 
                   if (item.tabId) {
@@ -113,21 +134,20 @@ export const Breadcrumbs = ({ items = [] }) => {
                     setActiveTab(item.tabId); 
                   }
                 }}
-                style={{ cursor: 'pointer', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }}
+                style={{ 
+                  cursor: 'pointer', 
+                  color: isLast ? 'var(--text-primary)' : 'var(--text-secondary)', 
+                  fontWeight: isLast ? '600' : '400',
+                  textDecoration: 'none', 
+                  transition: 'color 0.2s' 
+                }}
               >
                 <span itemProp="name">{item.label}</span>
               </a>
-            ) : (
-              <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <link itemProp="item" href={`https://nmergeia.com/#${encodeURIComponent(item.label.toLowerCase().replace(/\s+/g, '-'))}`} />
-                <span itemProp="name" style={{ color: 'var(--text-primary)', fontWeight: '600' }}>
-                  {item.label}
-                </span>
-              </span>
-            )}
-            <meta itemProp="position" content={`${idx + 2}`} />
-          </li>
-        ))}
+              <meta itemProp="position" content={`${idx + 2}`} />
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );

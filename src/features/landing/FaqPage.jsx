@@ -167,7 +167,7 @@ export const FaqPage = ({ appLanguage }) => {
       overflowY: 'auto'
     }}>
       {/* Header Estandarizado */}
-      <Breadcrumbs items={[{ label: lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'FAQ' }]} />
+      <Breadcrumbs items={[{ label: lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'FAQ', path: '/faq' }]} />
       <PageHeader 
         icon="help"
         title={lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'Frequently Asked Questions'}

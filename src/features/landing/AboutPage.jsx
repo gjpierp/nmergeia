@@ -24,7 +24,7 @@ export const AboutPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ width: '100%', textAlign: 'left' }}>
-        <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)' }]} />
+        <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)', path: '/about' }]} />
         
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px', borderBottom: '1px solid var(--border-light)', paddingBottom: '15px' }}>

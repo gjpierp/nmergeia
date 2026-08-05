@@ -67,14 +67,52 @@ if (!fs.existsSync(indexHtmlPath)) {
 
 const baseHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
+const routeTitles = {
+  '/features': 'Características Técnicas',
+  '/pricing': 'Planes y Precios',
+  '/faq': 'Preguntas Frecuentes',
+  '/about': 'Sobre Nosotros (EEAT)',
+  '/contact': 'Contacto y Soporte',
+  '/privacy': 'Política de Privacidad',
+  '/terms': 'Términos y Condiciones',
+  '/cookie-policy': 'Política de Cookies',
+  '/legal-notice': 'Aviso Legal',
+  '/eula': 'EULA (Licencia de Software)',
+  '/docs': 'Biblioteca Técnica'
+};
+
+const getBreadcrumbName = (routePath) => {
+  if (routeTitles[routePath]) return routeTitles[routePath];
+  const parts = routePath.split('/').filter(Boolean);
+  const lastPart = parts[parts.length - 1] || 'Documentación';
+  return lastPart.charAt(0).toUpperCase() + lastPart.slice(1).replace(/-/g, ' ');
+};
+
 routes.forEach(({ path: routePath, dirName }) => {
   const targetDir = path.join(distDir, dirName);
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
   }
 
+  const breadcrumbName = getBreadcrumbName(routePath);
+  const fullUrl = `https://nmergeia.com${routePath}`;
+
+  let pageHtml = baseHtml;
+  
+  // Replace JSON-LD BreadcrumbList for target route
+  pageHtml = pageHtml.replace(
+    /"@type": "BreadcrumbList",[\s\S]*?"itemListElement": \[[\s\S]*?\]/,
+    `"@type": "BreadcrumbList",\n          "itemListElement": [\n            {\n              "@type": "ListItem",\n              "position": 1,\n              "name": "Inicio",\n              "item": "https://nmergeia.com/"\n            },\n            {\n              "@type": "ListItem",\n              "position": 2,\n              "name": "${breadcrumbName}",\n              "item": "${fullUrl}"\n            }\n          ]`
+  );
+
+  // Replace DOM Microdata BreadcrumbList for target route
+  pageHtml = pageHtml.replace(
+    /<nav aria-label="Breadcrumb"[\s\S]*?<\/nav>/,
+    `<nav aria-label="Breadcrumb" style="margin-bottom: 20px; font-size: 0.9rem;">\n          <ol itemscope itemtype="https://schema.org/BreadcrumbList" style="display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; color: #64748b;">\n            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">\n              <a itemprop="item" href="https://nmergeia.com/" style="color: #2563eb; text-decoration: none;"><span itemprop="name">Inicio</span></a>\n              <meta itemprop="position" content="1" />\n            </li>\n            <li>/</li>\n            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">\n              <a itemprop="item" href="${fullUrl}" style="color: #0f172a; font-weight: 600; text-decoration: none;"><span itemprop="name">${breadcrumbName}</span></a>\n              <meta itemprop="position" content="2" />\n            </li>\n          </ol>\n        </nav>`
+  );
+
   const targetFile = path.join(targetDir, 'index.html');
-  fs.writeFileSync(targetFile, baseHtml, 'utf8');
+  fs.writeFileSync(targetFile, pageHtml, 'utf8');
 });
 
-console.log(`✅ Pre-renderizado Nativo Completado Exitosamente: Generados ${routes.length} archivos HTML estáticos independientes en dist/!`);
+console.log(`✅ Pre-renderizado Nativo Completado Exitosamente: Generados ${routes.length} archivos HTML estáticos independientes con migas de pan Schema.org específicas en dist/!`);

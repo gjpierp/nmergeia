@@ -219,7 +219,7 @@ export const MarkdownViewer = ({ filename, title, requiredRole }) => {
       width: '100%',
       boxSizing: 'border-box'
     }}>
-      {title && <PageHeader title={title} sticky={true} />}
+      {title && <PageHeader title={title} sticky={false} />}
 
       {loading ? (
         <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
