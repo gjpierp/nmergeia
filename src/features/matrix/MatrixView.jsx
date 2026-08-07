@@ -386,6 +386,63 @@ export const MatrixView = memo(({
         processFiles(true, tab);
     };
 
+    const handleBatchDeleteBoth = async () => {
+        if (selectedPaths.size === 0) return;
+        const count = selectedPaths.size;
+        const conf = await showModal('confirm', 'Eliminar Selección de Origen y Destino', `¿Seguro que deseas eliminar los ${count} archivos seleccionados TANTO del Origen COMO del Destino en tu disco local?`);
+        if (!conf) return;
+
+        const originH = tab.originHandle || originHandle;
+        const destSlotsToUse = tab.processedDestSlots || [];
+
+        for (const filePath of selectedPaths) {
+            if (originH) {
+                try {
+                    await deleteFileFromHandle(originH, filePath);
+                } catch (_e) {}
+            }
+            for (const slot of destSlotsToUse) {
+                if (slot.handle) {
+                    try {
+                        await deleteFileFromHandle(slot.handle, filePath);
+                    } catch (_e) {}
+                }
+            }
+        }
+        if (addToast) addToast(`Eliminados ${selectedPaths.size} archivos seleccionados simultáneamente de Origen y Destino.`, "success");
+        setSelectedPaths(new Set());
+        processFiles(true, tab);
+    };
+
+    const handleDeleteFolderBoth = async (folderPath, e) => {
+        e.stopPropagation();
+        const confirm = window.confirm(`¿Estás seguro de que deseas eliminar TODOS los archivos de la carpeta "${folderPath}" TANTO en el Origen COMO en el Destino?`);
+        if (!confirm) return;
+
+        const folderFiles = rowData.filter(r => r.type !== 'folder' && (r.path === folderPath || r.path.startsWith(folderPath + '/')));
+        let count = 0;
+        const origH = tab.originHandle || originHandle;
+
+        for (const item of folderFiles) {
+            if (item.oFile && origH) {
+                try {
+                    await handleDelete(origH, item.path, true);
+                    count++;
+                } catch (_e) {}
+            }
+            for (const s of item.statuses) {
+                if (s.handle && s.file) {
+                    try {
+                        await handleDelete(s.handle, item.path, false);
+                        count++;
+                    } catch (_e) {}
+                }
+            }
+        }
+        if (addToast) addToast(`Archivos de la carpeta "${folderPath}" fueron eliminados de Origen y Destino.`, "info");
+        processFiles(true, tab);
+    };
+
     const ROW_HEIGHT = 36;
     const overscan = 10;
     const totalHeight = rowData.length * ROW_HEIGHT;
@@ -551,6 +608,17 @@ export const MatrixView = memo(({
                     <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>delete</span>
                   </button>
 
+                  {/* 🗑️⚡ Borrar Seleccionados de Origen y Destino Simultáneamente (Icon-Only) */}
+                  <button 
+                    className="btn secondary-btn small-btn" 
+                    onClick={handleBatchDeleteBoth} 
+                    data-tooltip="Eliminar seleccionados de Origen y Destino simultáneamente en disco local"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#dc2626', border: '1px solid #dc2626', borderRadius: '4px' }}
+                    aria-label="Eliminar seleccionados de Origen y Destino simultáneamente"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>auto_delete</span>
+                  </button>
+
                   {/* ✖️ Desmarcar Todo */}
                   <button 
                     className="btn clear-btn small-btn" 
@@ -630,6 +698,7 @@ export const MatrixView = memo(({
                                 {needsToDest && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_dest', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#10b981'}}>arrow_forward</span></button>}
                                 <button className="btn clear-btn small-btn" onClick={(e) => handleDeleteFolder(row.path, 'origin', e)} data-tooltip="Borrar todos los archivos de esta carpeta en Origen"><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#ef4444'}}>delete_forever</span></button>
                                 <button className="btn clear-btn small-btn" onClick={(e) => handleDeleteFolder(row.path, 'dest', e)} data-tooltip="Borrar todos los archivos de esta carpeta en Destino"><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#f87171'}}>delete</span></button>
+                                <button className="btn clear-btn small-btn" onClick={(e) => handleDeleteFolderBoth(row.path, e)} data-tooltip="Borrar esta carpeta de Origen y Destino simultáneamente"><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#dc2626'}}>auto_delete</span></button>
                              </div>
                           </div>
                        );
@@ -724,6 +793,14 @@ export const MatrixView = memo(({
                                         <>
                                           <button className="btn clear-btn small-btn" onClick={() => handleDelete(tab.originHandle || originHandle, row.path, true)} data-tooltip={t('matrix_tooltip_delete_from_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip={t('matrix_tooltip_delete_from_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                          <button className="btn clear-btn small-btn" onClick={async () => {
+                                            const origH = tab.originHandle || originHandle;
+                                            const conf = window.confirm(`¿Eliminar "${row.path}" de Origen y Destino simultáneamente?`);
+                                            if (!conf) return;
+                                            if (origH) await handleDelete(origH, row.path, true);
+                                            if (s.handle) await handleDelete(s.handle, row.path, false);
+                                            processFiles(true, tab);
+                                          }} data-tooltip="Eliminar simultáneamente de Origen y Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#dc2626'}}>auto_delete</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => handleTransfer(s.file, tab.originHandle, row.path)} data-tooltip={t('matrix_tooltip_copy_from_dest_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip={t('matrix_tooltip_view_differences')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => handleTransfer(row.oFile, s.handle, row.path)} data-tooltip={t('matrix_tooltip_copy_from_origin_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>
@@ -740,6 +817,14 @@ export const MatrixView = memo(({
                                         <>
                                           <button className="btn clear-btn small-btn" onClick={() => handleDelete(tab.originHandle || originHandle, row.path, true)} data-tooltip={t('matrix_tooltip_delete_from_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#b91c1c'}}>delete_forever</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => handleDelete(s.handle, row.path)} data-tooltip={t('matrix_tooltip_delete_from_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#ef4444'}}>delete</span></button>
+                                          <button className="btn clear-btn small-btn" onClick={async () => {
+                                            const origH = tab.originHandle || originHandle;
+                                            const conf = window.confirm(`¿Eliminar "${row.path}" de Origen y Destino simultáneamente?`);
+                                            if (!conf) return;
+                                            if (origH) await handleDelete(origH, row.path, true);
+                                            if (s.handle) await handleDelete(s.handle, row.path, false);
+                                            processFiles(true, tab);
+                                          }} data-tooltip="Eliminar simultáneamente de Origen y Destino"><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#dc2626'}}>auto_delete</span></button>
                                           <button className="btn clear-btn small-btn" onClick={() => openDiffTab(row.oFile, s.file, i)} data-tooltip={t('matrix_tooltip_view_file')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#8b5cf6'}}>search</span></button>
                                         </>
                                     )}
