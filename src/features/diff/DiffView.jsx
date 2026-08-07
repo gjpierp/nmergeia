@@ -842,28 +842,28 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                  boxSizing: 'border-box'
                }}
              >
-                {/* Visualizador Lado a Lado de Líneas (Origen vs Destino) */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%', height: 'fit-content' }}>
-                  {/* Columna Origen */}
+                {/* Visualizador Vertical de Líneas (Origen arriba, Destino abajo) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', height: 'fit-content' }}>
+                  {/* Fila 1: Líneas de Origen (Arriba) */}
                   <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--accent-secondary, #06b6d4)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>difference</span>
-                      <span>- {originPath || t('diff_origin')} (Líneas de Origen):</span>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--accent-secondary, #06b6d4)', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="material-symbols-rounded" style={{ fontSize: '0.9rem' }}>remove</span>
+                      <span>{originPath || t('diff_origin')} (Origen):</span>
                     </div>
                     <pre style={{
                       textAlign: 'left',
                       fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                      fontSize: '0.75rem',
-                      lineHeight: '1.4',
+                      fontSize: '0.7rem',
+                      lineHeight: '1.35',
                       whiteSpace: 'pre-wrap',
                       wordBreak: 'break-all',
                       overflowX: 'auto',
                       overflowY: 'auto',
                       color: 'var(--accent-secondary, #06b6d4)',
                       margin: 0,
-                      background: 'rgba(6, 182, 212, 0.07)',
-                      padding: '8px 10px',
-                      borderRadius: '6px',
+                      background: 'rgba(6, 182, 212, 0.06)',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
                       borderLeft: '3px solid var(--accent-secondary, #06b6d4)',
                       border: '1px solid rgba(6, 182, 212, 0.2)'
                     }}>
@@ -871,26 +871,26 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                     </pre>
                   </div>
 
-                  {/* Columna Destino */}
+                  {/* Fila 2: Líneas de Destino (Abajo) */}
                   <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#a78bfa', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>difference</span>
-                      <span>+ {destSlots[0]?.path || t('diff_dest')} (Líneas de Destino):</span>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#a78bfa', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span className="material-symbols-rounded" style={{ fontSize: '0.9rem' }}>add</span>
+                      <span>{destSlots[0]?.path || t('diff_dest')} (Destino):</span>
                     </div>
                     <pre style={{
                       textAlign: 'left',
                       fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                      fontSize: '0.75rem',
-                      lineHeight: '1.4',
+                      fontSize: '0.7rem',
+                      lineHeight: '1.35',
                       whiteSpace: 'pre-wrap',
                       wordBreak: 'break-all',
                       overflowX: 'auto',
                       overflowY: 'auto',
                       color: '#a78bfa',
                       margin: 0,
-                      background: 'rgba(167, 139, 250, 0.07)',
-                      padding: '8px 10px',
-                      borderRadius: '6px',
+                      background: 'rgba(167, 139, 250, 0.06)',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
                       borderLeft: '3px solid #a78bfa',
                       border: '1px solid rgba(167, 139, 250, 0.2)'
                     }}>
