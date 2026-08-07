@@ -62,7 +62,7 @@ export default defineConfig({
             if (id.includes('monaco-editor')) {
               return 'vendor-monaco';
             }
-            if (id.includes('react') || id.includes('react-dom') || id.includes('zustand')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('zustand') || id.includes('i18next')) {
               return 'vendor-react';
             }
             if (id.includes('three') || id.includes('gsap')) {
@@ -73,9 +73,6 @@ export default defineConfig({
             }
             if (id.includes('mermaid') || id.includes('rehype') || id.includes('remark') || id.includes('react-markdown')) {
               return 'vendor-markdown';
-            }
-            if (id.includes('i18next')) {
-              return 'vendor-i18n';
             }
             return 'vendor-utils';
           }
