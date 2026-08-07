@@ -54,7 +54,7 @@ export default defineConfig({
     })
   ],
   build: {
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -65,7 +65,19 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('zustand')) {
               return 'vendor-react';
             }
-            return 'vendor';
+            if (id.includes('three') || id.includes('gsap')) {
+              return 'vendor-3d';
+            }
+            if (id.includes('pdfjs-dist') || id.includes('xlsx') || id.includes('jszip') || id.includes('mammoth')) {
+              return 'vendor-documents';
+            }
+            if (id.includes('mermaid') || id.includes('rehype') || id.includes('remark') || id.includes('react-markdown')) {
+              return 'vendor-markdown';
+            }
+            if (id.includes('i18next')) {
+              return 'vendor-i18n';
+            }
+            return 'vendor-utils';
           }
         }
       }

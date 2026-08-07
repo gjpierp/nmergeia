@@ -6,10 +6,14 @@ import { fileURLToPath } from 'url';
 import https from 'https';
 import Stripe from 'stripe';
 
+import compression from 'compression';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.set('trust proxy', 1);
+app.use(compression());
 
 // Redirección Obligatoria HTTP -> HTTPS (301 Permanent Redirect para Googlebot & SSL Compliance)
 app.use((req, res, next) => {
@@ -17,11 +21,11 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   
   const host = req.headers.host || '';
-  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  const xForwardedProto = req.headers['x-forwarded-proto'];
   
   // Si la petición viene por HTTP no seguro en entorno de producción o proxy externo
-  if (proto === 'http' && !host.includes('localhost') && !host.includes('127.0.0.1')) {
-    return res.redirect(301, `https://${host}${req.url}`);
+  if (xForwardedProto && xForwardedProto.split(',')[0] === 'http' && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+    return res.redirect(301, `https://${host}${req.originalUrl || req.url}`);
   }
   next();
 });

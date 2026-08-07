@@ -1,7 +1,7 @@
 {
   "name": "NMerge",
   "private": true,
-  "version": "1.2.10",
+  "version": "1.2.11",
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-rate-limit": "8.6.0",
