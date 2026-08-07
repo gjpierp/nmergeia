@@ -51,13 +51,14 @@ export const PrivacyPage = () => {
               <li><strong>LGPD:</strong> Brasil y <strong>PIPEDA:</strong> Canadá.</li>
             </ul>
 
-            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Publicidad, Cookies de Terceros y Google AdSense</h2>
+            <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>3. Publicidad, Cookies de Terceros y Cookie DART de Google AdSense</h2>
             <p>
               NMerge IA utiliza servicios publicitarios provistos por <strong>Google AdSense</strong> y sus socios comerciales para mantener el acceso gratuito a la herramienta en cuentas no-premium. Al utilizar nuestro sitio web, usted acepta el uso de cookies para la personalización y medición de anuncios.
             </p>
             <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)' }}>
-              <li><strong>Cookies de DoubleClick / Google:</strong> Google, como proveedor de terceros, utiliza cookies para publicar anuncios en nuestro sitio. El uso de la cookie de DoubleClick permite a Google y a sus socios mostrar anuncios basados en las visitas anteriores del usuario a NMerge IA o a otros sitios en Internet.</li>
-              <li><strong>Desactivación de Publicidad Personalizada:</strong> Los usuarios pueden inhabilitar el uso de la cookie de DoubleClick para la publicidad basada en intereses visitando la <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)' }}>Configuración de anuncios de Google</a>. Alternativamente, puede inhabilitar el uso de cookies de proveedores terceros para la publicidad basada en intereses visitando <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)' }}>aboutads.info</a>.</li>
+              <li><strong>Cookie DART de Google:</strong> Google, como proveedor asociado de terceros, utiliza la <strong>cookie DART</strong> para publicar anuncios en nuestro sitio web basándose en las visitas anteriores de los usuarios a NMerge IA y a otros sitios de Internet.</li>
+              <li><strong>Cookies de DoubleClick / Google:</strong> El uso de la cookie de DoubleClick permite a Google y a sus socios mostrar anuncios personalizados según la navegación del usuario.</li>
+              <li><strong>Desactivación de Publicidad Personalizada:</strong> Los usuarios pueden inhabilitar el uso de la cookie DART y la cookie de DoubleClick para la publicidad basada en intereses visitando la <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)' }}>Configuración de anuncios de Google</a>. Alternativamente, puede inhabilitar el uso de cookies de proveedores terceros visitando <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)' }}>aboutads.info</a>.</li>
             </ul>
 
             <h2 style={{ fontSize: '1.3rem', color: '#10b981', marginTop: '25px' }}>4. Integraciones de Inteligencia Artificial Opcionales</h2>

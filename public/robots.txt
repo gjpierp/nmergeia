@@ -7,4 +7,4 @@ Allow: /politica-de-privacidad.html
 User-agent: Mediapartners-Google
 Allow: /
 
-Sitemap: https://nmergeia.local/sitemap.xml
+Sitemap: https://nmergeia.com/sitemap.xml
