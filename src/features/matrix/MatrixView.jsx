@@ -479,61 +479,91 @@ export const MatrixView = memo(({
            </div>
         </div>
 
-        {/* Barra de Acciones por Lote (Selección Múltiple) */}
-        {selectedPaths.size > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', padding: '10px 16px', background: 'rgba(6, 182, 212, 0.12)', borderRadius: '10px', border: '1px solid var(--accent-primary)', marginBottom: '10px' }}>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
-               <span className="material-symbols-rounded" style={{ color: 'var(--accent-primary)', fontSize: '1.3rem' }}>check_box</span>
-               <span>{selectedPaths.size} {selectedPaths.size === 1 ? 'archivo seleccionado' : 'archivos seleccionados'} de {filteredPaths.length}</span>
-             </div>
-
-             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-               <button className="btn secondary-btn small-btn" onClick={handleBatchTransferToOrigin} data-tooltip="Copiar seleccionados hacia el Origen" style={{ color: '#3b82f6', border: '1px solid #3b82f6' }}>
-                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>arrow_back</span>
-                 Copiar a Origen
-               </button>
-
-               <button className="btn secondary-btn small-btn" onClick={handleBatchTransferToDest} data-tooltip="Copiar seleccionados hacia el Destino" style={{ color: '#10b981', border: '1px solid #10b981' }}>
-                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>arrow_forward</span>
-                 Copiar a Destino
-               </button>
-
-               <button className="btn secondary-btn small-btn" onClick={handleBatchDeleteOrigin} data-tooltip="Eliminar seleccionados del Origen en disco local" style={{ color: '#ef4444', border: '1px solid #ef4444' }}>
-                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>delete_forever</span>
-                 Borrar de Origen
-               </button>
-
-               <button className="btn secondary-btn small-btn" onClick={handleBatchDeleteDest} data-tooltip="Eliminar seleccionados del Destino en disco local" style={{ color: '#f87171', border: '1px solid #f87171' }}>
-                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>delete</span>
-                 Borrar de Destino
-               </button>
-
-               <button className="btn clear-btn small-btn" onClick={() => setSelectedPaths(new Set())} data-tooltip="Desmarcar todos" style={{ color: 'var(--text-tertiary)' }}>
-                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>close</span>
-               </button>
-             </div>
-          </div>
-        )}
-
         <div className="section-card matrix-container" style={{ flex: 1, overflow: 'hidden', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', borderRadius: '8px' }}>
           
           <div className="matrix-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', padding: '6px 12px', background: 'var(--bg-tertiary)', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>
+            {/* Sección Izquierda: Ruta de Origen | Rutas de Destino */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', flexWrap: 'wrap' }}>
               <span><strong>{t('matrix_origin')}:</strong> <span style={{ color: 'var(--accent-primary)', fontWeight: '600' }}>{tab.originHandle ? tab.originHandle.name : 'N/A'}</span></span> 
               <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span> 
               <span><strong>{t('matrix_destinations')}:</strong> <span style={{ color: '#22c55e', fontWeight: '600' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span></span>
-              <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-              <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>• {t('matrix_file_structure')}</span>
             </div>
-            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
-              <input 
-                type="checkbox" 
-                checked={selectedPaths.size > 0 && selectedPaths.size === filteredPaths.length}
-                onChange={toggleSelectAll}
-                style={{ cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
-              />
-              <span>Seleccionar Todo ({filteredPaths.length})</span>
-            </label>
+
+            {/* Sección Derecha: Seleccionar Todo + Botonera de Acciones por Lote (Icon-Only Buttons) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedPaths.size > 0 && selectedPaths.size === filteredPaths.length}
+                  onChange={toggleSelectAll}
+                  style={{ cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
+                />
+                <span>Seleccionar Todo ({filteredPaths.length})</span>
+              </label>
+
+              {selectedPaths.size > 0 && (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', paddingLeft: '8px', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: 'bold', marginRight: '2px' }}>
+                    ({selectedPaths.size})
+                  </span>
+
+                  {/* ⏪ Copiar Seleccionados a Origen (Icon-Only) */}
+                  <button 
+                    className="btn secondary-btn small-btn" 
+                    onClick={handleBatchTransferToOrigin} 
+                    data-tooltip="Copiar seleccionados hacia el Origen"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#3b82f6', border: '1px solid #3b82f6', borderRadius: '4px' }}
+                    aria-label="Copiar seleccionados hacia el Origen"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>arrow_back</span>
+                  </button>
+
+                  {/* ⏩ Copiar Seleccionados a Destino (Icon-Only) */}
+                  <button 
+                    className="btn secondary-btn small-btn" 
+                    onClick={handleBatchTransferToDest} 
+                    data-tooltip="Copiar seleccionados hacia el Destino"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#10b981', border: '1px solid #10b981', borderRadius: '4px' }}
+                    aria-label="Copiar seleccionados hacia el Destino"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>arrow_forward</span>
+                  </button>
+
+                  {/* 🗑️ Borrar Seleccionados de Origen (Icon-Only) */}
+                  <button 
+                    className="btn secondary-btn small-btn" 
+                    onClick={handleBatchDeleteOrigin} 
+                    data-tooltip="Eliminar seleccionados del Origen en disco local"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '4px' }}
+                    aria-label="Eliminar seleccionados del Origen"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>delete_forever</span>
+                  </button>
+
+                  {/* 🗑️ Borrar Seleccionados de Destino (Icon-Only) */}
+                  <button 
+                    className="btn secondary-btn small-btn" 
+                    onClick={handleBatchDeleteDest} 
+                    data-tooltip="Eliminar seleccionados del Destino en disco local"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#f87171', border: '1px solid #f87171', borderRadius: '4px' }}
+                    aria-label="Eliminar seleccionados del Destino"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>delete</span>
+                  </button>
+
+                  {/* ✖️ Desmarcar Todo */}
+                  <button 
+                    className="btn clear-btn small-btn" 
+                    onClick={() => setSelectedPaths(new Set())} 
+                    data-tooltip="Desmarcar seleccionados"
+                    style={{ height: '26px', width: '26px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: 'var(--text-tertiary)' }}
+                    aria-label="Desmarcar seleccionados"
+                  >
+                    <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>close</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }} onScroll={(e) => setMatrixScrollTop(e.target.scrollTop)}>
