@@ -326,26 +326,33 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     };
   
     const transferAllDiffs = (direction) => {
-        if (!diffEditorRef.current) return;
-        const origEditor = diffEditorRef.current.getOriginalEditor();
-        const modEditor = diffEditorRef.current.getModifiedEditor();
-        
-        const origModel = origEditor.getModel();
-        const modModel = modEditor.getModel();
-  
-        if (direction === 'to_dest') {
-            const text = origModel.getValue();
-            const fullRange = modModel.getFullModelRange();
-            modEditor.executeEdits("automerge", [{ range: fullRange, text }]);
-        } else {
-            const text = modModel.getValue();
-            const fullRange = origModel.getFullModelRange();
-            origEditor.executeEdits("automerge", [{ range: fullRange, text }]);
-        }
+        try {
+            if (!diffEditorRef.current) return;
+            const origEditor = diffEditorRef.current.getOriginalEditor();
+            const modEditor = diffEditorRef.current.getModifiedEditor();
+            if (!origEditor || !modEditor) return;
+            
+            const origModel = origEditor.getModel();
+            const modModel = modEditor.getModel();
+            if (!origModel || !modModel) return;
+      
+            if (direction === 'to_dest') {
+                const text = origModel.getValue();
+                const fullRange = modModel.getFullModelRange();
+                modEditor.executeEdits("automerge", [{ range: fullRange, text }]);
+            } else {
+                const text = modModel.getValue();
+                const fullRange = origModel.getFullModelRange();
+                origEditor.executeEdits("automerge", [{ range: fullRange, text }]);
+            }
 
-        const newMod = modEditor.getValue();
-        const newOrig = origEditor.getValue();
-        setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
+            const newMod = modEditor.getValue();
+            const newOrig = origEditor.getValue();
+            setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, modified: newMod, original: newOrig } : t));
+        } catch (err) {
+            console.error('[DiffView] Error en transferAllDiffs:', err);
+            if (addToast) addToast(`Error al transferir todas las diferencias: ${err.message || 'Error desconocido'}`, 'error');
+        }
     };
   
     const handleUndo = () => {
@@ -364,38 +371,53 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
         try {
             const handle = isOriginFile 
                 ? (tab.originHandle || originHandle) 
-                : (tab.destHandle || (destSlots && destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : null));
+                : (tab.destHandle || (destSlots && destSlots[tab.destSlotIdx] ? destSlots[tab.destSlotIdx].handle : (destSlots && destSlots[0] ? destSlots[0].handle : null)));
 
-            let content = isOriginFile ? tab.original : tab.modified;
-            if (diffEditorRef.current) {
-                content = isOriginFile 
-                    ? diffEditorRef.current.getOriginalEditor().getValue() 
-                    : diffEditorRef.current.getModifiedEditor().getValue();
+            if (!handle) {
+                console.warn('[DiffView] Handle no disponible para el guardado:', { isOriginFile, tab });
+                if (addToast) addToast(isOriginFile ? 'No se encontró el directorio de Origen.' : 'No se encontró el directorio de Destino.', 'error');
+                return;
             }
 
-            await saveFile(handle, tab.filePath, false, content, false, tab.id, isOriginFile);
+            let content = isOriginFile ? (tab.original || '') : (tab.modified || '');
+            if (diffEditorRef.current) {
+                try {
+                    const subEd = isOriginFile 
+                        ? diffEditorRef.current.getOriginalEditor() 
+                        : diffEditorRef.current.getModifiedEditor();
+                    if (subEd && typeof subEd.getValue === 'function') {
+                        content = subEd.getValue();
+                    }
+                } catch (e) {
+                    console.warn('[DiffView] Error al leer el valor del editor Monaco:', e);
+                }
+            }
+
+            if (typeof saveFile === 'function') {
+                await saveFile(handle, tab.filePath, false, content, false, tab.id, isOriginFile);
+            }
             
-            const matrixTab = tabs ? tabs.find(t => t.type === 'matrix') : null;
+            const matrixTab = tabs ? tabs.find(t => t && t.type === 'matrix') : null;
             if (matrixTab) {
                 const originFiles = matrixTab.processedOrigin || [];
                 const destSlotsArr = matrixTab.processedDestSlots || [];
                 const originHandleName = matrixTab.originHandle ? matrixTab.originHandle.name : '';
 
                 let allFiles = new Set([
-                    ...originFiles.map(f => f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : (f.name || f.name)),
-                    ...destSlotsArr.flatMap(slot => slot && slot.handle ? (slot.files || []).map(f => f.webkitRelativePath ? getRelativePath(f.webkitRelativePath, slot.handle.name) : f.name) : [])
+                    ...originFiles.map(f => f && f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : (f?.name || '')),
+                    ...destSlotsArr.flatMap(slot => slot && slot.handle ? (slot.files || []).map(f => f && f.webkitRelativePath ? getRelativePath(f.webkitRelativePath, slot.handle.name) : (f?.name || '')) : [])
                 ]);
-                let sortedFiles = Array.from(allFiles).sort();
+                let sortedFiles = Array.from(allFiles).filter(Boolean).sort();
                 let currentIndex = sortedFiles.indexOf(tab.filePath);
                 
                 let nextFile = null;
                 for (let i = currentIndex + 1; i < sortedFiles.length; i++) {
                     const path = sortedFiles[i];
-                    const oFile = originFiles.find(f => (f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : f.name) === path);
+                    const oFile = originFiles.find(f => (f && f.webkitRelativePath && originHandleName ? getRelativePath(f.webkitRelativePath, originHandleName) : f?.name) === path);
                     const slot = destSlotsArr[0];
                     if (slot) {
                         const slotHandleName = slot.handle ? slot.handle.name : '';
-                        const dFile = (slot.files || []).find(f => (f.webkitRelativePath && slotHandleName ? getRelativePath(f.webkitRelativePath, slotHandleName) : f.name) === path);
+                        const dFile = (slot.files || []).find(f => (f && f.webkitRelativePath && slotHandleName ? getRelativePath(f.webkitRelativePath, slotHandleName) : f?.name) === path);
                         let isDiff = (!oFile && dFile) || (oFile && dFile && oFile.size !== dFile.size);
                         if (!isDiff && oFile && dFile) {
                             const key = `${slot.id}-${path}`;
@@ -409,21 +431,21 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                         }
                     }
                 }
-                if (nextFile) {
-                    closeTab(tab.id);
-                    if (addToast) addToast(t('diff_toast_save_next'), "success");
+                if (nextFile && typeof openDiffTab === 'function') {
+                    if (typeof closeTab === 'function') closeTab(tab.id);
+                    if (addToast) addToast(t('diff_toast_save_next') || 'Guardado y avanzando al siguiente archivo...', "success");
                     openDiffTab(nextFile.oFile, nextFile.dFile, nextFile.slotIdx);
                 } else {
-                    closeTab(tab.id);
-                    if (addToast) addToast(t('diff_toast_save_finished'), "success");
+                    if (typeof closeTab === 'function') closeTab(tab.id);
+                    if (addToast) addToast(t('diff_toast_save_finished') || 'Guardado exitosamente.', "success");
                 }
             } else {
-                closeTab(tab.id);
-                if (addToast) addToast(t('diff_toast_save_finished'), "success");
+                if (typeof closeTab === 'function') closeTab(tab.id);
+                if (addToast) addToast(t('diff_toast_save_finished') || 'Guardado exitosamente.', "success");
             }
         } catch (err) {
             console.error('[DiffView] Error en handleSaveAndNext:', err);
-            if (addToast) addToast(`Error al guardar y navegar: ${err.message}`, 'error');
+            if (addToast) addToast(`Error al guardar y continuar: ${err.message || 'Operación cancelada'}`, 'error');
         }
     };
 
