@@ -3,6 +3,7 @@ import { verifyPermission } from '../features/directory-sync/api/FileSystemServi
 import { apiClient } from '../shared/lib/apiClient.js';
 import { showModal } from '../shared/ui/CustomModal.jsx';
 import { saveHandle } from '../shared/lib/DatabaseService.js';
+import { encryptData, decryptData } from '../shared/lib/cryptoUtils.js';
 
 /**
  * Hook que gestiona la carga y el guardado de perfiles de comparación (Historial).
@@ -86,6 +87,9 @@ export const useProfiles = () => {
         setSavedProfiles(prev => {
             const updated = [newProfile, ...prev].slice(0, 20);
             saveHandle(profilesKey, updated);
+            try {
+                localStorage.setItem(`nmerge_history_${profilesKey}`, encryptData(updated));
+            } catch (_err) {}
             return updated;
         });
         setLoadedProfileId(newProfile.id);
@@ -100,6 +104,9 @@ export const useProfiles = () => {
             setSavedProfiles(prev => {
                 const updated = prev.map(p => p.id === profile.id ? { ...p, name: newName } : p);
                 saveHandle(profilesKey, updated);
+                try {
+                    localStorage.setItem(`nmerge_history_${profilesKey}`, encryptData(updated));
+                } catch (_err) {}
                 return updated;
             });
         }
@@ -112,6 +119,9 @@ export const useProfiles = () => {
             setSavedProfiles(prev => {
                 const updated = prev.filter(p => p.id !== profile.id);
                 saveHandle(profilesKey, updated);
+                try {
+                    localStorage.setItem(`nmerge_history_${profilesKey}`, encryptData(updated));
+                } catch (_err) {}
                 return updated;
             });
             setLoadedProfileId(null);

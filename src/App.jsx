@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { saveHandle, getHandle } from './shared/lib/DatabaseService.js';
+import { encryptData, decryptData } from './shared/lib/cryptoUtils.js';
 import { useAppStore } from './app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { CustomModal, showModal } from './shared/ui/CustomModal.jsx';
@@ -413,12 +414,21 @@ function App() {
     const key = userSession ? `savedProfiles_${userSession.email}` : 'savedProfiles';
     getHandle(key)
       .then(p => {
-        if (p) setSavedProfiles(p);
-        else setSavedProfiles([]);
+        if (p && p.length > 0) {
+          setSavedProfiles(p);
+        } else {
+          const encLocal = localStorage.getItem(`nmerge_history_${key}`);
+          const decrypted = decryptData(encLocal);
+          if (decrypted) setSavedProfiles(decrypted);
+          else setSavedProfiles([]);
+        }
       })
       .catch(err => {
-        console.error("Error loading profiles from IndexedDB:", err);
-        setSavedProfiles([]);
+        console.error("Error loading profiles from IndexedDB, intentando lectura cifrada:", err);
+        const encLocal = localStorage.getItem(`nmerge_history_${key}`);
+        const decrypted = decryptData(encLocal);
+        if (decrypted) setSavedProfiles(decrypted);
+        else setSavedProfiles([]);
       });
   }, [userSession, setSavedProfiles]);
 

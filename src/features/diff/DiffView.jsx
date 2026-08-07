@@ -842,98 +842,86 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                  boxSizing: 'border-box'
                }}
              >
-                {/* Visualizador Vertical de Líneas (Origen arriba, Destino abajo) */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', height: 'fit-content' }}>
-                  {/* Fila 1: Líneas de Origen (Arriba) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--accent-secondary, #06b6d4)', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span className="material-symbols-rounded" style={{ fontSize: '0.9rem' }}>remove</span>
-                      <span>{originPath || t('diff_origin')} (Origen):</span>
-                    </div>
-                    <pre style={{
-                      textAlign: 'left',
-                      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                      fontSize: '0.7rem',
-                      lineHeight: '1.35',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-all',
-                      overflowX: 'auto',
-                      overflowY: 'auto',
-                      color: 'var(--accent-secondary, #06b6d4)',
-                      margin: 0,
-                      background: 'rgba(6, 182, 212, 0.06)',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      borderLeft: '3px solid var(--accent-secondary, #06b6d4)',
-                      border: '1px solid rgba(6, 182, 212, 0.2)'
-                    }}>
-                      {diffContent.origin || '(Línea vacía / borrada)'}
-                    </pre>
-                  </div>
+                {/* Visor Vertical Minimalista de Líneas (Origen arriba, Destino abajo sin encabezados redundantes) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', height: 'fit-content' }}>
+                  {/* Fila 1: Línea de Origen */}
+                  <pre style={{
+                    textAlign: 'left',
+                    fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                    fontSize: '0.7rem',
+                    lineHeight: '1.3',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-all',
+                    overflowX: 'auto',
+                    overflowY: 'auto',
+                    color: 'var(--accent-secondary, #06b6d4)',
+                    margin: 0,
+                    background: 'rgba(6, 182, 212, 0.06)',
+                    padding: '3px 6px',
+                    borderRadius: '4px',
+                    borderLeft: '3px solid var(--accent-secondary, #06b6d4)',
+                    border: '1px solid rgba(6, 182, 212, 0.2)'
+                  }}>
+                    {diffContent.origin || '(Línea vacía / borrada)'}
+                  </pre>
 
-                  {/* Fila 2: Líneas de Destino (Abajo) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#a78bfa', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span className="material-symbols-rounded" style={{ fontSize: '0.9rem' }}>add</span>
-                      <span>{destSlots[0]?.path || t('diff_dest')} (Destino):</span>
-                    </div>
-                    <pre style={{
-                      textAlign: 'left',
-                      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                      fontSize: '0.7rem',
-                      lineHeight: '1.35',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-all',
-                      overflowX: 'auto',
-                      overflowY: 'auto',
-                      color: '#a78bfa',
-                      margin: 0,
-                      background: 'rgba(167, 139, 250, 0.06)',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      borderLeft: '3px solid #a78bfa',
-                      border: '1px solid rgba(167, 139, 250, 0.2)'
-                    }}>
-                      {diffContent.dest || '(Línea vacía / agregada)'}
-                    </pre>
-                  </div>
+                  {/* Fila 2: Línea de Destino */}
+                  <pre style={{
+                    textAlign: 'left',
+                    fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                    fontSize: '0.7rem',
+                    lineHeight: '1.3',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-all',
+                    overflowX: 'auto',
+                    overflowY: 'auto',
+                    color: '#a78bfa',
+                    margin: 0,
+                    background: 'rgba(167, 139, 250, 0.06)',
+                    padding: '3px 6px',
+                    borderRadius: '4px',
+                    borderLeft: '3px solid #a78bfa',
+                    border: '1px solid rgba(167, 139, 250, 0.2)'
+                  }}>
+                    {diffContent.dest || '(Línea vacía / agregada)'}
+                  </pre>
                 </div>
 
-                {/* Barra de Acciones con Botones Lado a Lado */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                    {/* Botón 1: Copiar Origen a Destino */}
+                {/* Barra de Acciones con Botones de Ícono Exclusivamente (Icon-Only Pattern) */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    {/* Botón 1: Copiar Origen a Destino (Solo Ícono) */}
                     <button 
                       className="btn secondary-btn small-btn"
                       onClick={() => transferCurrentDiff('to_dest')}
-                      style={{ height: '32px', padding: '0 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#10b981', border: '1px solid #10b981', fontSize: '0.78rem', borderRadius: '4px' }}
-                      data-tooltip={t('diff_replace_with_origin')}
+                      style={{ height: '32px', width: '32px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#10b981', border: '1px solid #10b981', borderRadius: '4px' }}
+                      data-tooltip={t('diff_replace_with_origin') || 'Copiar Origen a Destino'}
+                      aria-label="Copiar Origen a Destino"
                     >
-                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>arrow_forward</span>
-                      <span>Copiar Origen a Destino</span>
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.15rem' }}>arrow_forward</span>
                     </button>
 
-                    {/* Botón 2: Copiar Destino a Origen */}
+                    {/* Botón 2: Copiar Destino a Origen (Solo Ícono) */}
                     <button 
                       className="btn secondary-btn small-btn"
                       onClick={() => transferCurrentDiff('to_origin')}
-                      style={{ height: '32px', padding: '0 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#3b82f6', border: '1px solid #3b82f6', fontSize: '0.78rem', borderRadius: '4px' }}
-                      data-tooltip={t('diff_replace_with_dest')}
+                      style={{ height: '32px', width: '32px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', color: '#3b82f6', border: '1px solid #3b82f6', borderRadius: '4px' }}
+                      data-tooltip={t('diff_replace_with_dest') || 'Copiar Destino a Origen'}
+                      aria-label="Copiar Destino a Origen"
                     >
-                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>arrow_back</span>
-                      <span>Copiar Destino a Origen</span>
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.15rem' }}>arrow_back</span>
                     </button>
 
-                    {/* Botón 3: Integrar por IA (Ubicado AL LADO de los otros 2 botones) */}
+                    {/* Botón 3: Integrar por IA (Solo Ícono) */}
                     <button 
                       className="btn primary-btn small-btn"
                       onClick={handleCallAI}
                       disabled={aiLoading || (aiProvider === 'gemini' && !aiApiKey)}
-                      style={{ height: '32px', padding: '0 14px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', color: '#ffffff', border: 'none', borderRadius: '4px' }}
-                      data-tooltip="Resolver y fusionar diferencia automáticamente usando IA"
+                      style={{ height: '32px', width: '32px', padding: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', color: '#ffffff', border: 'none', borderRadius: '4px' }}
+                      data-tooltip={aiLoading ? (t('diff_ai_analyzing') || 'Analizando con IA...') : (t('diff_ai_resolve_conflict') || 'Integrar por IA')}
+                      aria-label="Integrar por IA"
                     >
-                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>auto_awesome</span>
-                      <span>{aiLoading ? (t('diff_ai_analyzing') || 'Analizando...') : (t('diff_ai_resolve_conflict') || 'Integrar por IA')}</span>
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.15rem' }}>auto_awesome</span>
                     </button>
                   </div>
 
