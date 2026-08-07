@@ -119,12 +119,16 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
              const subFiles = await _getFilesFromHandle(entry, `${entry.name}/`, excludes, includes, rootName, state);
              files.push(...subFiles);
           } else if (typeof entry.getFile === 'function') {
-             const file = await entry.getFile();
-             Object.defineProperty(file, 'webkitRelativePath', {
-                value: `${rootName}/${entry.name}`
-             });
-             file.fileHandle = entry; 
-             files.push(file);
+            try {
+              const file = await entry.getFile();
+              Object.defineProperty(file, 'webkitRelativePath', {
+                 value: `${rootName}/${entry.name}`
+              });
+              file.fileHandle = entry; 
+              files.push(file);
+            } catch (fileErr) {
+              console.warn(`Permiso expirado o archivo no accesible (${entry.name}):`, fileErr);
+            }
           }
        }
        return files;
@@ -184,7 +188,14 @@ const _getFilesFromHandle = async (dirHandle, path = '', excludes = [], includes
            name: entry.name,
            webkitRelativePath: `${rootName}/${relativePath}`,
            fileHandle: entry,
-           getFile: () => entry.getFile()
+           getFile: async () => {
+             try {
+               return await entry.getFile();
+             } catch (err) {
+               console.warn(`Error al leer handle de archivo ${entry.name}:`, err);
+               throw err;
+             }
+           }
          };
          files.push(fileProxy);
       }
@@ -266,8 +277,15 @@ export const deleteFileFromHandle = async (dirHandle, relativePath) => {
  * Obtiene el objeto File a partir de un Handle.
  */
 export const getFileObject = async (fileHandle) => {
-  if (fileHandle && typeof fileHandle.getFile === 'function') {
-    return await fileHandle.getFile();
+  if (!fileHandle) return null;
+  if (fileHandle instanceof File) return fileHandle;
+  if (typeof fileHandle.getFile === 'function') {
+    try {
+      return await fileHandle.getFile();
+    } catch (err) {
+      console.warn("Permiso expirado o archivo movido al intentar getFile():", err);
+      return null;
+    }
   }
   return fileHandle;
 };
