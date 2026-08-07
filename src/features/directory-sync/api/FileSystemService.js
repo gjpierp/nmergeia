@@ -1,5 +1,6 @@
 import ignore from 'ignore';
 import { telemetry } from '../../../shared/lib/TelemetryService.js';
+import { encryptData, decryptData } from '../../../shared/lib/cryptoUtils.js';
 
 /**
  * @file FileSystemService.js
@@ -57,17 +58,58 @@ const IGNORED_PATHS = [
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
+/**
+ * Guarda en localStorage de forma cifrada el metadato del directorio/archivo cuando se le otorgan permisos.
+ */
+export const saveGrantedFolderPermission = (fileHandle) => {
+  try {
+    if (!fileHandle || typeof window === 'undefined') return;
+    const name = fileHandle.name || (fileHandle.handles ? `${fileHandle.handles.length} archivos` : 'Carpeta');
+    const kind = fileHandle.kind || (fileHandle.type === 'files' ? 'files' : 'directory');
+    
+    const raw = localStorage.getItem('nmerge_granted_folders');
+    let list = [];
+    if (raw) {
+      const decrypted = decryptData(raw);
+      if (Array.isArray(decrypted)) list = decrypted;
+    }
+
+    const entry = {
+      name,
+      kind,
+      grantedAt: new Date().toISOString(),
+      permission: 'readwrite'
+    };
+
+    const filtered = list.filter(item => item.name !== name);
+    const updated = [entry, ...filtered].slice(0, 50);
+
+    localStorage.setItem('nmerge_granted_folders', encryptData(updated));
+  } catch (err) {
+    console.warn("Error al guardar permiso otorgado en localStorage cifrado:", err);
+  }
+};
+
 export const verifyPermission = async (fileHandle, userTriggered = false) => {
   try {
-    if (!fileHandle || typeof fileHandle.queryPermission !== 'function') return true;
+    if (!fileHandle || typeof fileHandle.queryPermission !== 'function') {
+      if (fileHandle && fileHandle.name) saveGrantedFolderPermission(fileHandle);
+      return true;
+    }
     // 1. Verificación silenciosa sin abrir diálogos ni popups del navegador
     const current = await fileHandle.queryPermission({ mode: 'readwrite' });
-    if (current === 'granted') return true;
+    if (current === 'granted') {
+      saveGrantedFolderPermission(fileHandle);
+      return true;
+    }
 
     // 2. Solo solicitar permiso interactivo si fue detonado por un gesto directo de clic del usuario
     if (userTriggered && typeof fileHandle.requestPermission === 'function') {
       const requested = await fileHandle.requestPermission({ mode: 'readwrite' });
-      if (requested === 'granted') return true;
+      if (requested === 'granted') {
+        saveGrantedFolderPermission(fileHandle);
+        return true;
+      }
     }
   } catch (e) {
     console.warn("Permiso denegado o no otorgado por el navegador:", e);
