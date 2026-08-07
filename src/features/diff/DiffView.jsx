@@ -505,17 +505,16 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     return (
       <div className="editor-screen" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
         <div className="editor-header" style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', padding: '1rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-light)'}}>
-           
-           <div style={{ display: 'flex', width: '100%', marginBottom: '10px' }}>
+                     <div style={{ display: 'flex', width: '100%', marginBottom: '6px', fontSize: '0.8rem' }}>
                <div style={{ flex: 1, paddingRight: '10px', overflow: 'hidden' }}>
                    <strong style={{color: 'var(--accent-secondary)', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={`${originPath}/${tab.filePath}`}>
-                      {t('diff_origin')}: {originPath}/{tab.filePath}
-                  </strong>
+                      {originPath}/{tab.filePath}
+                   </strong>
                </div>
-               <div style={{ flex: 1, paddingLeft: '20px', borderLeft: '1px solid var(--border-color)', overflow: 'hidden' }}>
-                   <strong style={{color: '#a78bfa', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={destSlot ? `${destSlot.path}/${tab.filePath}` : t('diff_unknown')}>
-                      {t('diff_dest')}: {destSlot ? `${destSlot.path}/${tab.filePath}` : t('diff_unknown')}
-                  </strong>
+               <div style={{ flex: 1, paddingLeft: '10px', borderLeft: '1px solid var(--border-color)', overflow: 'hidden' }}>
+                   <strong style={{color: '#a78bfa', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}} title={destSlot ? `${destSlot.path}/${tab.filePath}` : ''}>
+                      {destSlot ? `${destSlot.path}/${tab.filePath}` : tab.filePath}
+                   </strong>
                </div>
            </div>
            
@@ -564,13 +563,13 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
                              </span>
                          </label>
                      )}
-                    <div className="diff-headers">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <PremiumLock>
                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_origin')} data-tooltip={t('diff_tooltip_automerge_all_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_left</span></button>
                     </PremiumLock>
-                    <span>{originPath || t('diff_origin')}</span>
-                    <span>{t('diff_vs')}</span>
-                    <span>{destSlots[0]?.path || t('diff_dest')}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{originPath}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>↔</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{destSlots[0]?.path || ''}</span>
                     <PremiumLock>
                     <button className="btn secondary-btn small-btn" disabled={isDocBinary} onClick={() => transferAllDiffs('to_dest')} data-tooltip={t('diff_tooltip_automerge_all_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>keyboard_double_arrow_right</span></button>
                     </PremiumLock>
@@ -627,10 +626,10 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
             }}>
                 <Suspense fallback={<div style={{padding: '20px', color: 'var(--text-secondary)'}}>{t('diff_loading_editor')}</div>}>
                     {tab.destValues && tab.destValues.length > 1 ? (
-                        <div style={{ display: 'flex', height: '100%', width: '100%', gap: '15px' }}>
+                        <div style={{ display: 'flex', height: '100%', width: '100%', gap: '0px' }}>
                             <div style={{ flex: '1 0 460px', display: 'flex', flexDirection: 'column', height: '100%', minWidth: '460px' }}>
-                                <div style={{ padding: '8px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>{t('diff_origin')}: {originPath}</span>
+                                <div style={{ padding: '6px 12px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>{originPath}</span>
                                     <div style={{ display: 'flex', gap: '4px' }}>
                                         <button className="btn clear-btn small-btn" disabled={isDocBinary || tab.original === tab.initialOriginal} onClick={() => {
                                             setTabs(prev => prev.map(t => t.id === tab.id ? { ...t, original: t.initialOriginal } : t));

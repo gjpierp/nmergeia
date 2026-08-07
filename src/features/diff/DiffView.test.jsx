@@ -158,7 +158,7 @@ describe('DiffView Component', () => {
                 destSlots={mockDestSlots}
             />
         );
-        expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
+        expect(screen.getByText(/src\/main\.js/i)).toBeInTheDocument();
     });
 
     it('displays the normalizer checkbox for JSON files and sorts keys on toggle', async () => {
@@ -226,7 +226,7 @@ describe('DiffView Component', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
+            expect(screen.getByText(/src\/main\.js/i)).toBeInTheDocument();
         });
 
         // Test navigation action: first (text is 'first_page')
@@ -262,7 +262,7 @@ describe('DiffView Component', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText(/origin|origen|diff_origin/i)).toBeInTheDocument();
+            expect(screen.getByText(/src\/main\.js/i)).toBeInTheDocument();
         });
 
         const nextBtn = screen.getByRole('button', { name: /keyboard_arrow_down/i });

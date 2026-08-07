@@ -278,14 +278,32 @@ export const deleteFileFromHandle = async (dirHandle, relativePath) => {
  */
 export const getFileObject = async (fileHandle) => {
   if (!fileHandle) return null;
-  if (fileHandle instanceof File) return fileHandle;
-  if (typeof fileHandle.getFile === 'function') {
+  if (typeof window !== 'undefined' && fileHandle instanceof File) return fileHandle;
+  
+  const targetHandle = fileHandle.fileHandle || fileHandle;
+
+  if (typeof targetHandle.getFile === 'function') {
     try {
-      return await fileHandle.getFile();
+      return await targetHandle.getFile();
     } catch (err) {
-      console.warn("Permiso expirado o archivo movido al intentar getFile():", err);
+      console.warn("Permiso de archivo expirado o atascado, verificando permiso...", err);
+      try {
+        const isPermitted = await verifyPermission(targetHandle, false);
+        if (isPermitted) {
+          return await targetHandle.getFile();
+        }
+      } catch (_permErr) {}
       return null;
     }
   }
+
+  if (typeof fileHandle.getFile === 'function') {
+    try {
+      return await fileHandle.getFile();
+    } catch (_e) {
+      return null;
+    }
+  }
+
   return fileHandle;
 };

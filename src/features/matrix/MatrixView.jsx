@@ -332,6 +332,60 @@ export const MatrixView = memo(({
         processFiles(true, tab);
     };
 
+    const toggleSelectFolder = (folderPath, e) => {
+        e.stopPropagation();
+        const folderFiles = rowData.filter(r => r.type !== 'folder' && (r.path === folderPath || r.path.startsWith(folderPath + '/'))).map(r => r.path);
+        if (folderFiles.length === 0) return;
+        setSelectedPaths(prev => {
+            const next = new Set(prev);
+            const allSelected = folderFiles.every(p => next.has(p));
+            if (allSelected) {
+                folderFiles.forEach(p => next.delete(p));
+            } else {
+                folderFiles.forEach(p => next.add(p));
+            }
+            return next;
+        });
+    };
+
+    const isFolderSelected = (folderPath) => {
+        const folderFiles = rowData.filter(r => r.type !== 'folder' && (r.path === folderPath || r.path.startsWith(folderPath + '/'))).map(r => r.path);
+        if (folderFiles.length === 0) return false;
+        return folderFiles.every(p => selectedPaths.has(p));
+    };
+
+    const handleDeleteFolder = async (folderPath, target, e) => {
+        e.stopPropagation();
+        const targetName = target === 'origin' ? 'el Origen' : 'el Destino';
+        const confirm = window.confirm(`¿Estás seguro de que deseas eliminar TODOS los archivos de la carpeta "${folderPath}" en ${targetName}?`);
+        if (!confirm) return;
+
+        const folderFiles = rowData.filter(r => r.type !== 'folder' && (r.path === folderPath || r.path.startsWith(folderPath + '/')));
+        let count = 0;
+        for (const item of folderFiles) {
+            if (target === 'origin' && item.oFile) {
+                const origH = tab.originHandle || originHandle;
+                if (origH) {
+                    try {
+                        await handleDelete(origH, item.path, true);
+                        count++;
+                    } catch (_e) {}
+                }
+            } else if (target === 'dest') {
+                for (const s of item.statuses) {
+                    if (s.handle && s.file) {
+                        try {
+                            await handleDelete(s.handle, item.path, false);
+                            count++;
+                        } catch (_e) {}
+                    }
+                }
+            }
+        }
+        if (addToast) addToast(`${count} archivos de la carpeta "${folderPath}" fueron eliminados en ${targetName}.`, "info");
+        processFiles(true, tab);
+    };
+
     const ROW_HEIGHT = 36;
     const overscan = 10;
     const totalHeight = rowData.length * ROW_HEIGHT;
@@ -463,24 +517,23 @@ export const MatrixView = memo(({
 
         <div className="section-card matrix-container" style={{ flex: 1, overflow: 'hidden', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', borderRadius: '8px' }}>
           
-          <div className="matrix-header" style={{ display: 'flex', flexDirection: 'column', padding: '15px 1rem', background: 'var(--bg-tertiary)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '8px' }}>
-              <strong>{t('matrix_origin')}:</strong> <span style={{ color: 'var(--accent-primary)' }}>{tab.originHandle ? tab.originHandle.name : 'N/A'}</span> 
-              <span style={{ margin: '0 10px' }}>|</span> 
-              <strong>{t('matrix_destinations')}:</strong> <span style={{ color: '#22c55e' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span>
+          <div className="matrix-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', padding: '6px 12px', background: 'var(--bg-tertiary)', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-tertiary)', flexWrap: 'wrap' }}>
+              <span><strong>{t('matrix_origin')}:</strong> <span style={{ color: 'var(--accent-primary)', fontWeight: '600' }}>{tab.originHandle ? tab.originHandle.name : 'N/A'}</span></span> 
+              <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span> 
+              <span><strong>{t('matrix_destinations')}:</strong> <span style={{ color: '#22c55e', fontWeight: '600' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span></span>
+              <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>• {t('matrix_file_structure')}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>- {t('matrix_file_structure')}</div>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
-                <input 
-                  type="checkbox" 
-                  checked={selectedPaths.size > 0 && selectedPaths.size === filteredPaths.length}
-                  onChange={toggleSelectAll}
-                  style={{ cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
-                />
-                <span>Seleccionar Todo ({filteredPaths.length})</span>
-              </label>
-            </div>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
+              <input 
+                type="checkbox" 
+                checked={selectedPaths.size > 0 && selectedPaths.size === filteredPaths.length}
+                onChange={toggleSelectAll}
+                style={{ cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
+              />
+              <span>Seleccionar Todo ({filteredPaths.length})</span>
+            </label>
           </div>
 
           <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }} onScroll={(e) => setMatrixScrollTop(e.target.scrollTop)}>
@@ -532,12 +585,21 @@ export const MatrixView = memo(({
                        return (
                           <div key={'folder-'+row.path} onClick={() => toggleFolder(row.path)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', padding: `6px 1rem 6px ${row.depth * 1.5 + 1}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '0.75rem', height: '36px', boxSizing: 'border-box' }}>
                              <div style={{display: 'flex', alignItems: 'center'}}>
-                                <span style={{marginRight: '8px', fontSize: '0.70rem', color: 'var(--text-tertiary)'}}>{row.isCollapsed ? '▶︎' : '▼'}</span>
+                                <input 
+                                  type="checkbox"
+                                  checked={isFolderSelected(row.path)}
+                                  onChange={(e) => toggleSelectFolder(row.path, e)}
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{ cursor: 'pointer', width: '15px', height: '15px', marginRight: '8px', accentColor: 'var(--accent-primary)' }}
+                                />
+                                <span style={{marginRight: '6px', fontSize: '0.70rem', color: 'var(--text-tertiary)'}}>{row.isCollapsed ? '▶︎' : '▼'}</span>
                                 <span className="file-icon" style={{fontSize: '0.8rem', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#f59e0b'}}>folder</span></span> {row.name}
                              </div>
-                             <div style={{display: 'flex', gap: '10px'}}>
-                                {needsToOrigin && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_origin', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#3b82f6'}}>arrow_back</span></button>}
-                                {needsToDest && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_dest', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#10b981'}}>arrow_forward</span></button>}
+                             <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+                                {needsToOrigin && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_origin', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_origin')}><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#3b82f6'}}>arrow_back</span></button>}
+                                {needsToDest && <button className="btn clear-btn small-btn" onClick={(e) => handleTransferFolder(row.path, 'to_dest', e)} data-tooltip={t('matrix_tooltip_copy_folder_to_dest')}><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#10b981'}}>arrow_forward</span></button>}
+                                <button className="btn clear-btn small-btn" onClick={(e) => handleDeleteFolder(row.path, 'origin', e)} data-tooltip="Borrar todos los archivos de esta carpeta en Origen"><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#ef4444'}}>delete_forever</span></button>
+                                <button className="btn clear-btn small-btn" onClick={(e) => handleDeleteFolder(row.path, 'dest', e)} data-tooltip="Borrar todos los archivos de esta carpeta en Destino"><span className="material-symbols-rounded" style={{fontSize: '1.1rem', color: '#f87171'}}>delete</span></button>
                              </div>
                           </div>
                        );
