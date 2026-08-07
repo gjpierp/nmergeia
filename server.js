@@ -15,18 +15,10 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(compression());
 
-// Redirección Obligatoria HTTP -> HTTPS (301 Permanent Redirect para Googlebot & SSL Compliance)
+// Cabeceras de Seguridad y HSTS (SSL Compliance para Googlebot & Cloudflare Edge)
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Private-Network', 'true');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  
-  const host = req.headers.host || '';
-  const xForwardedProto = req.headers['x-forwarded-proto'];
-  
-  // Si la petición viene por HTTP no seguro en entorno de producción o proxy externo
-  if (xForwardedProto && xForwardedProto.split(',')[0] === 'http' && !host.includes('localhost') && !host.includes('127.0.0.1')) {
-    return res.redirect(301, `https://${host}${req.originalUrl || req.url}`);
-  }
   next();
 });
 
