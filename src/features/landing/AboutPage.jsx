@@ -3,6 +3,7 @@ import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 
 export const AboutPage = () => {
   const { setActiveTab } = useAppStore();
