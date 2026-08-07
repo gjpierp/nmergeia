@@ -55,7 +55,7 @@ export const FeaturesPage = () => {
           color: 'var(--text-secondary)'
         }}>
           <p style={{ margin: 0 }}>
-            <strong>NMerge IA (StackUpIA Software Labs)</strong> está diseñada desde sus cimientos para satisfacer las exigencias de ingenieros de software senior, equipos DevOps y auditores de seguridad que requieren inspeccionar, comparar y combinar grandes volúmenes de código fuente con **privacidad absoluta y máxima velocidad de ejecución**. A continuación se detalla la matriz completa de características técnicas que componen la plataforma.
+            <strong>NMerge IA (StackUpIA Software Labs)</strong> está diseñada desde sus cimientos para satisfacer las exigencias de ingenieros de software senior, equipos DevOps y auditores de seguridad que requieren inspeccionar, comparar y combinar grandes volúmenes de código fuente con <strong>privacidad absoluta y máxima velocidad de ejecución</strong>. A continuación se detalla la matriz completa de características técnicas que componen la plataforma.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export const FeaturesPage = () => {
               4. Gobernanza y Control de Acceso Sentinel-NGAC (Estándar NIST SP 800-178)
             </h3>
             <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.7', margin: '0 0 15px 0' }}>
-              NMerge IA implementa la especificación **Next Generation Access Control (NGAC)** recomendada por el NIST para la gestión de permisos basada en grafos atributivos.
+              NMerge IA implementa la especificación <strong>Next Generation Access Control (NGAC)</strong> recomendada por el NIST para la gestión de permisos basada en grafos atributivos.
             </p>
             <ul style={{ paddingLeft: '20px', fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li><strong>Evaluador de Grafos Atributivos (PDP/PEP):</strong> Controla el acceso a funcionalidades clave (terminal, exportaciones, parches) según los atributos del usuario.</li>

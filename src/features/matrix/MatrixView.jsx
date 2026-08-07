@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { getRelativePath } from "../../utils/pathUtils.js";
 import { parseFilterRules, DEFAULT_FILTER_CONTENT } from "../../hooks/useMatrixProcessor.js";
 import { NgacAdBanner } from '../monetization/NgacAdBanner.jsx';
+import { deleteFileFromHandle, saveFileToHandle, getFileObject } from '../../features/directory-sync/api/FileSystemService.js';
+import { showModal } from '../../shared/ui/CustomModal.jsx';
 
 export const MatrixView = memo(({ 
     tab, 
@@ -25,9 +27,12 @@ export const MatrixView = memo(({
         collapsedFolders, setCollapsedFolders,
         fileEqualityMap,
         matrixScrollTop, setMatrixScrollTop,
-        sessionFilterConfig
+        sessionFilterConfig,
+        addToast,
+        originHandle
     } = useAppStore();
 
+    const [selectedPaths, setSelectedPaths] = useState(new Set());
     const containerRef = useRef(null);
     const [containerHeight, setContainerHeight] = useState(600);
 
@@ -204,6 +209,129 @@ export const MatrixView = memo(({
         });
     }, [sortedRows, collapsedFolders, originMap, destMaps, fileEqualityMap]);
 
+    const toggleSelectPath = (path, e) => {
+        if (e) e.stopPropagation();
+        setSelectedPaths(prev => {
+            const next = new Set(prev);
+            if (next.has(path)) next.delete(path);
+            else next.add(path);
+            return next;
+        });
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedPaths.size === filteredPaths.length && filteredPaths.length > 0) {
+            setSelectedPaths(new Set());
+        } else {
+            setSelectedPaths(new Set(filteredPaths));
+        }
+    };
+
+    const handleBatchDeleteOrigin = async () => {
+        if (selectedPaths.size === 0) return;
+        const handleToUse = tab.originHandle || originHandle;
+        if (!handleToUse) {
+            if (addToast) addToast("No se encontró el directorio de origen.", "error");
+            return;
+        }
+        const count = selectedPaths.size;
+        const conf = await showModal('confirm', 'Eliminar Selección de Origen', `¿Seguro que quieres eliminar los ${count} archivos seleccionados del directorio de origen en tu disco local?`);
+        if (!conf) return;
+
+        let deletedCount = 0;
+        for (const filePath of selectedPaths) {
+            try {
+                await deleteFileFromHandle(handleToUse, filePath);
+                deletedCount++;
+            } catch (_e) {
+                console.error("Error borrando de origen:", filePath, _e);
+            }
+        }
+        if (addToast) addToast(`${deletedCount} de ${count} archivos eliminados del origen con éxito.`, "success");
+        setSelectedPaths(new Set());
+        processFiles(true, tab);
+    };
+
+    const handleBatchDeleteDest = async () => {
+        if (selectedPaths.size === 0) return;
+        const destSlotsToUse = tab.processedDestSlots || [];
+        if (destSlotsToUse.length === 0 || !destSlotsToUse[0]?.handle) {
+            if (addToast) addToast("No se encontró directorio de destino.", "error");
+            return;
+        }
+        const count = selectedPaths.size;
+        const conf = await showModal('confirm', 'Eliminar Selección de Destino', `¿Seguro que quieres eliminar los ${count} archivos seleccionados del directorio de destino en tu disco local?`);
+        if (!conf) return;
+
+        let deletedCount = 0;
+        for (const filePath of selectedPaths) {
+            for (const slot of destSlotsToUse) {
+                if (slot.handle) {
+                    try {
+                        await deleteFileFromHandle(slot.handle, filePath);
+                        deletedCount++;
+                    } catch (_e) {}
+                }
+            }
+        }
+        if (addToast) addToast(`Archivos seleccionados eliminados del destino con éxito.`, "success");
+        setSelectedPaths(new Set());
+        processFiles(true, tab);
+    };
+
+    const handleBatchTransferToDest = async () => {
+        if (selectedPaths.size === 0) return;
+        const destSlotsToUse = tab.processedDestSlots || [];
+        if (destSlotsToUse.length === 0 || !destSlotsToUse[0]?.handle) {
+            if (addToast) addToast("No se encontró directorio de destino.", "error");
+            return;
+        }
+        let transferredCount = 0;
+        for (const filePath of selectedPaths) {
+            const oFile = originMap.get(filePath);
+            if (oFile) {
+                for (const slot of destSlotsToUse) {
+                    if (slot.handle) {
+                        try {
+                            let fileObj = await getFileObject(oFile);
+                            await saveFileToHandle(slot.handle, filePath, false, fileObj, true);
+                            transferredCount++;
+                        } catch (_e) {}
+                    }
+                }
+            }
+        }
+        if (addToast) addToast(`${transferredCount} transferencias hacia el destino completadas.`, "success");
+        setSelectedPaths(new Set());
+        processFiles(true, tab);
+    };
+
+    const handleBatchTransferToOrigin = async () => {
+        if (selectedPaths.size === 0) return;
+        const originH = tab.originHandle || originHandle;
+        if (!originH) {
+            if (addToast) addToast("No se encontró el directorio de origen.", "error");
+            return;
+        }
+        let transferredCount = 0;
+        for (const filePath of selectedPaths) {
+            const dSlot = destMaps.find(({ map }) => map.has(filePath));
+            if (dSlot) {
+                const dFile = dSlot.map.get(filePath);
+                if (dFile) {
+                    try {
+                        let fileObj = await getFileObject(dFile);
+                        await saveFileToHandle(originH, filePath, false, fileObj, true);
+                        transferredCount++;
+                    } catch (_e) {}
+                }
+            }
+        }
+        if (addToast) addToast(`${transferredCount} transferencias hacia el origen completadas.`, "success");
+        setSelectedPaths(new Set());
+        processFiles(true, tab);
+    };
+
     const ROW_HEIGHT = 36;
     const overscan = 10;
     const totalHeight = rowData.length * ROW_HEIGHT;
@@ -297,6 +425,42 @@ export const MatrixView = memo(({
            </div>
         </div>
 
+        {/* Barra de Acciones por Lote (Selección Múltiple) */}
+        {selectedPaths.size > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', padding: '10px 16px', background: 'rgba(6, 182, 212, 0.12)', borderRadius: '10px', border: '1px solid var(--accent-primary)', marginBottom: '10px' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ffffff', fontSize: '0.85rem', fontWeight: '600' }}>
+               <span className="material-symbols-rounded" style={{ color: 'var(--accent-primary)', fontSize: '1.3rem' }}>check_box</span>
+               <span>{selectedPaths.size} {selectedPaths.size === 1 ? 'archivo seleccionado' : 'archivos seleccionados'} de {filteredPaths.length}</span>
+             </div>
+
+             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+               <button className="btn secondary-btn small-btn" onClick={handleBatchTransferToOrigin} data-tooltip="Copiar seleccionados hacia el Origen" style={{ color: '#3b82f6', border: '1px solid #3b82f6' }}>
+                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>arrow_back</span>
+                 Copiar a Origen
+               </button>
+
+               <button className="btn secondary-btn small-btn" onClick={handleBatchTransferToDest} data-tooltip="Copiar seleccionados hacia el Destino" style={{ color: '#10b981', border: '1px solid #10b981' }}>
+                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>arrow_forward</span>
+                 Copiar a Destino
+               </button>
+
+               <button className="btn secondary-btn small-btn" onClick={handleBatchDeleteOrigin} data-tooltip="Eliminar seleccionados del Origen en disco local" style={{ color: '#ef4444', border: '1px solid #ef4444' }}>
+                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>delete_forever</span>
+                 Borrar de Origen
+               </button>
+
+               <button className="btn secondary-btn small-btn" onClick={handleBatchDeleteDest} data-tooltip="Eliminar seleccionados del Destino en disco local" style={{ color: '#f87171', border: '1px solid #f87171' }}>
+                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem', marginRight: '4px' }}>delete</span>
+                 Borrar de Destino
+               </button>
+
+               <button className="btn clear-btn small-btn" onClick={() => setSelectedPaths(new Set())} data-tooltip="Desmarcar todos" style={{ color: 'var(--text-tertiary)' }}>
+                 <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>close</span>
+               </button>
+             </div>
+          </div>
+        )}
+
         <div className="section-card matrix-container" style={{ flex: 1, overflow: 'hidden', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', borderRadius: '8px' }}>
           
           <div className="matrix-header" style={{ display: 'flex', flexDirection: 'column', padding: '15px 1rem', background: 'var(--bg-tertiary)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -305,7 +469,18 @@ export const MatrixView = memo(({
               <span style={{ margin: '0 10px' }}>|</span> 
               <strong>{t('matrix_destinations')}:</strong> <span style={{ color: '#22c55e' }}>{tab.processedDestSlots ? tab.processedDestSlots.filter(s => s.handle).map(s => s.handle.name).join(', ') : 'N/A'}</span>
             </div>
-            <div style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>- {t('matrix_file_structure')}</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>- {t('matrix_file_structure')}</div>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
+                <input 
+                  type="checkbox" 
+                  checked={selectedPaths.size > 0 && selectedPaths.size === filteredPaths.length}
+                  onChange={toggleSelectAll}
+                  style={{ cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
+                />
+                <span>Seleccionar Todo ({filteredPaths.length})</span>
+              </label>
+            </div>
           </div>
 
           <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }} onScroll={(e) => setMatrixScrollTop(e.target.scrollTop)}>
@@ -392,11 +567,10 @@ export const MatrixView = memo(({
                     };
 
                     return (
-                      <div key={'file-'+row.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `4px 1rem 4px ${row.depth * 1.5 + 2.5}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', height: '36px', boxSizing: 'border-box' }}>
+                      <div key={'file-'+row.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: `4px 1rem 4px ${row.depth * 1.5 + 1.5}rem`, borderBottom: '1px solid rgba(255,255,255,0.02)', height: '36px', boxSizing: 'border-box' }}>
                         
                         <div 
                           style={{
-                            cursor: 'pointer', 
                             color: fileColor, 
                             fontWeight: (hasDiff || isMissingInOrigin || isMissingInAllDests) ? 'bold' : 'normal',
                             fontSize: '0.85rem',
@@ -406,10 +580,16 @@ export const MatrixView = memo(({
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap'
                           }} 
-                          onClick={handleFileClick}
-                          data-tooltip={t('matrix_tooltip_view_diff')}
                         >
-                          <span className="file-icon" style={{fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#9ca3af'}}>insert_drive_file</span></span> {row.name}
+                          <input 
+                            type="checkbox"
+                            checked={selectedPaths.has(row.path)}
+                            onChange={(e) => toggleSelectPath(row.path, e)}
+                            style={{ cursor: 'pointer', width: '15px', height: '15px', marginRight: '8px', accentColor: 'var(--accent-primary)' }}
+                          />
+                          <span onClick={handleFileClick} style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }} data-tooltip={t('matrix_tooltip_view_diff')}>
+                            <span className="file-icon" style={{fontSize: '0.8rem', color: 'var(--text-secondary)', marginRight: '5px'}}><span className="material-symbols-rounded" style={{fontSize: '1.2rem', color: '#9ca3af'}}>insert_drive_file</span></span> {row.name}
+                          </span>
                         </div>
 
                         <div style={{display: 'flex', gap: '15px'}}>

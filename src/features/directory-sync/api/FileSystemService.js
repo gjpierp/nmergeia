@@ -202,7 +202,14 @@ export const getFilesFromHandle = telemetry.measureExecutionTime('getFilesFromHa
  */
 export const saveFileToHandle = async (dirHandle, relativePath, content) => {
   try {
-    const parts = relativePath.split('/').filter(Boolean);
+    if (!dirHandle) throw new Error("Handle de directorio no válido");
+
+    let cleanPath = relativePath;
+    if (dirHandle.name && cleanPath.startsWith(`${dirHandle.name}/`)) {
+      cleanPath = cleanPath.substring(dirHandle.name.length + 1);
+    }
+
+    const parts = cleanPath.split('/').filter(Boolean);
     const fileName = parts.pop();
     let currentHandle = dirHandle;
 
@@ -229,7 +236,17 @@ export const saveFileToHandle = async (dirHandle, relativePath, content) => {
  */
 export const deleteFileFromHandle = async (dirHandle, relativePath) => {
   try {
-    const parts = relativePath.split('/').filter(Boolean);
+    if (!dirHandle) throw new Error("Handle de directorio no válido");
+
+    const isPermitted = await verifyPermission(dirHandle, true);
+    if (!isPermitted) throw new Error("Permiso de escritura denegado en el navegador.");
+
+    let cleanPath = relativePath;
+    if (dirHandle.name && cleanPath.startsWith(`${dirHandle.name}/`)) {
+      cleanPath = cleanPath.substring(dirHandle.name.length + 1);
+    }
+
+    const parts = cleanPath.split('/').filter(Boolean);
     const fileName = parts.pop();
     let currentHandle = dirHandle;
 

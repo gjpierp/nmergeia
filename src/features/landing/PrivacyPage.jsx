@@ -3,6 +3,8 @@ import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+import { PageHeader } from '../../shared/ui/PageHeader.jsx';
+import { Footer } from '../../shared/ui/Footer.jsx';
 
 export const PrivacyPage = () => {
   const { setActiveTab } = useAppStore();
@@ -126,6 +128,7 @@ export const PrivacyPage = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

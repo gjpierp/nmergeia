@@ -80,7 +80,7 @@ export const useAppStore = create((set) => ({
   filterText: '',
   setFilterText: (val) => setVal(set, 'filterText', val),
 
-  sessionFilterConfig: null,
+  sessionFilterConfig: typeof window !== 'undefined' ? (localStorage.getItem('nmerge_filter_local') || null) : null,
   setSessionFilterConfig: (val) => setVal(set, 'sessionFilterConfig', val),
 
   showOnlyChanges: false,

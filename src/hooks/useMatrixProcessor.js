@@ -23,12 +23,31 @@ export const parseFilterRules = (filterText) => {
 
     if (clean.startsWith('+')) {
       const pattern = clean.substring(1).trim();
-      if (pattern) includes.push(pattern);
+      if (pattern) {
+        try {
+          ignore().add(pattern);
+          includes.push(pattern);
+        } catch (_e) {
+          console.warn(`Patrón de filtro inválido omitido: "${pattern}"`, _e);
+        }
+      }
     } else if (clean.startsWith('-') || clean.startsWith('!')) {
       const pattern = clean.substring(1).trim();
-      if (pattern) excludes.push(pattern);
+      if (pattern) {
+        try {
+          ignore().add(pattern);
+          excludes.push(pattern);
+        } catch (_e) {
+          console.warn(`Patrón de filtro inválido omitido: "${pattern}"`, _e);
+        }
+      }
     } else {
-      excludes.push(clean);
+      try {
+        ignore().add(clean);
+        excludes.push(clean);
+      } catch (_e) {
+        console.warn(`Patrón de filtro inválido omitido: "${clean}"`, _e);
+      }
     }
   }
 

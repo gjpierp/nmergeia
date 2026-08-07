@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ignore from 'ignore';
 import { apiClient, FILTER_LOCAL_KEY } from '../../../shared/lib/apiClient.js';
 import { useAppStore } from '../../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
@@ -131,6 +132,14 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
       pattern = pattern + '/';
     }
 
+    // Validar sintaxis del patrón antes de agregar
+    try {
+      ignore().add(pattern);
+    } catch (_err) {
+      addToast(`El patrón "${pattern}" no es válido o contiene sintaxis errónea.`, 'error');
+      return;
+    }
+
     const newRule = {
       id: Date.now(),
       type: newType,
@@ -181,6 +190,14 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
       finalPattern += '/';
     }
     
+    // Validar sintaxis del patrón antes de guardar la edición
+    try {
+      ignore().add(finalPattern);
+    } catch (_err) {
+      addToast(`El patrón "${finalPattern}" no es válido o contiene sintaxis errónea.`, 'error');
+      return;
+    }
+
     const updated = rules.map(r => {
       if (r.id === id) {
         return { ...r, type: editType, pattern: finalPattern };

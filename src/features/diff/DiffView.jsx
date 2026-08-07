@@ -81,7 +81,6 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
     const [normalizeEnabled, setNormalizeEnabled] = useState(false);
 
     // Estados del Asistente Híbrido de Fusión
-    const [assistantTab, setAssistantTab] = useState('traditional'); // 'traditional' | 'ai'
     const [aiProvider, setAiProvider] = useState(() => localStorage.getItem('nmerge_ai_provider') || 'ollama');
     const [aiApiKey, setAiApiKey] = useState(() => localStorage.getItem('nmerge_ai_apikey') || '');
     const [aiModel, setAiModel] = useState(() => localStorage.getItem('nmerge_ai_model') || 'qwen2.5:1.5b');
@@ -828,193 +827,208 @@ export function DiffView({ tab, tabs, setTabs, originHandle, destSlots, originPa
             </div>
         </div>
         {diffContent && (
-             <div style={{ flexShrink: 0, background: 'var(--bg-secondary)', padding: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {/* Selector de Pestañas del Asistente */}
-                <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', gap: '10px', paddingBottom: '10px' }}>
-                    <button 
-                        className={`btn ${assistantTab === 'traditional' ? 'primary-btn' : 'secondary-btn'} small-btn`}
-                        onClick={() => setAssistantTab('traditional')}
-                        style={{ height: '32px', borderRadius: '4px' }}
-                    >
-                        {t('diff_traditional_merge')}
-                    </button>
-                    <button 
-                        className={`btn ${assistantTab === 'ai' ? 'primary-btn' : 'secondary-btn'} small-btn`}
-                        onClick={() => setAssistantTab('ai')}
-                        style={{ height: '32px', borderRadius: '4px' }}
-                    >
-                        {t('diff_ai_assistant')}
-                    </button>
+             <div 
+               style={{ 
+                 flexShrink: 0, 
+                 maxHeight: '33vh', 
+                 height: 'fit-content', 
+                 overflowY: 'auto', 
+                 background: 'var(--bg-secondary)', 
+                 padding: '12px 16px', 
+                 borderTop: '1px solid var(--border-color)', 
+                 display: 'flex', 
+                 flexDirection: 'column', 
+                 gap: '10px',
+                 boxSizing: 'border-box'
+               }}
+             >
+                {/* Visualizador Lado a Lado de Líneas (Origen vs Destino) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', width: '100%', height: 'fit-content' }}>
+                  {/* Columna Origen */}
+                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--accent-secondary, #06b6d4)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>difference</span>
+                      <span>- {originPath || t('diff_origin')} (Líneas de Origen):</span>
+                    </div>
+                    <pre style={{
+                      textAlign: 'left',
+                      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                      fontSize: '0.75rem',
+                      lineHeight: '1.4',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-all',
+                      overflowX: 'auto',
+                      overflowY: 'auto',
+                      color: 'var(--accent-secondary, #06b6d4)',
+                      margin: 0,
+                      background: 'rgba(6, 182, 212, 0.07)',
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      borderLeft: '3px solid var(--accent-secondary, #06b6d4)',
+                      border: '1px solid rgba(6, 182, 212, 0.2)'
+                    }}>
+                      {diffContent.origin || '(Línea vacía / borrada)'}
+                    </pre>
+                  </div>
+
+                  {/* Columna Destino */}
+                  <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#a78bfa', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span className="material-symbols-rounded" style={{ fontSize: '1rem' }}>difference</span>
+                      <span>+ {destSlots[0]?.path || t('diff_dest')} (Líneas de Destino):</span>
+                    </div>
+                    <pre style={{
+                      textAlign: 'left',
+                      fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                      fontSize: '0.75rem',
+                      lineHeight: '1.4',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-all',
+                      overflowX: 'auto',
+                      overflowY: 'auto',
+                      color: '#a78bfa',
+                      margin: 0,
+                      background: 'rgba(167, 139, 250, 0.07)',
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      borderLeft: '3px solid #a78bfa',
+                      border: '1px solid rgba(167, 139, 250, 0.2)'
+                    }}>
+                      {diffContent.dest || '(Línea vacía / agregada)'}
+                    </pre>
+                  </div>
                 </div>
 
-                {/* Contenido Tradicional */}
-                {assistantTab === 'traditional' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div style={{ flex: 1 }}>
-                                <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: 'var(--accent-secondary)', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid var(--accent-secondary)'}}>{diffContent.origin}</pre>
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <pre style={{textAlign: 'left', fontFamily: 'monospace', fontSize:'0.85rem', whiteSpace: 'pre', overflowX: 'auto', color: '#a78bfa', margin: '0', background: 'rgba(0,0,0,0.3)', padding: '12px 15px', borderRadius: '4px', borderLeft: '4px solid #a78bfa'}}>{diffContent.dest}</pre>
-                            </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-                            <button 
-                                className="btn secondary-btn small-btn"
-                                onClick={() => transferCurrentDiff('to_dest')}
-                                style={{ height: '34px', width: '34px', padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#10b981', border: '1px solid #10b981' }}
-                                data-tooltip={t('diff_replace_with_origin')}
-                            >
-                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>arrow_forward</span>
-                            </button>
-                            <button 
-                                className="btn secondary-btn small-btn"
-                                onClick={() => transferCurrentDiff('to_origin')}
-                                style={{ height: '34px', width: '34px', padding: '0', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#3b82f6', border: '1px solid #3b82f6' }}
-                                data-tooltip={t('diff_replace_with_dest')}
-                            >
-                                <span className="material-symbols-rounded" style={{ fontSize: '1.2rem' }}>arrow_back</span>
-                            </button>
-                        </div>
+                {/* Barra de Acciones con Botones Lado a Lado */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', paddingTop: '6px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    {/* Botón 1: Copiar Origen a Destino */}
+                    <button 
+                      className="btn secondary-btn small-btn"
+                      onClick={() => transferCurrentDiff('to_dest')}
+                      style={{ height: '32px', padding: '0 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#10b981', border: '1px solid #10b981', fontSize: '0.78rem', borderRadius: '4px' }}
+                      data-tooltip={t('diff_replace_with_origin')}
+                    >
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>arrow_forward</span>
+                      <span>Copiar Origen a Destino</span>
+                    </button>
+
+                    {/* Botón 2: Copiar Destino a Origen */}
+                    <button 
+                      className="btn secondary-btn small-btn"
+                      onClick={() => transferCurrentDiff('to_origin')}
+                      style={{ height: '32px', padding: '0 12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#3b82f6', border: '1px solid #3b82f6', fontSize: '0.78rem', borderRadius: '4px' }}
+                      data-tooltip={t('diff_replace_with_dest')}
+                    >
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>arrow_back</span>
+                      <span>Copiar Destino a Origen</span>
+                    </button>
+
+                    {/* Botón 3: Integrar por IA (Ubicado AL LADO de los otros 2 botones) */}
+                    <button 
+                      className="btn primary-btn small-btn"
+                      onClick={handleCallAI}
+                      disabled={aiLoading || (aiProvider === 'gemini' && !aiApiKey)}
+                      style={{ height: '32px', padding: '0 14px', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', background: 'linear-gradient(135deg, #06b6d4, #3b82f6)', color: '#ffffff', border: 'none', borderRadius: '4px' }}
+                      data-tooltip="Resolver y fusionar diferencia automáticamente usando IA"
+                    >
+                      <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>auto_awesome</span>
+                      <span>{aiLoading ? (t('diff_ai_analyzing') || 'Analizando...') : (t('diff_ai_resolve_conflict') || 'Integrar por IA')}</span>
+                    </button>
+                  </div>
+
+                  {/* Configuración / Selector de proveedor IA */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {isAiConfigured && !showAiConfig ? (
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        <span>IA Activa: <strong>{aiProvider === 'ollama' ? `Ollama (${aiModel})` : 'Gemini Cloud'}</strong></span>
+                        <button 
+                          className="btn clear-btn small-btn" 
+                          onClick={() => setShowAiConfig(true)}
+                          style={{ height: '24px', padding: '0 6px', fontSize: '0.7rem', color: 'var(--accent-primary)' }}
+                        >
+                          {t('diff_update')}
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--bg-tertiary)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>
+                        <select 
+                          value={aiProvider} 
+                          onChange={(e) => setAiProvider(e.target.value)} 
+                          style={{ height: '24px', fontSize: '0.75rem', padding: '0 4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
+                        >
+                          <option value="ollama">Ollama Local</option>
+                          <option value="gemini">Gemini Cloud</option>
+                        </select>
+                        {aiProvider === 'gemini' ? (
+                          <input 
+                            type="password" 
+                            placeholder="API Key Gemini" 
+                            value={aiApiKey} 
+                            onChange={(e) => setAiApiKey(e.target.value)} 
+                            style={{ height: '24px', fontSize: '0.75rem', width: '120px', padding: '0 4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
+                          />
+                        ) : (
+                          <input 
+                            type="text" 
+                            value={aiModel} 
+                            onChange={(e) => setAiModel(e.target.value)} 
+                            style={{ height: '24px', fontSize: '0.75rem', width: '110px', padding: '0 4px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
+                          />
+                        )}
+                        <button 
+                          className="btn primary-btn small-btn"
+                          onClick={() => handleSaveAiConfig(aiApiKey, aiProvider, aiModel)}
+                          style={{ height: '24px', fontSize: '0.7rem', padding: '0 8px' }}
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Mensaje de estado IA */}
+                {aiStatusMessage && (
+                    <div style={{ fontSize: '0.75rem', color: '#ef4444', fontStyle: 'italic' }}>
+                        {aiStatusMessage}
                     </div>
                 )}
-                {assistantTab === 'ai' && (
-                    <div style={{ display: 'flex', gap: '15px', textAlign: 'left' }}>
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', borderRight: '1px solid var(--border-color)', paddingRight: '15px' }}>
-                             {isAiConfigured && !showAiConfig ? (
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-tertiary)', padding: '10px 12px', borderRadius: '4px', fontSize: '0.8rem', border: '1px solid var(--border-color)' }}>
-                                      <span>{t('diff_active')} <strong>{aiProvider === 'ollama' ? `Ollama (${aiModel})` : t('diff_gemini_cloud')}</strong></span>
-                                      <button 
-                                          className="btn secondary-btn" 
-                                          onClick={() => setShowAiConfig(true)}
-                                          style={{ height: '24px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
-                                      >
-                                          {t('diff_update')}
-                                      </button>
-                                  </div>
-                              ) : (
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                          <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>{t('diff_provider')}</span>
-                                          <select 
-                                              value={aiProvider} 
-                                              onChange={(e) => setAiProvider(e.target.value)} 
-                                              className="input-field"
-                                              style={{ height: '28px', fontSize: '0.75rem', padding: '2px 5px', width: '130px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
-                                          >
-                                              <option value="ollama">{t('diff_ollama_local')}</option>
-                                              <option value="gemini">{t('diff_gemini_api_cloud')}</option>
-                                          </select>
-                                          {isAiConfigured && (
-                                              <button 
-                                                  className="btn secondary-btn" 
-                                                  onClick={() => setShowAiConfig(false)}
-                                                  style={{ height: '28px', padding: '0 8px', fontSize: '0.7rem', borderRadius: '4px' }}
-                                              >
-                                                  {t('diff_cancel')}
-                                              </button>
-                                          )}
-                                      </div>
-                                      <div style={{ background: 'var(--bg-tertiary)', padding: '10px', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                          {aiProvider === 'ollama' ? (
-                                              <div>
-                                                  <strong style={{ color: 'var(--text-primary)' }}>{t('diff_ollama_guide_title')}</strong>
-                                                  <ol style={{ margin: '5px 0 0 15px', padding: 0 }}>
-                                                      <li>{t('diff_ollama_step_1')} <a href="https://ollama.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>ollama.com</a>.</li>
-                                                      <li>{t('diff_ollama_step_2')} <code>ollama run qwen2.5:1.5b</code>.</li>
-                                                      <li>{t('diff_ollama_step_3')}</li>
-                                                  </ol>
-                                                  <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                      <span>{t('diff_model')}</span>
-                                                      <input 
-                                                          type="text" 
-                                                          value={aiModel} 
-                                                          onChange={(e) => setAiModel(e.target.value)}
-                                                          className="input-field" 
-                                                          style={{ height: '24px', fontSize: '0.75rem', padding: '2px 5px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px', width: '120px' }}
-                                                      />
-                                                  </div>
-                                                  <button 
-                                                      className="btn primary-btn" 
-                                                      onClick={() => handleSaveAiConfig('', 'ollama', aiModel)}
-                                                      style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px', marginTop: '10px', display: 'block' }}
-                                                  >
-                                                      {t('diff_save_settings')}
-                                                  </button>
-                                              </div>
-                                          ) : (
-                                              <div>
-                                                  <strong style={{ color: 'var(--text-primary)' }}>{t('diff_gemini_guide_title')}</strong>
-                                                  <ol style={{ margin: '5px 0 8px 15px', padding: 0 }}>
-                                                      <li>{t('diff_gemini_step_1')} <a href="https://aistudio.google.com" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)' }}>Google AI Studio</a>.</li>
-                                                      <li>{t('diff_gemini_step_2')}</li>
-                                                  </ol>
-                                                  <div style={{ display: 'flex', gap: '6px' }}>
-                                                      <input 
-                                                          type="password" 
-                                                          placeholder={t('diff_gemini_placeholder')} 
-                                                          value={aiApiKey} 
-                                                          onChange={(e) => setAiApiKey(e.target.value)}
-                                                          className="input-field" 
-                                                          style={{ flex: 1, height: '26px', fontSize: '0.75rem', padding: '2px 8px', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', borderRadius: '4px' }}
-                                                      />
-                                                      <button 
-                                                          className="btn primary-btn" 
-                                                          onClick={() => handleSaveAiConfig(aiApiKey, 'gemini', 'gemini-1.5-flash')}
-                                                          style={{ height: '26px', fontSize: '0.7rem', padding: '0 10px', borderRadius: '4px' }}
-                                                      >
-                                                          {t('diff_tooltip_save')}
-                                                      </button>
-                                                  </div>
-                                              </div>
-                                          )}
-                                      </div>
-                                  </div>
-                              )}
-                             <button 
-                                 className="btn primary-btn"
-                                 onClick={handleCallAI}
-                                 disabled={aiLoading || (aiProvider === 'gemini' && !aiApiKey)}
-                                 style={{ height: '36px', borderRadius: '4px', fontSize: '0.8rem' }}
-                             >
-                                 {aiLoading ? t('diff_ai_analyzing') : t('diff_ai_resolve_conflict')}
-                             </button>
-                             {aiStatusMessage && (
-                                 <div style={{ fontSize: '0.75rem', color: aiStatusMessage.includes('Error') ? '#ef4444' : '#ef4444', fontStyle: 'italic' }}>
-                                     {aiStatusMessage}
-                                 </div>
-                             )}
-                         </div>
-                        <div style={{ flex: 1.5, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('diff_unified_proposal')}</span>
-                            <textarea 
-                                readOnly
-                                value={aiResult}
-                                placeholder={t('diff_ai_placeholder')}
-                                style={{
-                                    flex: 1,
-                                    minHeight: '120px',
-                                    fontFamily: 'monospace',
-                                    fontSize: '0.8rem',
-                                    background: 'var(--bg-primary)',
-                                    color: 'var(--text-primary)',
-                                    border: '1px solid var(--border-color)',
-                                    borderRadius: '4px',
-                                    padding: '10px',
-                                    resize: 'none'
-                                }}
-                            />
-                            {aiResult && (
-                                <button 
-                                    className="btn primary-btn"
-                                    onClick={applyAiResolution}
-                                    style={{ height: '34px', borderRadius: '4px', fontSize: '0.8rem', background: '#10b981', alignSelf: 'flex-end' }}
-                                >
-                                    {t('diff_apply_merge')}
-                                </button>
-                            )}
-                        </div>
+
+                {/* Propuesta de Integración Generada por IA */}
+                {aiResult && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(16, 185, 129, 0.08)', padding: '10px 12px', borderRadius: '6px', border: '1px solid #10b981', marginTop: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="material-symbols-rounded" style={{ fontSize: '1.1rem' }}>task_alt</span>
+                        {t('diff_unified_proposal') || 'Propuesta de Integración Generada por IA:'}
+                      </span>
+                      <button 
+                        className="btn primary-btn small-btn"
+                        onClick={applyAiResolution}
+                        style={{ height: '28px', padding: '0 12px', borderRadius: '4px', fontSize: '0.75rem', background: '#10b981', border: 'none', color: '#ffffff', fontWeight: 'bold' }}
+                      >
+                        {t('diff_apply_merge') || 'Aplicar Fusión IA'}
+                      </button>
                     </div>
+                    <textarea 
+                      readOnly
+                      value={aiResult}
+                      style={{
+                        width: '100%',
+                        maxHeight: '100px',
+                        fontFamily: 'Consolas, Monaco, monospace',
+                        fontSize: '0.78rem',
+                        background: 'var(--bg-primary)',
+                        color: 'var(--text-primary)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '4px',
+                        padding: '8px',
+                        resize: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
                 )}
              </div>
         )}

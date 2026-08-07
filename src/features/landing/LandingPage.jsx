@@ -4,6 +4,7 @@ import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
+import { Footer } from '../../shared/ui/Footer.jsx';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -442,6 +443,7 @@ export const LandingPage = () => {
 
         </div>
       </div>
+      <Footer onNavigate={(tabId, path) => handleNav(tabId, path)} />
     </div>
   );
 };
