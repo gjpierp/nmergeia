@@ -269,5 +269,15 @@
   "MNU_TEMA_11": "Multi-tenant SaaS Architecture",
   "MNU_TEMA_12": "Backend Resilience & Circuit Breakers",
   "MNU_TEMA_15": "Clean & Hexagonal Architecture",
-  "MNU_TEMA_16": "DDD & Requirements Gathering"
+  "MNU_TEMA_16": "DDD & Domain Analysis",
+  "MNU_NOSQL_MONGODB": "MongoDB Enterprise & Sharding",
+  "MNU_NOSQL_REDIS": "Redis Cluster & High Availability",
+  "MNU_NOSQL_ELASTICSEARCH": "Elasticsearch & Vector Search",
+  "MNU_NOSQL_CLICKHOUSE": "ClickHouse Analytics & Columnar Engine",
+  "MNU_CLOUD_GCP": "Google Cloud Platform (GCP) Enterprise",
+  "MNU_CLOUD_AZURE": "Azure Enterprise Architecture",
+  "MNU_GITOPS_ARGOCD": "GitOps & Canary Deployments",
+  "MNU_OBSERVABILITY_OTEL": "OTel Observability & Grafana Loki",
+  "MNU_CRYPTO_PKI": "PKI, TLS 1.3 & Post-Quantum Cryptography",
+  "MNU_SECURITY_ZEROTRUST": "Zero-Trust Architecture & Service Mesh"
 }

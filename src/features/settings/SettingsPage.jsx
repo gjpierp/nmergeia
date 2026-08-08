@@ -387,7 +387,7 @@ export const SettingsPage = () => {
             Idioma de la Plataforma
           </h2>
           <select
-            value={i18n.language || 'es'}
+            value={(appLanguage || i18n.language || 'es').split('-')[0]}
             onChange={(e) => handleLanguageChange(e.target.value)}
             className="input-field"
             style={{ width: '100%', height: '42px', fontSize: '0.9rem' }}
@@ -397,6 +397,8 @@ export const SettingsPage = () => {
             <option value="pt">Português (Brasil)</option>
             <option value="fr">Français (France)</option>
             <option value="de">Deutsch (Deutschland)</option>
+            <option value="zh">中文 (Chinese)</option>
+            <option value="ja">日本語 (Japanese)</option>
           </select>
         </section>
 

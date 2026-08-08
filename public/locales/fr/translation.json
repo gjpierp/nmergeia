@@ -268,6 +268,16 @@
   "MNU_TEMA_10": "Modèle Saga & ETL Distribué",
   "MNU_TEMA_11": "SaaS Multi-tenant",
   "MNU_TEMA_12": "Résilience Backend & Circuit Breakers",
-  "MNU_TEMA_15": "Architectures Propres & Hexagonales",
-  "MNU_TEMA_16": "DDD & Analyse des Exigences"
+  "MNU_TEMA_15": "Architectures Propres & Hexagonale",
+  "MNU_TEMA_16": "DDD & Analyse de Domaine",
+  "MNU_NOSQL_MONGODB": "MongoDB Enterprise & Sharding",
+  "MNU_NOSQL_REDIS": "Redis Cluster & Haute Disponibilité",
+  "MNU_NOSQL_ELASTICSEARCH": "Elasticsearch & Recherche Vectorielle",
+  "MNU_NOSQL_CLICKHOUSE": "ClickHouse Analytics & Moteur Colonnaire",
+  "MNU_CLOUD_GCP": "Google Cloud Platform (GCP) Enterprise",
+  "MNU_CLOUD_AZURE": "Architecture d'Entreprise Azure",
+  "MNU_GITOPS_ARGOCD": "GitOps & Déploiements Canari",
+  "MNU_OBSERVABILITY_OTEL": "Observabilité OTel & Grafana Loki",
+  "MNU_CRYPTO_PKI": "PKI, TLS 1.3 & Cryptographie Post-Quantique",
+  "MNU_SECURITY_ZEROTRUST": "Architecture Zero-Trust & Service Mesh"
 }

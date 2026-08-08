@@ -16,15 +16,25 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
 
   const topicToMenuKey = {
     'datascience': 'MNU_DATASCIENCE_GUIDE',
-    'postgres': 'MNU_TEMA_POSTGRES',
+    'postgres': 'MNU_POSTGRES_GUIDE',
     'oracle': 'MNU_ORACLE_GUIDE',
-    'docker': 'MNU_TEMA_02',
+    'docker': 'MNU_DOCKER_GUIDE',
     'ngac': 'MNU_NGAC_GUIDE',
     'ext_react': 'MNU_EXT_REACT',
     'ext_vue': 'MNU_EXT_VUE',
     'ext_node': 'MNU_EXT_NODE',
     'ext_aws': 'MNU_EXT_AWS',
-    'ext_pentest': 'MNU_EXT_PENTEST'
+    'ext_pentest': 'MNU_EXT_PENTEST',
+    'nosql_mongodb': 'MNU_NOSQL_MONGODB',
+    'nosql_redis': 'MNU_NOSQL_REDIS',
+    'nosql_elasticsearch': 'MNU_NOSQL_ELASTICSEARCH',
+    'nosql_clickhouse': 'MNU_NOSQL_CLICKHOUSE',
+    'cloud_gcp': 'MNU_CLOUD_GCP',
+    'cloud_azure': 'MNU_CLOUD_AZURE',
+    'gitops_argocd': 'MNU_GITOPS_ARGOCD',
+    'observability_otel': 'MNU_OBSERVABILITY_OTEL',
+    'crypto_pki': 'MNU_CRYPTO_PKI',
+    'security_zerotrust': 'MNU_SECURITY_ZEROTRUST'
   };
 
   const translatedTitle = topicToMenuKey[topicId] ? t(topicToMenuKey[topicId], { defaultValue: title }) : title;

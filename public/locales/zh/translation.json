@@ -269,5 +269,15 @@
   "MNU_TEMA_11": "多租户 SaaS 架构",
   "MNU_TEMA_12": "后端弹性与熔断器",
   "MNU_TEMA_15": "整洁与六边形架构",
-  "MNU_TEMA_16": "DDD 领域驱动设计与需求分析"
+  "MNU_TEMA_16": "DDD 与领域分析",
+  "MNU_NOSQL_MONGODB": "MongoDB 企业版与分片",
+  "MNU_NOSQL_REDIS": "Redis 集群与高可用",
+  "MNU_NOSQL_ELASTICSEARCH": "Elasticsearch 与向量搜索",
+  "MNU_NOSQL_CLICKHOUSE": "ClickHouse 分析与列式引擎",
+  "MNU_CLOUD_GCP": "Google Cloud Platform (GCP) 企业架构",
+  "MNU_CLOUD_AZURE": "Azure 企业级架构",
+  "MNU_GITOPS_ARGOCD": "GitOps 与金丝雀部署",
+  "MNU_OBSERVABILITY_OTEL": "OTel 可观测性与 Grafana Loki",
+  "MNU_CRYPTO_PKI": "PKI、TLS 1.3 与后量子密码学",
+  "MNU_SECURITY_ZEROTRUST": "零信任架构与 Service Mesh"
 }
