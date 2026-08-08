@@ -390,6 +390,12 @@ export const NgacService = {
         'DockerInicial', 'DockerBasico', 'DockerMedio', 'DockerAvanzado', 'DockerExperto',
         'NgacInicial', 'NgacBasico', 'NgacMedio', 'NgacAvanzado', 'NgacExperto',
         'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest',
+        'MNU_NOSQL_MONGODB', 'MNU_NOSQL_REDIS', 'MNU_NOSQL_ELASTICSEARCH', 'MNU_NOSQL_CLICKHOUSE',
+        'MNU_CLOUD_GCP', 'MNU_CLOUD_AZURE', 'MNU_GITOPS_ARGOCD', 'MNU_OBSERVABILITY_OTEL',
+        'MNU_CRYPTO_PKI', 'MNU_SECURITY_ZEROTRUST',
+        'nosql_mongodb', 'nosql_redis', 'nosql_elasticsearch', 'nosql_clickhouse',
+        'cloud_gcp', 'cloud_azure', 'gitops_argocd', 'observability_otel',
+        'crypto_pki', 'security_zerotrust',
         'Tema01OptPostgres', 'Tema02DockerMultistage', 'Tema03GitAvanzado', 'Tema04IacTerraform', 'Tema05RbacAbacNgac', 'Tema06NgacMenus', 'Tema07RlsGobernanza', 'Tema08DevsecopsVault', 'Tema09MigracionDb', 'Tema10EtlSaga', 'Tema11SaasMultitenant', 'Tema12ResilienciaBackend', 'Tema13LlmRag', 'Tema14AiAgents', 'Tema15Arquitecturas', 'Tema16Requerimientos', 'Tema17Kubernetes', 'Tema18CloudNative'
       ];
 
@@ -473,7 +479,10 @@ export const NgacService = {
       }).catch(() => {});
 
       const topics = [
-        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest'
+        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest',
+        'MNU_NOSQL_MONGODB', 'MNU_NOSQL_REDIS', 'MNU_NOSQL_ELASTICSEARCH', 'MNU_NOSQL_CLICKHOUSE',
+        'MNU_CLOUD_GCP', 'MNU_CLOUD_AZURE', 'MNU_GITOPS_ARGOCD', 'MNU_OBSERVABILITY_OTEL',
+        'MNU_CRYPTO_PKI', 'MNU_SECURITY_ZEROTRUST'
       ];
       const allOptions = ['Landing', 'Comparar', 'Login', 'Historial', 'Filtros', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', 'Terminal', 'AdSenseAdmin', ...topics];
       for (const opt of allOptions) {
@@ -501,7 +510,10 @@ export const NgacService = {
       }
 
       const topicsGuest = [
-        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest'
+        'Postgres', 'Docker', 'Ngac', 'ExtReact', 'ExtNode', 'ExtAws', 'ExtPentest',
+        'MNU_NOSQL_MONGODB', 'MNU_NOSQL_REDIS', 'MNU_NOSQL_ELASTICSEARCH', 'MNU_NOSQL_CLICKHOUSE',
+        'MNU_CLOUD_GCP', 'MNU_CLOUD_AZURE', 'MNU_GITOPS_ARGOCD', 'MNU_OBSERVABILITY_OTEL',
+        'MNU_CRYPTO_PKI', 'MNU_SECURITY_ZEROTRUST'
       ];
       const guestOptions = ['Landing', 'Comparar', 'Historial', 'Filtros', 'Login', 'Register', 'AdBannerTop', 'AdBannerSidebar', 'AdBannerMatrix', 'Privacy', 'Terms', 'About', 'Contact', 'Docs', 'FAQ', ...topicsGuest];
       for (const opt of guestOptions) {
