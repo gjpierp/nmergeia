@@ -172,6 +172,8 @@ const pathToTabMap = {
   '/temas/cloud/azure': 'cloud-azure',
   '/temas/gitops/argocd': 'gitops-argocd',
   '/temas/observability/otel': 'observability-otel',
+  '/temas/crypto/pki': 'crypto-pki',
+  '/temas/security/zerotrust': 'security-zerotrust',
 
   '/temas/tema-02-docker-multistage': 'tema-02-docker-multistage',
   '/temas/tema-03-git-avanzado': 'tema-03-git-avanzado',

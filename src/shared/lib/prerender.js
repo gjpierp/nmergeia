@@ -66,7 +66,11 @@ const routes = [
   { path: '/temas/cloud/gcp', dirName: path.join('temas', 'cloud', 'gcp') },
   { path: '/temas/cloud/azure', dirName: path.join('temas', 'cloud', 'azure') },
   { path: '/temas/gitops/argocd', dirName: path.join('temas', 'gitops', 'argocd') },
-  { path: '/temas/observability/otel', dirName: path.join('temas', 'observability', 'otel') }
+  { path: '/temas/observability/otel', dirName: path.join('temas', 'observability', 'otel') },
+
+  // Ola C: Criptografía & Zero-Trust
+  { path: '/temas/crypto/pki', dirName: path.join('temas', 'crypto', 'pki') },
+  { path: '/temas/security/zerotrust', dirName: path.join('temas', 'security', 'zerotrust') }
 ];
 
 console.log(`🚀 Iniciando Pre-renderizado Nativo de ${routes.length} Páginas HTML Físicas...`);

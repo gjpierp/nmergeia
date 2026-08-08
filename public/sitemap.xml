@@ -562,6 +562,34 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/ext-pentest?lang=ja"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/temas/crypto/pki</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/crypto/pki"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/crypto/pki"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/crypto/pki?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/crypto/pki?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/crypto/pki?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/crypto/pki?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/crypto/pki?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/crypto/pki?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/security/zerotrust</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/security/zerotrust"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/security/zerotrust"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/security/zerotrust?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/security/zerotrust?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/security/zerotrust?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/security/zerotrust?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/security/zerotrust?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/security/zerotrust?lang=ja"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/temas/ext-react</loc>
     <lastmod>2026-08-08</lastmod>
     <changefreq>monthly</changefreq>

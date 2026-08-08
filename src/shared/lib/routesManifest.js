@@ -61,6 +61,8 @@ export const MENU_TREE = [
       { id: 1232, code: 'MNU_TEMA_06', label: 'Menús Dinámicos Sentinel-NGAC', path: '/temas/tema-06-ngac-menus', icon: 'list_alt', priority: '0.7', changefreq: 'monthly' },
       { id: 1233, code: 'MNU_TEMA_08', label: 'DevSecOps & HashiCorp Vault', path: '/temas/tema-08-devsecops-vault', icon: 'vpn_key', priority: '0.7', changefreq: 'monthly' },
       { id: 1234, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web & OWASP Top 10', path: '/temas/ext-pentest', icon: 'bug_report', priority: '0.7', changefreq: 'monthly' },
+      { id: 1280, code: 'MNU_CRYPTO_PKI', label: 'PKI, TLS 1.3 & Criptografía Post-Cuántica', path: '/temas/crypto/pki', icon: 'key', priority: '0.8', changefreq: 'weekly' },
+      { id: 1281, code: 'MNU_SECURITY_ZEROTRUST', label: 'Zero-Trust Architecture & Service Mesh', path: '/temas/security/zerotrust', icon: 'shield_lock', priority: '0.8', changefreq: 'weekly' },
 
       // ⚛️ Frontend & Backend Ecosystem
       { id: 1240, code: 'MNU_EXT_REACT', label: 'React Avanzado & Profiling', path: '/temas/ext-react', icon: 'javascript', priority: '0.7', changefreq: 'monthly' },

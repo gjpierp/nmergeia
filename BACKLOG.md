@@ -54,6 +54,6 @@ Actualmente la plataforma cuenta con **85 temas técnicos de alto valor**, todos
 - [x] **GitOps & Canary Deployments:** ArgoCD, ApplicationSets, Flagger y Progressive Delivery con Istio.
 - [x] **Observabilidad OTel:** OpenTelemetry (OTel Collector), Grafana Loki, Prometheus y SLO/SLI Error Budgeting.
 
-### 🛡️ Ola C: Criptografía & Zero-Trust (+10 Temas Candidatos)
-- [ ] **PKI & TLS 1.3:** Infraestructura de Llave Pública, Cert-Manager y Criptografía Post-Cuántica (Kyber).
-- [ ] **Zero-Trust Architecture:** Microsegmentación de redes con Service Mesh (Istio/Linkerd) e Identidad SPIFFE/SPIRE.
+### 🛡️ Ola C: Criptografía & Zero-Trust (🟢 COMPLETADO - v1.2.28)
+- [x] **PKI & TLS 1.3:** Offline Root CA, Cert-Manager, TLS 1.3 0-RTT y Criptografía Post-Cuántica (Kyber/Dilithium).
+- [x] **Zero-Trust Architecture:** Microsegmentación mTLS con Service Mesh (Istio), Identidad SPIFFE/SPIRE y ABAC/NGAC.
