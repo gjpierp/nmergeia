@@ -168,6 +168,10 @@ const pathToTabMap = {
   '/temas/nosql/redis': 'nosql-redis',
   '/temas/nosql/elasticsearch': 'nosql-elasticsearch',
   '/temas/nosql/clickhouse': 'nosql-clickhouse',
+  '/temas/cloud/gcp': 'cloud-gcp',
+  '/temas/cloud/azure': 'cloud-azure',
+  '/temas/gitops/argocd': 'gitops-argocd',
+  '/temas/observability/otel': 'observability-otel',
 
   '/temas/tema-02-docker-multistage': 'tema-02-docker-multistage',
   '/temas/tema-03-git-avanzado': 'tema-03-git-avanzado',

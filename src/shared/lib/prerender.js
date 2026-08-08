@@ -60,7 +60,13 @@ const routes = [
   { path: '/temas/nosql/mongodb', dirName: path.join('temas', 'nosql', 'mongodb') },
   { path: '/temas/nosql/redis', dirName: path.join('temas', 'nosql', 'redis') },
   { path: '/temas/nosql/elasticsearch', dirName: path.join('temas', 'nosql', 'elasticsearch') },
-  { path: '/temas/nosql/clickhouse', dirName: path.join('temas', 'nosql', 'clickhouse') }
+  { path: '/temas/nosql/clickhouse', dirName: path.join('temas', 'nosql', 'clickhouse') },
+
+  // Ola B: Multi-Cloud, GitOps & Observabilidad
+  { path: '/temas/cloud/gcp', dirName: path.join('temas', 'cloud', 'gcp') },
+  { path: '/temas/cloud/azure', dirName: path.join('temas', 'cloud', 'azure') },
+  { path: '/temas/gitops/argocd', dirName: path.join('temas', 'gitops', 'argocd') },
+  { path: '/temas/observability/otel', dirName: path.join('temas', 'observability', 'otel') }
 ];
 
 console.log(`🚀 Iniciando Pre-renderizado Nativo de ${routes.length} Páginas HTML Físicas...`);

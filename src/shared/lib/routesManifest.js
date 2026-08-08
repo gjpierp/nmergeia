@@ -50,6 +50,10 @@ export const MENU_TREE = [
       { id: 1223, code: 'MNU_TEMA_17', label: 'Kubernetes & Orquestación', path: '/temas/tema-17-kubernetes', icon: 'hub', priority: '0.8', changefreq: 'monthly' },
       { id: 1224, code: 'MNU_TEMA_18', label: 'Cloud Native & SRE', path: '/temas/tema-18-cloud-native', icon: 'cloud_done', priority: '0.8', changefreq: 'monthly' },
       { id: 1225, code: 'MNU_EXT_AWS', label: 'AWS Serverless & Lambda', path: '/temas/ext-aws', icon: 'cloud_queue', priority: '0.7', changefreq: 'monthly' },
+      { id: 1270, code: 'MNU_CLOUD_GCP', label: 'Google Cloud Platform (GCP) Enterprise', path: '/temas/cloud/gcp', icon: 'cloud', priority: '0.8', changefreq: 'weekly' },
+      { id: 1271, code: 'MNU_CLOUD_AZURE', label: 'Azure Enterprise Architecture', path: '/temas/cloud/azure', icon: 'cloud_done', priority: '0.8', changefreq: 'weekly' },
+      { id: 1272, code: 'MNU_GITOPS_ARGOCD', label: 'GitOps & Canary Deployments', path: '/temas/gitops/argocd', icon: 'sync_alt', priority: '0.8', changefreq: 'weekly' },
+      { id: 1273, code: 'MNU_OBSERVABILITY_OTEL', label: 'Observabilidad OTel & Grafana Loki', path: '/temas/observability/otel', icon: 'monitoring', priority: '0.8', changefreq: 'weekly' },
 
       // 🛡️ Ciberseguridad & Gobernanza NGAC
       { id: 1230, code: 'MNU_NGAC_GUIDE', label: 'Gobernanza Sentinel-NGAC', path: '/temas/ngac', icon: 'security', priority: '0.8', changefreq: 'weekly' },

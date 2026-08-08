@@ -42,17 +42,17 @@ Actualmente la plataforma cuenta con **85 temas técnicos de alto valor**, todos
 
 ## 🔮 3. BACKLOG DE EXPANSIÓN (PRÓXIMAS OLAS DE CONTENIDO)
 
-### 🗄️ Ola A: NoSQL & Storage Distribuido (+15 Temas Candidatos)
-- [ ] **MongoDB Enterprise:** Sharding, Replica Sets, Aggregation Pipelines complejas y Change Streams.
-- [ ] **Redis Cluster & Caching:** Sentinel HA, Eviction Policies (LRU/LFU), Bitmaps, Streams y Pub/Sub.
-- [ ] **Elasticsearch & Búsqueda Vectorial:** Index Lifecycle Management (ILM), Sharding y Dense Vectors kNN.
-- [ ] **ClickHouse Analytics:** Motores columnares MergeTree y consultas OLAP masivas en milisegundos.
+### 🗄️ Ola A: NoSQL & Storage Distribuido (🟢 COMPLETADO - v1.2.25)
+- [x] **MongoDB Enterprise:** Sharding, Replica Sets, Aggregation Pipelines complejas y Change Streams.
+- [x] **Redis Cluster & Caching:** Sentinel HA, Eviction Policies (LRU/LFU), Bitmaps, Streams y Pub/Sub.
+- [x] **Elasticsearch & Búsqueda Vectorial:** Index Lifecycle Management (ILM), Sharding y Dense Vectors kNN.
+- [x] **ClickHouse Analytics:** Motores columnares MergeTree y consultas OLAP masivas en milisegundos.
 
-### ☁️ Ola B: Multi-Cloud, GitOps & Observabilidad (+15 Temas Candidatos)
-- [ ] **Google Cloud Platform (GCP):** Cloud Run, Pub/Sub, BigQuery, GKE y Cloud Spanner.
-- [ ] **Azure Enterprise:** Azure Kubernetes Service (AKS), App Services y Blob Storage.
-- [ ] **GitOps & Canary Deployments:** ArgoCD, Flux CD, Flagger y Progressive Delivery.
-- [ ] **Observabilidad OTel:** OpenTelemetry (OTel), Trazabilidad Distribuida, Grafana Loki y Prometheus.
+### ☁️ Ola B: Multi-Cloud, GitOps & Observabilidad (🟢 COMPLETADO - v1.2.27)
+- [x] **Google Cloud Platform (GCP):** Cloud Run, Pub/Sub, BigQuery, GKE Autopilot y Cloud Spanner.
+- [x] **Azure Enterprise:** Azure Kubernetes Service (AKS), App Services, WORM Storage y Entra ID.
+- [x] **GitOps & Canary Deployments:** ArgoCD, ApplicationSets, Flagger y Progressive Delivery con Istio.
+- [x] **Observabilidad OTel:** OpenTelemetry (OTel Collector), Grafana Loki, Prometheus y SLO/SLI Error Budgeting.
 
 ### 🛡️ Ola C: Criptografía & Zero-Trust (+10 Temas Candidatos)
 - [ ] **PKI & TLS 1.3:** Infraestructura de Llave Pública, Cert-Manager y Criptografía Post-Cuántica (Kyber).

@@ -436,6 +436,62 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/ext-aws?lang=ja"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/temas/cloud/gcp</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/cloud/gcp"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/cloud/gcp"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/cloud/gcp?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/cloud/gcp?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/cloud/gcp?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/cloud/gcp?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/cloud/gcp?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/cloud/gcp?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/cloud/azure</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/cloud/azure"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/cloud/azure"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/cloud/azure?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/cloud/azure?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/cloud/azure?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/cloud/azure?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/cloud/azure?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/cloud/azure?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/gitops/argocd</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/gitops/argocd"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/gitops/argocd"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/gitops/argocd?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/gitops/argocd?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/gitops/argocd?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/gitops/argocd?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/gitops/argocd?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/gitops/argocd?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/observability/otel</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nmergeia.com/temas/observability/otel"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/observability/otel"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/observability/otel?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/observability/otel?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/observability/otel?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/observability/otel?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/observability/otel?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/observability/otel?lang=ja"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/temas/ngac</loc>
     <lastmod>2026-08-08</lastmod>
     <changefreq>weekly</changefreq>
