@@ -83,7 +83,11 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
           { id: 120, code: 'MNU_POSTGRES_GUIDE', label: 'PostgreSQL Enterprise', path: '/temas/postgres', icon: 'storage', node_type: 'OBJECT' },
           { id: 121, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Enterprise', path: '/temas/oracle', icon: 'database', node_type: 'OBJECT' },
           { id: 1212, code: 'MNU_TEMA_09', label: 'Migraciones de BD (Liquibase/Flyway)', path: '/temas/tema-09-migracion-db', icon: 'published_with_changes', node_type: 'OBJECT' },
-          { id: 1213, code: 'MNU_TEMA_07', label: 'Row-Level Security (RLS)', path: '/temas/tema-07-rls-gobernanza', icon: 'policy', node_type: 'OBJECT' }
+          { id: 1213, code: 'MNU_TEMA_07', label: 'Row-Level Security (RLS)', path: '/temas/tema-07-rls-gobernanza', icon: 'policy', node_type: 'OBJECT' },
+          { id: 1260, code: 'MNU_NOSQL_MONGODB', label: 'MongoDB Enterprise & Sharding', path: '/temas/nosql/mongodb', icon: 'view_cozy', node_type: 'OBJECT' },
+          { id: 1261, code: 'MNU_NOSQL_REDIS', label: 'Redis Cluster & High Availability', path: '/temas/nosql/redis', icon: 'bolt', node_type: 'OBJECT' },
+          { id: 1262, code: 'MNU_NOSQL_ELASTICSEARCH', label: 'Elasticsearch & Vector Search', path: '/temas/nosql/elasticsearch', icon: 'search', node_type: 'OBJECT' },
+          { id: 1263, code: 'MNU_NOSQL_CLICKHOUSE', label: 'ClickHouse Analytics & Columnar Engine', path: '/temas/nosql/clickhouse', icon: 'table_rows', node_type: 'OBJECT' }
         ]
       },
       {
@@ -93,7 +97,11 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
           { id: 1222, code: 'MNU_TEMA_04', label: 'Infrastructure as Code (Terraform)', path: '/temas/tema-04-iac-terraform', icon: 'build_circle', node_type: 'OBJECT' },
           { id: 1223, code: 'MNU_TEMA_17', label: 'Kubernetes & Orquestación', path: '/temas/tema-17-kubernetes', icon: 'hub', node_type: 'OBJECT' },
           { id: 1224, code: 'MNU_TEMA_18', label: 'Cloud Native & SRE', path: '/temas/tema-18-cloud-native', icon: 'cloud_done', node_type: 'OBJECT' },
-          { id: 405, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', node_type: 'OBJECT' }
+          { id: 405, code: 'MNU_EXT_AWS', label: 'AWS Serverless', path: '/temas/ext-aws', icon: 'cloud_queue', node_type: 'OBJECT' },
+          { id: 1270, code: 'MNU_CLOUD_GCP', label: 'Google Cloud Platform (GCP)', path: '/temas/cloud/gcp', icon: 'cloud', node_type: 'OBJECT' },
+          { id: 1271, code: 'MNU_CLOUD_AZURE', label: 'Azure Enterprise Architecture', path: '/temas/cloud/azure', icon: 'cloud_done', node_type: 'OBJECT' },
+          { id: 1272, code: 'MNU_GITOPS_ARGOCD', label: 'GitOps & Canary Deployments', path: '/temas/gitops/argocd', icon: 'sync_alt', node_type: 'OBJECT' },
+          { id: 1273, code: 'MNU_OBSERVABILITY_OTEL', label: 'Observabilidad OTel & Loki', path: '/temas/observability/otel', icon: 'monitoring', node_type: 'OBJECT' }
         ]
       },
       {
@@ -103,7 +111,9 @@ const DEFAULT_SENTINEL_MENU = import.meta.env.VITE_IS_DESKTOP === 'true' ? [
           { id: 1231, code: 'MNU_TEMA_05', label: 'Control de Acceso RBAC/ABAC/NGAC', path: '/temas/tema-05-rbac-abac-ngac', icon: 'admin_panel_settings', node_type: 'OBJECT' },
           { id: 1232, code: 'MNU_TEMA_06', label: 'Menús Dinámicos Sentinel-NGAC', path: '/temas/tema-06-ngac-menus', icon: 'list_alt', node_type: 'OBJECT' },
           { id: 1233, code: 'MNU_TEMA_08', label: 'DevSecOps & HashiCorp Vault', path: '/temas/tema-08-devsecops-vault', icon: 'vpn_key', node_type: 'OBJECT' },
-          { id: 407, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', node_type: 'OBJECT' }
+          { id: 407, code: 'MNU_EXT_PENTEST', label: 'Pentesting Web', path: '/temas/ext-pentest', icon: 'bug_report', node_type: 'OBJECT' },
+          { id: 1280, code: 'MNU_CRYPTO_PKI', label: 'PKI & TLS 1.3 Post-Cuántica', path: '/temas/crypto/pki', icon: 'key', node_type: 'OBJECT' },
+          { id: 1281, code: 'MNU_SECURITY_ZEROTRUST', label: 'Zero-Trust & Service Mesh', path: '/temas/security/zerotrust', icon: 'shield_lock', node_type: 'OBJECT' }
         ]
       },
       {
