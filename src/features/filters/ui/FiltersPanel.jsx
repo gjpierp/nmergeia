@@ -83,17 +83,17 @@ export const FiltersPanel = ({ openDiffTab, processFiles }) => {
         return;
       }
 
-      // Por defecto, TODAS las reglas válidas cargadas inician ACTIVAS (active: true)
-      const active = true;
-      const cleanRaw = `${type === 'include' ? '+' : '-'} ${pattern}`;
+      // Si la línea venía comentada (// o #), la regla debe permanecer DESACTIVADA (active: false)
+      const active = !isComment;
+      const cleanRaw = active ? `${type === 'include' ? '+' : '-'} ${pattern}` : `// ${type === 'include' ? '+' : '-'} ${pattern}`;
 
       // Deduplication logic
       if (activePatternMap.has(pattern)) {
         const existingIdx = activePatternMap.get(pattern);
-        parsed[existingIdx] = { id: parsed[existingIdx].id, type, pattern, active: true, raw: cleanRaw };
+        parsed[existingIdx] = { id: parsed[existingIdx].id, type, pattern, active, raw: cleanRaw };
       } else {
         activePatternMap.set(pattern, parsed.length);
-        parsed.push({ id: idx, type, pattern, active: true, raw: cleanRaw });
+        parsed.push({ id: idx, type, pattern, active, raw: cleanRaw });
       }
     });
     setRules(parsed);

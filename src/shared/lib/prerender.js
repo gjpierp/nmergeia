@@ -54,7 +54,13 @@ const routes = [
   { path: '/temas/tema-15-arquitecturas-software', dirName: path.join('temas', 'tema-15-arquitecturas-software') },
   { path: '/temas/tema-16-toma-requerimientos', dirName: path.join('temas', 'tema-16-toma-requerimientos') },
   { path: '/temas/tema-17-kubernetes', dirName: path.join('temas', 'tema-17-kubernetes') },
-  { path: '/temas/tema-18-cloud-native', dirName: path.join('temas', 'tema-18-cloud-native') }
+  { path: '/temas/tema-18-cloud-native', dirName: path.join('temas', 'tema-18-cloud-native') },
+
+  // Ola A: NoSQL & Storage Distribuido
+  { path: '/temas/nosql/mongodb', dirName: path.join('temas', 'nosql', 'mongodb') },
+  { path: '/temas/nosql/redis', dirName: path.join('temas', 'nosql', 'redis') },
+  { path: '/temas/nosql/elasticsearch', dirName: path.join('temas', 'nosql', 'elasticsearch') },
+  { path: '/temas/nosql/clickhouse', dirName: path.join('temas', 'nosql', 'clickhouse') }
 ];
 
 console.log(`🚀 Iniciando Pre-renderizado Nativo de ${routes.length} Páginas HTML Físicas...`);

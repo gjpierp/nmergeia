@@ -275,6 +275,58 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/tema-07-rls-gobernanza?lang=ja"/>
   </url>
   <url>
+    <loc>https://nmergeia.com/temas/nosql/mongodb</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/nosql/mongodb?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/nosql/mongodb?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/nosql/mongodb?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/nosql/mongodb?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/nosql/mongodb?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/nosql/mongodb?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/nosql/mongodb?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/nosql/redis</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/nosql/redis?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/nosql/redis?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/nosql/redis?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/nosql/redis?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/nosql/redis?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/nosql/redis?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/nosql/redis?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/nosql/elasticsearch</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/nosql/elasticsearch?lang=ja"/>
+  </url>
+  <url>
+    <loc>https://nmergeia.com/temas/nosql/clickhouse</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://nmergeia.com/temas/nosql/clickhouse?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nmergeia.com/temas/nosql/clickhouse?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://nmergeia.com/temas/nosql/clickhouse?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nmergeia.com/temas/nosql/clickhouse?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://nmergeia.com/temas/nosql/clickhouse?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nmergeia.com/temas/nosql/clickhouse?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://nmergeia.com/temas/nosql/clickhouse?lang=ja"/>
+  </url>
+  <url>
     <loc>https://nmergeia.com/temas/docker</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>weekly</changefreq>

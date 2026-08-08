@@ -38,6 +38,10 @@ export const MENU_TREE = [
       { id: 1211, code: 'MNU_ORACLE_GUIDE', label: 'Oracle Database Enterprise', path: '/temas/oracle', icon: 'database', priority: '0.8', changefreq: 'weekly' },
       { id: 1212, code: 'MNU_TEMA_09', label: 'Migraciones de BD (Liquibase/Flyway)', path: '/temas/tema-09-migracion-db', icon: 'published_with_changes', priority: '0.7', changefreq: 'monthly' },
       { id: 1213, code: 'MNU_TEMA_07', label: 'Row-Level Security (RLS)', path: '/temas/tema-07-rls-gobernanza', icon: 'policy', priority: '0.7', changefreq: 'monthly' },
+      { id: 1260, code: 'MNU_NOSQL_MONGODB', label: 'MongoDB Enterprise & Sharding', path: '/temas/nosql/mongodb', icon: 'view_cozy', priority: '0.8', changefreq: 'weekly' },
+      { id: 1261, code: 'MNU_NOSQL_REDIS', label: 'Redis Cluster & High Availability', path: '/temas/nosql/redis', icon: 'bolt', priority: '0.8', changefreq: 'weekly' },
+      { id: 1262, code: 'MNU_NOSQL_ELASTICSEARCH', label: 'Elasticsearch & Vector Search', path: '/temas/nosql/elasticsearch', icon: 'search', priority: '0.8', changefreq: 'weekly' },
+      { id: 1263, code: 'MNU_NOSQL_CLICKHOUSE', label: 'ClickHouse Analytics & Columnar Engine', path: '/temas/nosql/clickhouse', icon: 'table_rows', priority: '0.8', changefreq: 'weekly' },
 
       // 🐳 Contenedores & Cloud Native
       { id: 1220, code: 'MNU_DOCKER_GUIDE', label: 'Docker & Contenedores (Guía Completa)', path: '/temas/docker', icon: 'cloud', priority: '0.8', changefreq: 'weekly' },
