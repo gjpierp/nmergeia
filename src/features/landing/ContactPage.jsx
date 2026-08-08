@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
@@ -93,6 +94,13 @@ export const ContactPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Contacto & Soporte Técnico | NMerge IA</title>
+        <meta name="description" content="Ponte en contacto con el equipo de soporte técnico e ingeniería de NMerge IA y StackUpIA Software Labs." />
+        <link rel="canonical" href="https://nmergeia.com/contact" />
+        <meta property="og:url" content="https://nmergeia.com/contact" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Contacto & Soporte', path: '/contact' }]} />
         

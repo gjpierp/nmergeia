@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
@@ -24,8 +25,15 @@ export const TermsPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Términos y Condiciones de Servicio | NMerge IA</title>
+        <meta name="description" content="Términos legales y condiciones oficiales de uso de la plataforma NMerge IA y productos StackUpIA." />
+        <link rel="canonical" href="https://nmergeia.com/terms" />
+        <meta property="og:url" content="https://nmergeia.com/terms" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
-        <Breadcrumbs items={[{ label: 'Términos y Condiciones', path: '/terms' }]} />
+        <Breadcrumbs items={[{ label: 'Términos de Servicio', path: '/terms' }]} />
         
         <PageHeader 
           icon="gavel"

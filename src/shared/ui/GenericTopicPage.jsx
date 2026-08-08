@@ -54,10 +54,15 @@ export const GenericTopicPage = ({ topicId, title, initialLevel = 'inicial', sin
     breadcrumbsItems.push({ label: currentTab.label });
   }
 
+  const canonicalPath = singleFile ? `/temas/${topicId}` : `/temas/${topicId}/${activeTab}`;
+  const canonicalUrl = `https://nmergeia.com${canonicalPath}`;
+
   return (
     <div id="generic-topic-container" style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
       <Helmet>
         <title>NMerge | {translatedTitle} {!singleFile ? `(${currentTab.label})` : ''}</title>
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
       </Helmet>
 
       <Breadcrumbs items={breadcrumbsItems} />

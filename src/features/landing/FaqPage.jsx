@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 
@@ -166,6 +167,13 @@ export const FaqPage = ({ appLanguage }) => {
       fontFamily: '"Outfit", sans-serif',
       overflowY: 'auto'
     }}>
+      <Helmet>
+        <title>Preguntas Frecuentes (FAQ) | NMerge IA</title>
+        <meta name="description" content="Respuestas a preguntas frecuentes sobre comparación de directorios, algoritmos Myers LCS, privacidad local-first y licencias NMerge IA." />
+        <link rel="canonical" href="https://nmergeia.com/faq" />
+        <meta property="og:url" content="https://nmergeia.com/faq" />
+      </Helmet>
+
       {/* Header Estandarizado */}
       <Breadcrumbs items={[{ label: lang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'FAQ', path: '/faq' }]} />
       <PageHeader 

@@ -25,10 +25,13 @@ function generateSitemap() {
     xml += `    <changefreq>${page.changefreq || 'monthly'}</changefreq>\n`;
     xml += `    <priority>${page.priority || '0.7'}</priority>\n`;
 
+    // 🌐 x-default apunta siempre a la URL canónica limpia
+    xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>\n`;
+
     LANGUAGES.forEach(lang => {
-      const langUrl = cleanPath 
-        ? `${DOMAIN}${cleanPath}?lang=${lang}`
-        : `${DOMAIN}/?lang=${lang}`;
+      const langUrl = (lang === 'es') 
+        ? loc 
+        : (cleanPath ? `${DOMAIN}${cleanPath}?lang=${lang}` : `${DOMAIN}?lang=${lang}`);
       xml += `    <xhtml:link rel="alternate" hreflang="${lang}" href="${langUrl}"/>\n`;
     });
 

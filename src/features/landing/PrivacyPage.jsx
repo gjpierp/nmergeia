@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
@@ -25,6 +26,13 @@ export const PrivacyPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Política de Privacidad & Protección de Datos | NMerge IA</title>
+        <meta name="description" content="Política oficial de privacidad, protección de datos (GDPR/CCPA) y uso de cookies AdSense en NMerge IA." />
+        <link rel="canonical" href="https://nmergeia.com/privacy" />
+        <meta property="og:url" content="https://nmergeia.com/privacy" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Política de Privacidad', path: '/privacy' }]} />
         

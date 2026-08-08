@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { AppAdInjectedContent } from '../../app/core/components/AppAdInjectedContent.jsx';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
@@ -21,6 +22,13 @@ export const DocsPanel = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Biblioteca Técnica & Documentación | NMerge IA</title>
+        <meta name="description" content="Documentación completa del sistema NMerge IA: algoritmo Myers LCS, motor Monaco Editor y gobernanza Sentinel-NGAC." />
+        <link rel="canonical" href="https://nmergeia.com/docs" />
+        <meta property="og:url" content="https://nmergeia.com/docs" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Biblioteca Técnica & Documentación', path: '/docs' }]} />
         <PageHeader icon="menu_book" title="Documentación Técnica e i18n" subtitle="Arquitectura de Comparación, Algoritmos Myers LCS y Gobernanza de Acceso NGAC" />

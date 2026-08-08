@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { PageHeader } from '../../shared/ui/PageHeader.jsx';
 import { Breadcrumbs } from '../../shared/ui/Breadcrumbs.jsx';
@@ -20,6 +21,13 @@ export const PricingPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Planes y Precios | NMerge IA</title>
+        <meta name="description" content="Licenciamiento transparente NMerge IA. Modelo Local-First sin suscripciones ni costos ocultos para desarrolladores y empresas." />
+        <link rel="canonical" href="https://nmergeia.com/pricing" />
+        <meta property="og:url" content="https://nmergeia.com/pricing" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Planes y Precios', path: '/pricing' }]} />
         <PageHeader icon="payments" title="Planes y Precios" subtitle="Modelo Transparente de Licenciamiento Local-First & Opciones para Desarrolladores y Equipos" />

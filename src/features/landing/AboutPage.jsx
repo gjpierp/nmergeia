@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAppStore } from '../../app/useAppStore.js';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '../../shared/ui/Logo.jsx';
@@ -24,6 +25,13 @@ export const AboutPage = () => {
       overflowY: 'auto',
       boxSizing: 'border-box'
     }}>
+      <Helmet>
+        <title>Sobre Nosotros & Filosofía Técnica | NMerge IA</title>
+        <meta name="description" content="Conoce la historia, visión técnica y estándares EEAT de NMerge IA y StackUpIA Software Labs." />
+        <link rel="canonical" href="https://nmergeia.com/about" />
+        <meta property="og:url" content="https://nmergeia.com/about" />
+      </Helmet>
+
       <div style={{ width: '100%', textAlign: 'left' }}>
         <Breadcrumbs items={[{ label: 'Sobre Nosotros (EEAT)', path: '/about' }]} />
         
